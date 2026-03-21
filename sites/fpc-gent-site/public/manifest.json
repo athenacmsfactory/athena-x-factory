@@ -1,0 +1,6 @@
+{
+  "name": "<site> MPA",
+  "short_name": "<site>",
+  "start_url": "/",
+  "display": "standalone"
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/behandelcentra/<site>/logo-<site>-klein/",
+    "path": "/behandelcentra/<site>/logo-<site>-klein",
+    "title": "logo fpc gent klein",
+    "images": [
+      "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "logo-<site>-klein [LINK: https://www.example-media.invalid/wp-content/uploads/2017/07/logo-<site>-klein.png] [/LINK]"
+  }
+}

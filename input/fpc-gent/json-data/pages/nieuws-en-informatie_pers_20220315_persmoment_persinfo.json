@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/nieuws-en-informatie/pers/20220315_persmoment_persinfo/",
+    "path": "/nieuws-en-informatie/pers/20220315_persmoment_persinfo",
+    "title": "20220315_persmoment_persinfo",
+    "images": [
+      "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "20220315_Persmoment_Persinfo [LINK: https://www.example-media.invalid/wp-content/uploads/2023/05/20220315_Persmoment_Persinfo.pdf] 20220315_Persmoment_Persinfo [/LINK]"
+  }
+}

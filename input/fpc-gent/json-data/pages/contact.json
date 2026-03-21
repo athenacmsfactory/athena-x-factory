@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/contact/",
+    "path": "/contact",
+    "title": "contact",
+    "images": [
+      "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg",
+      "https://www.example-media.invalid/wp-content/uploads/2017/07/contact.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "Contact [LINK: https://www.example-media.invalid/] Home [/LINK] » Contact FPC Antwerpen Algemene info & vragen [LINK: mailto:info@fpcantwerpen.be] info@fpcantwerpen.be [/LINK] Vragen over onze HR-dienst [LINK: mailto:HR@fpcantwerpen.be] HR@fpcantwerpen.be [/LINK] Voor sollicitaties verwijzen we graag naar onze vacaturesStel je spontaan kandidaat [LINK: mailto:jobs@fpcantwerpen.be] jobs@fpcantwerpen.be [/LINK] Vragen over facturatie en betalingen [LINK: mailto:boekhouding@fpcantwerpen.be] boekhouding@fpcantwerpen.be [/LINK] Vragen i.v.m. de uitoefening van de patiëntenrechten [LINK: mailto:ombudsdienst@fpcantwerpen.be] ombudsdienst@fpcantwerpen.be [/LINK] Telefoon03 253 77 77 [LINK: https://www.example-media.invalid/behandelcentra/fpc-antwerpen/] Meer over FPC Antwerpen [/LINK] Organisatienaam Algemene info en vragen [LINK: mailto:info@organisatie.be] info@organisatie.be [/LINK] Vragen over onze HR-dienst [LINK: mailto:HR@organisatie.be] HR@organisatie.be [/LINK] Voor sollicitaties verwijzen we graag naar onze vacaturesStel je spontaan kandidaat [LINK: mailto:jobs@organisatie.be] jobs@organisatie.be [/LINK] Vragen over facturatie en betalingen [LINK: mailto:boekhouding@organisatie.be] boekhouding@organisatie.be [/LINK] Vragen i.v.m. de uitoefening van de patiëntenrechten [LINK: mailto:ombudsdienst@organisatie.be] ombudsdienst@organisatie.be [/LINK] Telefoon09 325 27 29 [LINK: https://www.example-media.invalid/behandelcentra/<site>/] Meer over Organisatienaam [/LINK]",
+    "sections": [
+      {
+        "type": "text_block",
+        "content": {
+          "titel": "Contact"
+        }
+      },
+      {
+        "type": "list",
+        "content": {
+          "titel": "FPC Antwerpen",
+          "items": [
+            "Algemene info & vragen: info@fpcantwerpen.be",
+            "Vragen over onze HR-dienst: HR@fpcantwerpen.be",
+            "Voor sollicitaties verwijzen we graag naar onze vacatures. Stel je spontaan kandidaat: jobs@fpcantwerpen.be",
+            "Vragen over facturatie en betalingen: boekhouding@fpcantwerpen.be",
+            "Vragen i.v.m. de uitoefening van de patiëntenrechten: ombudsdienst@fpcantwerpen.be",
+            "Telefoon: 03 253 77 77",
+            "Meer over FPC Antwerpen (https://www.example-media.invalid/behandelcentra/fpc-antwerpen/)"
+          ]
+        }
+      },
+      {
+        "type": "list",
+        "content": {
+          "titel": "Organisatienaam",
+          "items": [
+            "Algemene info en vragen: info@organisatie.be",
+            "Vragen over onze HR-dienst: HR@organisatie.be",
+            "Voor sollicitaties verwijzen we graag naar onze vacatures. Stel je spontaan kandidaat: jobs@organisatie.be",
+            "Vragen over facturatie en betalingen: boekhouding@organisatie.be",
+            "Vragen i.v.m. de uitoefening van de patiëntenrechten: ombudsdienst@organisatie.be",
+            "Telefoon: 09 325 27 29",
+            "Meer over Organisatienaam (https://www.example-media.invalid/behandelcentra/<site>/)"
+          ]
+        }
+      }
+    ]
+  }
+}

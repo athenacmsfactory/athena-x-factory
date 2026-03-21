@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/jobs/_jobs_aandeslag/",
+    "path": "/jobs/_jobs_aandeslag",
+    "title": "_jobs_aandeslag",
+    "images": [
+      "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "_jobs_aandeslag [LINK: https://www.example-media.invalid/wp-content/uploads/2017/07/jobs_aandeslag.jpg] [/LINK]"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/forensische-psychiatrie/link-img-2/",
+    "path": "/forensische-psychiatrie/link-img-2",
+    "title": "link img 2",
+    "images": [
+      "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "link-img-2 [LINK: https://www.example-media.invalid/wp-content/uploads/2017/07/link-img-2.jpg] [/LINK]"
+  }
+}

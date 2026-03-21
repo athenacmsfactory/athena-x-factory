@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid//startup-stock-photos/",
+    "path": "//startup-stock-photos",
+    "title": "startup stock photos",
+    "images": [
+      "logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "Startup Stock Photos [LINK: https://www.example-media.invalid/wp-content/uploads/2017/07/Re-integratie_Kennisdelen.jpg] [/LINK]",
+    "afbeelding": "logo_share.jpg"
+  }
+}

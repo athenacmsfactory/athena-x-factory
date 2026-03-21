@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/behandelcentra/hoog-beveiligde-centra-2/",
+    "path": "/behandelcentra/hoog-beveiligde-centra-2",
+    "title": "hoog beveiligde centra 2",
+    "images": [
+      "logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "Hoog beveiligde centra [LINK: https://www.example-media.invalid/wp-content/uploads/2017/07/Hoog-beveiligde-centra-e1502114074858.jpg] [/LINK]",
+    "afbeelding": "logo_share.jpg"
+  }
+}

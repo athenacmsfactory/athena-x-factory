@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "url": "https://www.example-media.invalid/over-ons/privacybeleid/privacy-policy/",
+    "path": "/over-ons/privacybeleid/privacy-policy",
+    "title": "privacy policy",
+    "images": [
+      "logo_share.jpg"
+    ],
+    "logo": "https://www.example-media.invalid/wp-content/themes/fpc/images/logo_share.jpg"
+  },
+  "content": {
+    "raw_text": "Privacy policy [LINK: https://www.example-media.invalid/wp-content/uploads/2019/01/Privacy-policy.jpg] [/LINK]",
+    "afbeelding": "logo_share.jpg"
+  }
+}
