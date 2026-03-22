@@ -47,6 +47,7 @@
             'light_button_color': ['--color-button-bg', '--btn-bg'],
             'light_card_color': ['--color-card-bg', '--card-bg', '--surface', '--color-surface'],
             'light_header_color': ['--color-header-bg', '--nav-bg'],
+            'light_menu_color': ['--color-menu-bg'],
             'light_bg_color': ['--color-background', '--bg-site'],
             'light_text_color': ['--color-text'],
             'global_radius': ['--radius-custom', '--radius-main'],
@@ -60,6 +61,7 @@
             'dark_button_color': ['--color-button-bg', '--btn-bg'],
             'dark_card_color': ['--color-card-bg', '--card-bg', '--surface', '--color-surface'],
             'dark_header_color': ['--color-header-bg', '--nav-bg'],
+            'dark_menu_color': ['--color-menu-bg'],
             'dark_bg_color': ['--color-background', '--bg-site'],
             'dark_text_color': ['--color-text'],
             'global_radius': ['--radius-custom', '--radius-main'],
@@ -225,7 +227,7 @@
                     if (el.hasAttribute('data-dock-current')) {
                         el.setAttribute('data-dock-current', value || "");
                     }
-                } else if (dockType === 'link') {
+                } else if (dockType === 'link' || dockType === 'button') {
                     const { label, url } = (typeof value === 'object' && value !== null) ? value : { label: value, url: "" };
                     el.innerText = label || "";
                     el.setAttribute('data-dock-label', label || "");
@@ -325,7 +327,7 @@
 
             let currentValue = target.getAttribute('data-dock-current') || target.innerText;
 
-            if (dockType === 'link') {
+            if (dockType === 'link' || dockType === 'button') {
                 currentValue = {
                     label: target.getAttribute('data-dock-label') || target.innerText,
                     url: target.getAttribute('data-dock-url') || ""

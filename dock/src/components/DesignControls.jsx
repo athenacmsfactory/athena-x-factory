@@ -342,7 +342,7 @@ const ColorGrid = ({ title, prefix, colors, onPreview, onSave }) => (
   <div className="space-y-3">
     <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-l-2 border-blue-500 pl-2">{title}</p>
     <div className="grid grid-cols-4 gap-2">
-      {['primary', 'accent', 'button', 'card', 'header', 'footer', 'bg', 'text'].map(key => (
+      {['primary', 'accent', 'button', 'menu', 'card', 'header', 'footer', 'bg', 'text'].map(key => (
         <div key={key} className="space-y-1 text-center">
           <div 
             className="w-full aspect-square rounded border border-slate-300 cursor-pointer shadow-sm relative group overflow-hidden"

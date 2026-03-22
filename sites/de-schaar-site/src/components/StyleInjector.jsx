@@ -37,11 +37,12 @@ const StyleInjector = ({ data = {} }) => {
       'title_color': ['--color-title'],
       'heading_color': ['--color-heading'],
       'accent_color': ['--color-accent'],
-      'button_color': ['--color-button'],
+      'button_color': ['--color-button', '--color-button-bg'],
       'card_color': ['--color-card', '--bg-surface'],
       'header_color': ['--color-header', '--bg-header'],
       'footer_color': ['--color-footer-bg'],
       'bg_color': ['--color-background', '--bg-site'],
+      'menu_color': ['--color-menu-bg'],
       'text_color': ['--color-text']
     };
 

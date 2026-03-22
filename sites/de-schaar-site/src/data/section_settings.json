@@ -38,7 +38,7 @@
     "id": "stylist_gradatie",
     "title": "Stylist Gradaties",
     "subtitle": "Gediplomeerd vakmanschap",
-    "visible": true,
+    "visible": false,
     "padding": 40
   },
   {

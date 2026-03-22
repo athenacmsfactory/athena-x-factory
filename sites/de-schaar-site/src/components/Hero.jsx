@@ -55,7 +55,6 @@ const Hero = ({ data }) => {
                     />
                 </h1>
                 
-                <div className="h-2 w-32 bg-accent mx-auto mb-10 rounded-full shadow-lg shadow-accent/50"></div>
                 
                 {hero.ondertitel && (
                   <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-light italic mb-12">

@@ -104,20 +104,24 @@ const Section = ({ data }) => {
         // Skip technical sections by default
         if (config.table === 'navbar' || config.table === 'footer' || config.table === 'social_media' || config.table.includes('hoofdgroepen')) return null;
         
-        // Skip based on visibility setting (except in Dev mode where we show them dimmed)
-        if (!isVisible && !isDev) return null;
+        const isDocked = window.self !== window.top;
+        
+        // Skip based on visibility setting
+        // Standalone/Production: Hide completely
+        // Docked (Iframe): Show faded for editability
+        if (!isVisible && !isDocked) return null;
 
         const realKey = Object.keys(data).find(k => k.toLowerCase() === config.table.toLowerCase());
         let items = data[realKey] || [];
         if (!Array.isArray(items)) items = [items];
         
-        // Skip if no items and not in dev
-        if (items.length === 0 && !isVisible && !isDev) return null;
+        // Skip if no items and not docked
+        if (items.length === 0 && !isVisible && !isDocked) return null;
 
         const currentLayout = getLayout(config.table, config.defaultLayout);
         const visibleItems = isDev ? items : items.filter(item => item && !item._hidden);
         
-        if (visibleItems.length === 0 && !isVisible && !isDev) return null;
+        if (visibleItems.length === 0 && !isVisible && !isDocked) return null;
 
         const sectionTitle = sectionMeta.title || config.title;
         const sectionSubtitle = sectionMeta.subtitle || config.subtitle;

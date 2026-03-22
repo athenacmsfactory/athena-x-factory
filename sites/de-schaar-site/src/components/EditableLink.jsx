@@ -39,7 +39,8 @@ export default function EditableLink({
   const finalLabel = useMemo(() => {
     if (label) return label;
     if (!isObject) return "";
-    return actualValue.label || actualValue.text || actualValue.title || "";
+    // v8.1+ Standard: Prefer 'text' (updated by Styled Text editor) over 'label' 
+    return actualValue.text || actualValue.label || actualValue.title || "";
   }, [label, isObject, actualValue]);
 
   const finalUrl = useMemo(() => {
@@ -93,16 +94,16 @@ export default function EditableLink({
     key: binding.key
   });
 
-  const dockLabel = field ? field.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : binding.key;
+  const dockLabel = field ? field.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : (binding.key || "Link");
 
   return (
     <Tag
       href={Tag === 'a' ? actualUrl : undefined}
       data-dock-bind={dockBind}
-      data-dock-type="link"
-      data-dock-label={finalLabel}
+      data-dock-type="button"
+      data-dock-label={dockLabel}
       data-dock-url={actualUrl}
-      className={`${className} ${variantClass} cursor-pointer hover:ring-2 hover:ring-blue-400/40 transition-all`}
+      className={`${className} cursor-pointer hover:ring-2 hover:ring-blue-400/40 rounded-sm transition-all`}
       style={individualStyle}
       title={`Shift+Klik om "${dockLabel}" te bewerken in de Dock (Normale klik om link te volgen)`}
       {...props}

@@ -110,7 +110,7 @@ function Header({ siteSettings = {}, headerSettings = {}, headerData = [], navDa
                     label={navLabel}
                     url={navUrl}
                     cmsBind={{ file: 'navbar', index: idx, key: 'label' }}
-                    className="text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary transition-colors"
+                    className="text-sm font-bold text-[var(--color-text)] hover:text-primary transition-colors"
                     onClick={(e) => handleScroll(e, navUrl)}
                   />
                 );
@@ -122,7 +122,7 @@ function Header({ siteSettings = {}, headerSettings = {}, headerData = [], navDa
             as="button"
             url={hData.knop}
             cmsBind={{ file: 'header', index: 0, key: 'knop' }}
-            className="bg-[var(--color-button-bg)] text-white px-6 py-3 rounded-[var(--button-radius,9999px)] font-bold hover:opacity-90 transition-all shadow-lg"
+            className="bg-[var(--color-button,var(--color-primary))] text-white px-6 py-3 rounded-[var(--button-radius,9999px)] font-bold hover:opacity-90 transition-all shadow-lg"
             onClick={(e) => handleScroll(e, hData.knop)}
           />
         </div>
@@ -138,7 +138,10 @@ function Header({ siteSettings = {}, headerSettings = {}, headerData = [], navDa
       </div>
 
       {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-x-0 top-[var(--header-height,80px)] bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-xl md:hidden transition-all duration-300 ease-in-out origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}>
+      <div 
+        className={`fixed inset-x-0 top-[var(--header-height,80px)] border-b border-slate-100 dark:border-slate-800 shadow-xl md:hidden transition-all duration-300 ease-in-out origin-top ${isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}
+        style={{ backgroundColor: 'var(--color-menu-bg, white)' }}
+      >
         <div className="p-6 flex flex-col gap-4">
           <Link to="/" className="text-lg font-bold text-primary py-2 border-b border-slate-50 dark:border-slate-800" onClick={() => setIsMenuOpen(false)}>
             Home
@@ -156,7 +159,7 @@ function Header({ siteSettings = {}, headerSettings = {}, headerData = [], navDa
                 label={navLabel}
                 url={navUrl}
                 cmsBind={{ file: 'navbar', index: idx, key: 'label' }}
-                className="text-lg font-bold text-slate-600 dark:text-slate-300 py-2 border-b border-slate-50 dark:border-slate-800"
+                className="text-lg font-bold text-[var(--color-text)] py-2 border-b border-slate-50 dark:border-slate-800"
                 onClick={(e) => handleScroll(e, navUrl)}
               />
             );
@@ -166,7 +169,7 @@ function Header({ siteSettings = {}, headerSettings = {}, headerData = [], navDa
             as="button"
             url={hData.knop}
             cmsBind={{ file: 'header', index: 0, key: 'knop' }}
-            className="w-full bg-[var(--color-button-bg)] text-white px-6 py-3 rounded-[var(--button-radius,9999px)] font-bold hover:opacity-90 transition-all text-center mt-4 shadow-lg"
+            className="w-full bg-[var(--color-button,var(--color-primary))] text-white px-6 py-3 rounded-[var(--button-radius,9999px)] font-bold hover:opacity-90 transition-all text-center mt-4 shadow-lg"
             onClick={(e) => handleScroll(e, hData.knop)}
           />
         </div>

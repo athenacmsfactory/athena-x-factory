@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import { DataAggregator } from '../logic/data-aggregator.js';
 
 export default function athenaEditorPlugin() {
   let viteConfig;
@@ -71,6 +72,7 @@ export default function athenaEditorPlugin() {
           let body = '';
           req.on('data', chunk => body += chunk);
           req.on('end', async () => {
+            const rootDir = viteConfig?.root || process.cwd();
             res.setHeader('Content-Type', 'application/json');
             try {
               const payload = JSON.parse(body);
@@ -291,6 +293,14 @@ export default function athenaEditorPlugin() {
               }
 
               fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+
+              // 🔥 v8.1 Auto-Aggregation Hook
+              try {
+                DataAggregator.aggregate(rootDir);
+              } catch (aggErr) {
+                console.error(`[Athena Editor] ⚠️ Aggregation failed:`, aggErr.message);
+              }
+
               res.end(JSON.stringify({ success: true }));
             } catch (e) {
               console.error(`[Athena Editor] CRITICAL ERROR:`, e);
