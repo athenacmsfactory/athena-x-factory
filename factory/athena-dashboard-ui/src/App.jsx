@@ -283,7 +283,7 @@ function ActionBtn({ label, icon, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-2.5 px-3 py-1.5 text-slate-500 hover:text-athena-accent transition-colors group"
+      className="w-full flex items-center gap-2.5 px-3 py-2 text-slate-500 hover:text-athena-accent transition-colors group"
     >
       <span className="text-xs opacity-50 group-hover:opacity-100">{icon}</span>
       <span className="text-[11px] font-black uppercase tracking-tighter">{label}</span>

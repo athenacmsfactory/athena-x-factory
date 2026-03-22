@@ -17,12 +17,6 @@ The primary development machine is a Chromebook with limited resources (16GB RAM
     - The `storage-prune-all` command sweeps inactive site `node_modules`.
     - It also sweeps `src/data-temp/` directories older than 3 weeks to prevent infinite disk space accumulation.
 
-## 🛡️ Git Governance & Environment Isolation (v8.2)
-- **Environment Isolation**: Er is een strikte scheiding tussen de monorepo's:
-    - `KarelTestSpecial/athena-x` (Development) ➔ Pusht naar GitHub organisatie `ath-x`.
-    - `athena-cms-factory/athena` (Production) ➔ Pusht naar GitHub organisatie `athena-cms-factory`.
-- **Backup Protocol**: Elke significante release naar productie moet voorafgegaan worden door een backup van de productie-organisatie naar de `bUP` organisatie via `factory/6-utilities/backup-org.sh`.
-
 ## 🏛️ Project Architecture & Dual-Data Standard
 - **Dual-Data Architecture (v8.1)**: Sites gebruiken een hybride datasysteem voor maximale prestaties en bewerkbaarheid:
     1. **Source of Truth (Modular)**: Losse `.json` bestanden in `src/data/` (bv. `hero.json`). Deze zijn 1-op-1 gekoppeld aan Google Sheets tabs.
@@ -66,7 +60,7 @@ To ensure maximum clarity and safety, every site follows a strict mapping:
 
 ## 📂 Detailed Project Directory Structure
 ```text
-/home/kareltestspecial/0-IT/2-Productie/athena-x/
+/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/
 ├── GEMINI.md                     # Master Context for the Factory (THIS FILE)
 ├── dock/                         # Visual Editor (Athena Dock) React App (Port 5002)
 │   ├── public/sites.json         # Central registry of all generated sites

@@ -63,6 +63,9 @@ export class ServerController {
             const activeMap = new Map();
             const systemPorts = Object.values(this.configManager.get('ports') || {});
             
+            // Explicitly defined system ports for fallback/core detection
+            const corePorts = [5000, 5001, 5002, 5003, 5004, 5005];
+            
             // Add API_PORT explicitly if not in config
             const apiPort = parseInt(process.env.API_PORT) || 5000;
             if (!systemPorts.includes(apiPort)) systemPorts.push(apiPort);
@@ -70,10 +73,7 @@ export class ServerController {
             const addServer = (port, info) => {
                 const portNum = parseInt(port);
                 if (!activeMap.has(portNum)) {
-                    // Verberg het dashboard zelf uit de lijst (poort 5001)
-                    if (portNum === 5001) return;
-                    
-                    const isSystem = systemPorts.includes(portNum) || [5000, 5001, 5002, 5003, 5004, 5005].includes(portNum);
+                    const isSystem = systemPorts.includes(portNum) || corePorts.includes(portNum);
                     activeMap.set(portNum, { ...info, isSystem, port: portNum });
                 }
             };
@@ -90,7 +90,30 @@ export class ServerController {
                 });
             }
 
-            // 2. Discover unmanaged processes (started via CLI)
+            // 2. Explicitly check system/core ports that might be started externally (PM2, CLI, etc.)
+            for (const port of corePorts) {
+                if (activeMap.has(port)) continue;
+
+                const res = this.execService.runSync(`ss -tuln | grep :${port} || true`, { label: 'System Port Check', silent: true });
+                if (res.success && res.output && res.output.includes(`:${port}`)) {
+                    let label = 'System Service';
+                    if (port === 5000) label = 'Athena API';
+                    if (port === 5001) label = 'Athena Dashboard';
+                    if (port === 5002) label = 'Athena Dock';
+                    if (port === 5003) label = 'Layout Editor';
+                    if (port === 5004) label = 'Media Visualizer';
+
+                    addServer(port, {
+                        siteName: label,
+                        port: port,
+                        pid: 'system',
+                        type: 'system',
+                        url: `http://${hostname}:${port}/`
+                    });
+                }
+            }
+
+            // 3. Discover unmanaged processes (started via CLI)
             this._discoverExternalServers(this.sitesDir, hostname, activeMap, systemPorts, addServer);
             this._discoverExternalServers(this.sitesExternalDir, hostname, activeMap, systemPorts, addServer);
 

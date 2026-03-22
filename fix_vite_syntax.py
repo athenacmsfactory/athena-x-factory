@@ -17,7 +17,7 @@ def fix_broken_vite_config(file_path):
             f.write(new_content)
         print(f"Fixed broken syntax in {file_path}")
 
-sites_dir = '/home/kareltestspecial/0-IT/2-Productie/athena-x/sites'
+sites_dir = '/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/sites'
 for root, dirs, files in os.walk(sites_dir):
     if 'vite.config.js' in files:
         fix_broken_vite_config(os.path.join(root, 'vite.config.js'))
