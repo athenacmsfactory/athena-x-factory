@@ -70,17 +70,17 @@ export class SiteHealer {
                     // RESTORE MISSING FILE
                     const defaultRow = {};
                     table.columns.forEach(col => defaultRow[col] = "");
-                    fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 2));
+                    fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 4));
                     results.restored.push(`${tableName}.json`);
                 } else {
                     // REPAIR CORRUPT OR EMPTY FILE
                     try {
                         const content = fs.readFileSync(filePath, 'utf8').trim();
-                        if (content === "" || content === "[]" || content === "[ ]") {
+                        if (content === "" || content === "[]" || content === "[ ]" || content === "{}" || content.length < 5) {
                             const defaultRow = {};
                             table.columns.forEach(col => defaultRow[col] = "");
-                            fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 2));
-                            results.repaired.push(`${tableName}.json (filled empty file)`);
+                            fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 4));
+                            results.repaired.push(`${tableName}.json (filled empty/short file)`);
                         } else {
                             JSON.parse(content); // Validate JSON
                         }
@@ -89,8 +89,37 @@ export class SiteHealer {
                         fs.renameSync(filePath, `${filePath}.corrupt.${Date.now()}`);
                         const defaultRow = {};
                         table.columns.forEach(col => defaultRow[col] = "");
-                        fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 2));
+                        fs.writeFileSync(filePath, JSON.stringify([defaultRow], null, 4));
                         results.repaired.push(`${tableName}.json (fixed corruption)`);
+                    }
+                }
+            }
+
+            // 2. SANITIZE COMMON CONFIG FILES (v8.8 Recovery Pass)
+            const commonConfigs = [
+                { name: 'layout_settings.json', default: {} },
+                { name: 'style_config.json', default: {} },
+                { name: 'style_bindings.json', default: {} },
+                { name: 'section_order.json', default: [] },
+                { name: 'links_config.json', default: {} },
+                { name: 'site_settings.json', default: { site_name: siteName } }
+            ];
+
+            for (const config of commonConfigs) {
+                const filePath = path.join(dataDir, config.name);
+                if (fs.existsSync(filePath)) {
+                    try {
+                        const content = fs.readFileSync(filePath, 'utf8').trim();
+                        // If file is empty or too short, fill with pretty-printed default
+                        if (content === "" || content === "[]" || content === "{}" || content.length < 5) {
+                            fs.writeFileSync(filePath, JSON.stringify(config.default, null, 4));
+                            results.repaired.push(`${config.name} (standardized config file)`);
+                        } else {
+                            JSON.parse(content);
+                        }
+                    } catch (e) {
+                         fs.writeFileSync(filePath, JSON.stringify(config.default, null, 4));
+                         results.repaired.push(`${config.name} (restored config from corruption)`);
                     }
                 }
             }

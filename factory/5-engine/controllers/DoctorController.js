@@ -12,7 +12,7 @@ export class DoctorController {
     constructor(configManager) {
         this.configManager = configManager;
         this.sitesDir = configManager.get('paths.sites');
-        this.policiesPath = path.join(process.cwd(), 'config/hydration-policies.json');
+        this.policiesPath = path.join(configManager.get('paths.config'), 'hydration-policies.json');
     }
 
     /**
@@ -62,7 +62,8 @@ export class DoctorController {
                 try {
                     const content = fs.readFileSync(path.join(dataDir, file), 'utf8');
                     JSON.parse(content);
-                    if (content.trim().length < 5) {
+                    const trimmed = content.trim();
+                    if (trimmed.length < 5 && trimmed !== '{}' && trimmed !== '[]') {
                         report.status = 'warning';
                         report.issues.push(`Empty JSON file: ${file}`);
                     }
