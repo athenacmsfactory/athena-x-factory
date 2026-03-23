@@ -54,6 +54,9 @@ const Section = ({ data }) => {
           const heroSubtitle = hero.subtitle || hero.ondertitel || hero.introductie;
           const imgKey = Object.keys(hero).find(k => /foto|afbeelding|url|image|img/i.test(k)) || 'image';
           
+          const titleKey = Object.keys(hero).find(k => k === 'title' || k === 'titel' || k === 'hero_header' || k === 'site_naam') || 'title';
+          const subtitleKey = Object.keys(hero).find(k => k === 'subtitle' || k === 'ondertitel' || k === 'introductie') || 'subtitle';
+
           return (
             <section 
               key={idx} 
@@ -69,22 +72,22 @@ const Section = ({ data }) => {
               </div>
               <div className="relative z-10 text-center px-6 max-w-5xl">
                 <h1 className="text-5xl md:text-8xl font-serif font-bold text-white mb-8 leading-tight drop-shadow-2xl">
-                  <span data-dock-type="text" data-dock-bind={`${sectionName}.0.Object.keys(hero).find(${k}`}>{heroTitle}</span>
+                  <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${titleKey}`}>{heroTitle}</span>
                 </h1>
                 <div className="h-2 w-32 bg-accent mx-auto mb-10 rounded-full shadow-lg shadow-accent/50"></div>
-                                    <div className="flex flex-col items-center gap-12">
-                                    <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-light italic">
-                                       <span data-dock-type="text" data-dock-bind={`${sectionName}.0.Object.keys(hero).find(${k}`}>{heroSubtitle}</span>
-                                    </p>
-                                    <div className="flex flex-wrap justify-center gap-4">
-                                        <button onClick={(e) => { 
-                if (e.shiftKey) return; 
-                const target = document.getElementById("contact");
-                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
-                                        
-                                    </div>
-                                </div>              </div>
+                <div className="flex flex-col items-center gap-12">
+                  <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-light italic">
+                    <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${subtitleKey}`}>{heroSubtitle}</span>
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <button onClick={(e) => { 
+                      if (e.shiftKey) return; 
+                      const target = document.getElementById("contact");
+                      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
+                    }} className="bg-accent text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all" data-dock-type="link" data-dock-bind="site_settings.0.titel">Contact</button>
+                  </div>
+                </div>
+              </div>
             </section>
           );
         }
