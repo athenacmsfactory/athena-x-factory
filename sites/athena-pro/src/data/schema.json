@@ -11,7 +11,7 @@
       "table_name": "contact",
       "columns": ["titel", "email", "telefoon", "locatie", "btw_nummer", "linkedin_url"]
     },
-    { "table_name": "hero", "columns": ["title", "subtitle", "cta_text", "image"] }
+    { "table_name": "hero", "columns": ["titel", "subtitel", "cta_tekst", "afbeelding"] }
   ],
   "sections": [
     {
@@ -37,11 +37,11 @@
         "linkedin_url": "string"
       }
     },
-    { "id": "hero", "title": "Hoofdpagina", "fields": { "title": "string", "subtitle": "text", "cta_text": "string", "image": "image" } },
-    { "id": "intro", "title": "Intro", "fields": { "title": "string", "content": "text", "subcontent": "text", "image": "image" } },
-    { "id": "voordelen", "title": "Voordelen", "fields": { "items": [{ "title": "string", "description": "text", "icon": "string" }] } },
-    { "id": "innovatie", "title": "Innovatie", "fields": { "categories": [{ "name": "string", "skills": "text" }] } },
-    { "id": "showcase", "title": "Showcase", "fields": { "items": [{ "name": "string", "category": "string", "description": "text", "link": "string", "image": "image" }] } },
+    { "id": "hero", "title": "Hoofdpagina", "fields": { "titel": "string", "subtitel": "text", "cta_tekst": "string", "afbeelding": "image" } },
+    { "id": "intro", "title": "Intro", "fields": { "titel": "string", "tekst": "text", "subtekst": "text", "afbeelding": "image" } },
+    { "id": "voordelen", "title": "Voordelen", "fields": { "items": [{ "titel": "string", "beschrijving": "text", "icoon": "string" }] } },
+    { "id": "innovatie", "title": "Innovatie", "fields": { "categories": [{ "naam": "string", "beschrijving": "text", "afbeelding": "image" }] } },
+    { "id": "showcase", "title": "Showcase", "fields": { "items": [{ "naam": "string", "categorie": "string", "beschrijving": "text", "url": "string", "afbeelding": "image" }] } },
     { "id": "proces", "title": "Proces", "fields": { "items": [{ "stap": "string", "titel": "string", "tijdsduur": "string", "uitleg": "text" }] } }
   ]
 }

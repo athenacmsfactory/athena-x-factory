@@ -65,6 +65,13 @@ function App() {
     }
   }
 
+  const copySiteNames = () => {
+    const names = sites.map(s => s.name).join('\n')
+    navigator.clipboard.writeText(names)
+      .then(() => addToast('Sitenamen gekopieerd naar klembord!', 'success'))
+      .catch(e => addToast('Fout bij kopiëren: ' + e.message, 'error'))
+  }
+
   const startTool = async (name, url) => {
     addToast(`Starten van ${name}...`, 'info')
     try {
@@ -132,6 +139,12 @@ function App() {
         <header className="h-12 bg-athena-panel border-b border-athena-border px-5 flex justify-between items-center flex-shrink-0 shadow-sm">
           <h2 className="text-[13px] font-semibold text-white uppercase tracking-wider">{currentView.replace('-', ' ')}</h2>
           <div className="flex gap-2">
+            <button 
+              onClick={copySiteNames}
+              className="px-3 py-1.5 text-[11px] font-bold bg-[#21262d] border border-athena-border text-slate-400 hover:text-athena-accent rounded transition-colors"
+            >
+              COPY NAMES
+            </button>
              <button 
               onClick={refreshData}
               className="px-3 py-1.5 text-[11px] font-bold bg-[#21262d] border border-athena-border text-slate-400 hover:text-athena-accent rounded transition-colors"

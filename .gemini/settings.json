@@ -13,5 +13,10 @@
         ]
       }
     ]
+  },
+  "hooksConfig": {
+    "disabled": [
+      "athena-after-agent-hook"
+    ]
   }
 }
