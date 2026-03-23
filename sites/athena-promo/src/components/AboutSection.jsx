@@ -31,7 +31,7 @@ const AboutSection = ({ data }) => {
               Over Ons
             </h2>
             <div className={`h-1 w-20 bg-accent mb-8 ${(imageField && info[imageField]) ? '' : 'mx-auto'}`}></div>
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">
               {missie}
             </span>
           </div>

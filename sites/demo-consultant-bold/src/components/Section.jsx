@@ -83,7 +83,7 @@ const Section = ({ data }) => {
                       if (e.shiftKey) return; 
                       const target = document.getElementById("contact");
                       if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-                    }} className="bg-accent text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all" data-dock-type="link" data-dock-bind="site_settings.0.titel">Contact</button>
+                    }} className="bg-accent text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all" data-dock-type="link" data-dock-bind="site_settings.0.site_name">Contact</button>
                   </div>
                 </div>
               </div>
@@ -177,7 +177,7 @@ const Section = ({ data }) => {
                           </div>
 
                           <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.cta_text">Lees Meer</a>
                             <div className="flex gap-3 text-slate-300">
                                 <i className="fa-solid fa-laptop-code text-xl"></i>
                                 <i className="fa-solid fa-magnifying-glass-chart text-xl"></i>
@@ -300,7 +300,7 @@ const Section = ({ data }) => {
                            </div>
                          ))}
                          {(item.link || item.link_url) && (
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                                 {item.link || "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                             </a>
                          )}

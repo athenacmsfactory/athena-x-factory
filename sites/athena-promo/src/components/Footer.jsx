@@ -59,7 +59,7 @@ export default function Footer({ data }) {
              <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Volg Ons</h4>
              <div className="flex gap-4">
                 {linkedin && (
-                   <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+                   <a href={"#"} data-dock-type="link" data-dock-bind="contact.0.linkedin_url">LinkedIn</a>
                 )}
              </div>
              <p className="text-sm opacity-50 mt-10">

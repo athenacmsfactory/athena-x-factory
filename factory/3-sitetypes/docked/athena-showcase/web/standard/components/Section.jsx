@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 
 const Section = ({ data }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const sectionOrder = data.section_order || [];
   const layoutSettings = data.layout_settings || {};
 
@@ -50,7 +61,7 @@ const Section = ({ data }) => {
               className="relative w-full h-auto min-h-[var(--hero-height,85vh)] max-h-[var(--hero-max-height,150vh)] aspect-[var(--hero-aspect-ratio,16/9)] flex items-center justify-center overflow-hidden bg-[var(--color-hero-bg)]"
             >
               <div className="absolute inset-0 z-0">
-                <img src={hero[imgKey]} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
+                <img src={getImageUrl(hero[imgKey])} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                 <div className="absolute inset-0 z-20 pointer-events-none" style={{ 
                   backgroundImage: 'linear-gradient(to bottom, var(--hero-overlay-start, rgba(0,0,0,0.6)), var(--hero-overlay-end, rgba(0,0,0,0.6)))' 
                 }}></div>
@@ -69,7 +80,7 @@ const Section = ({ data }) => {
                 if (e.shiftKey) return; 
                 const target = document.getElementById("contact");
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+            }} data-dock-type="link" data-dock-bind="site_settings.0.header_cta_text">Contact</button>
                                         
                                     </div>
                                 </div>              </div>
@@ -90,7 +101,7 @@ const Section = ({ data }) => {
                     return (
                       <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                         <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                          <img src={item[imgKey]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
                           <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                         </div>
                         <div className="p-8 flex flex-col flex-grow text-center">
@@ -139,7 +150,7 @@ const Section = ({ data }) => {
                           className="aspect-[16/10] overflow-hidden block relative"
                           onClick={(e) => { if (!e.shiftKey) e.preventDefault(); }}
                         >
-                          <img src={item[imgKey]} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
                           <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                              <div className="bg-primary/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-tighter shadow-xl">
                                 Shift + Klik voor link
@@ -163,7 +174,7 @@ const Section = ({ data }) => {
                           </div>
 
                           <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.cta_text">Lees Meer</a>
                             <div className="flex gap-3 text-slate-300">
                                 <i className="fa-solid fa-laptop-code text-xl"></i>
                                 <i className="fa-solid fa-magnifying-glass-chart text-xl"></i>
@@ -268,7 +279,7 @@ const Section = ({ data }) => {
                      <div key={index} className={`flex flex-col items-center text-center ${currentLayout === 'list' ? '' : (isEven ? 'md:flex-row' : 'md:flex-row-reverse')} gap-12 md:gap-20`}>
                        {imgKey && item[imgKey] && (
                          <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                           <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
                          </div>
                        )}
                        <div className="flex-1">
@@ -286,7 +297,7 @@ const Section = ({ data }) => {
                            </div>
                          ))}
                          {(item.link || item.link_url) && (
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                                 {item.link || "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                             </a>
                          )}

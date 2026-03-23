@@ -68,7 +68,7 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                             <div key={index} className={`flex flex-col items-center text-center ${layout === 'list' ? '' : (isEven ? 'md:flex-row' : 'md:flex-row-reverse')} gap-12 md:gap-20`}>
                                 {imgKey && item[imgKey] && (
                                     <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                                        <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
+                                        <EditableMedia src={getImageUrl(item[imgKey])} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
                                     </div>
                                 )}
                                 <div className="flex-1">

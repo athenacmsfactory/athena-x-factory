@@ -12,7 +12,7 @@ export default function ContentBlock({ data = {}, index = 0 }) {
           <h2 
             className="text-3xl font-bold text-gray-900 mb-6"
             data-dock-type="text"
-            data-dock-bind="site_settings.0.titel"
+            data-dock-bind="site_settings.0.site_name"
           >
             {block.titel}
           </h2>

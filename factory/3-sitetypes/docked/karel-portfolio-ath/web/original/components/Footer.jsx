@@ -15,12 +15,12 @@ const Footer = ({ profile, socials }) => {
           </div>
           <div className="flex flex-col justify-end items-start md:items-end">
              <a href={`mailto:\${profile.contact_email}`} className="text-3xl md:text-5xl font-black uppercase tracking-tighter hover:text-blue-500 transition-colors mb-4 break-all">
-                <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                <span data-dock-type="text" data-dock-bind={`socials.${idx}.titel`}>{social.titel || "..."}</span>
              </a>
              <div className="flex gap-6 mt-10">
                 {socials.map((social, idx) => (
                   <a key={idx} href={social.url} className="text-xs font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`socials.${idx}.beschrijving`}>{social.beschrijving || "..."}</span>
                   </a>
                 ))}
              </div>
@@ -28,7 +28,7 @@ const Footer = ({ profile, socials }) => {
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-10 border-t border-white/5 text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">
-          <div>© {new Date().getFullYear()} <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span></div>
+          <div>© {new Date().getFullYear()} <span data-dock-type="text" data-dock-bind={`socials.${idx}.tag`}>{social.tag || "..."}</span></div>
           <div className="flex gap-10">
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Service</a>

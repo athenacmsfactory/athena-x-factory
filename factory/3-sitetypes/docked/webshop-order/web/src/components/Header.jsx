@@ -23,7 +23,7 @@ function Header({ primaryTable, tableName, siteSettings = {} }) {
     <header className="relative min-h-[60vh] flex items-center justify-center text-center px-6 overflow-hidden bg-primary text-white">
       {/* Background Media Overlay */}
       <div className="absolute inset-0 opacity-40">
-        <img src={settings.hero_image} className="w-full h-full" data-dock-type="media" data-dock-bind="site_settings.0.hero_image" />
+        <img src={getImageUrl(settings.hero_image)} className="w-full h-full" data-dock-type="media" data-dock-bind="site_settings.0.hero_image" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto reveal">

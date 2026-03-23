@@ -43,7 +43,7 @@ function Header({ siteSettings = {}, navigationData = [] }) {
             {settings.logo && (
               <div className="relative w-12 h-12 overflow-hidden transition-transform duration-500">
                 <EditableMedia
-                  src={settings.logo}
+                  src={getImageUrl(settings.logo)}
                   cmsBind={{ file: '_site_settings', index: 0, key: 'logo' }}
                   className="w-full h-full object-contain"
                   fallback={logoChar}

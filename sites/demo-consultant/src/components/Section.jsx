@@ -83,7 +83,7 @@ const Section = ({ data }) => {
                 if (e.shiftKey) return; 
                 const target = document.getElementById("contact");
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+            }} data-dock-type="link" data-dock-bind="site_settings.0.header_cta_text">Contact</button>
                                         
                                     </div>
                                 </div>              </div>
@@ -136,15 +136,14 @@ const Section = ({ data }) => {
                   </h2>
                   <div className="h-2 w-24 bg-accent rounded-full mb-8"></div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div className="flex flex-wrap justify-center gap-16">
                   {items.map((item, index) => {
                     const titleKey = Object.keys(item).find(k => /name|naam|titel|project|header|title/i.test(k)) || 'name';
                     const textKey = Object.keys(item).find(k => /beschrijving|omschrijving|description|intro|text|summary/i.test(k)) || 'description';
                     const imgKey = Object.keys(item).find(k => /image|foto|afbeelding|url|img/i.test(k)) || 'image';
                     const linkUrl = item.link || item.link_url || "#";
-
                     return (
-                      <div key={index} className="group relative flex flex-col rounded-[3rem] overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:shadow-accent/20">
+                      <div key={index} className="group relative flex flex-col rounded-[3rem] overflow-hidden bg-white shadow-2xl transition-all duration-500 hover:-translate-y-4 hover:shadow-accent/20 w-full md:w-[calc(50%-2rem)] lg:w-[calc(50%-2.666rem)] max-w-2xl">
                         {/* Media Container */}
                         <a 
                           href={linkUrl} 
@@ -177,7 +176,7 @@ const Section = ({ data }) => {
                           </div>
 
                           <div className="mt-auto pt-6 border-t border-slate-50 flex justify-between items-center">
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.cta_text">Lees Meer</a>
                             <div className="flex gap-3 text-slate-300">
                                 <i className="fa-solid fa-laptop-code text-xl"></i>
                                 <i className="fa-solid fa-magnifying-glass-chart text-xl"></i>
@@ -300,7 +299,7 @@ const Section = ({ data }) => {
                            </div>
                          ))}
                          {(item.link || item.link_url) && (
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                                 {item.link || "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                             </a>
                          )}

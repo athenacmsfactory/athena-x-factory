@@ -9,12 +9,12 @@ const Footer = ({ settings }) => {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center md:justify-start">
              <span className="text-xl font-bold text-white tracking-tight">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
             </span>
           </div>
           <div className="mt-8 md:mt-0">
             <p className="text-center text-base text-slate-400">
-              &copy; {new Date().getFullYear()} <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>. Facturatie & Payroll via Smart. Alle rechten voorbehouden.
+              &copy; {new Date().getFullYear()} <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>. Facturatie & Payroll via Smart. Alle rechten voorbehouden.
             </p>
           </div>
         </div>

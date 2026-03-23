@@ -26,7 +26,7 @@ const Hero = ({ data, sectionName, features = {}, style = {} }) => {
         >
             <div className="absolute inset-0 z-0">
                 <EditableMedia
-                    src={hero[imgKey]}
+                    src={getImageUrl(hero[imgKey])}
                     className="w-full h-full object-cover object-top"
                     cmsBind={{ file: sectionName, index: 0, key: imgKey }}
                 />

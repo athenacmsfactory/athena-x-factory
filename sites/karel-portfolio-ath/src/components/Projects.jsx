@@ -22,10 +22,10 @@ const Projects = ({ projects }) => {
             <div key={idx} className="group relative">
               <RepeaterControls file="projects" index={idx} isHidden={project.hidden} />
               <div className="relative aspect-[16/10] rounded-[40px] overflow-hidden bg-zinc-900 border border-white/5 mb-8">
-                <img src={project.image_url} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" data-dock-type="media" data-dock-bind={`projects.${idx}.${image_url}`} />
+                <img src={getImageUrl(project.image_url)} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" data-dock-type="media" data-dock-bind={`projects.${idx}.${image_url}`} />
                 <div className="absolute top-6 left-6">
                   <span className="px-4 py-2 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`projects.${idx}.titel`}>{project.titel || "..."}</span>
                   </span>
                 </div>
               </div>
@@ -33,10 +33,10 @@ const Projects = ({ projects }) => {
               <div className="flex justify-between items-start gap-4">
                 <div>
                   <h4 className="text-3xl font-black uppercase tracking-tighter mb-2">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`projects.${idx}.beschrijving`}>{project.beschrijving || "..."}</span>
                   </h4>
                   <p className="text-zinc-500 text-sm max-w-sm">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`projects.${idx}.tag`}>{project.tag || "..."}</span>
                   </p>
                 </div>
                 <button className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-500">

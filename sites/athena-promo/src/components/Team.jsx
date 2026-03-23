@@ -22,7 +22,7 @@ const Team = ({ data, sectionName }) => {
                             <div key={index} className="flex flex-col items-center text-center group">
                                 <div className="w-48 h-48 rounded-full overflow-hidden mb-6 border-4 border-white shadow-2xl group-hover:scale-105 transition-transform duration-300 ring-4 ring-transparent hover:ring-accent/30 relative">
                                     <EditableMedia 
-                                        src={item[imgKey]} 
+                                        src={getImageUrl(item[imgKey])} 
                                         className="w-full h-full object-cover" 
                                         cmsBind={{ file: sectionName, index, key: imgKey }}
                                     />

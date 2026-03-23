@@ -19,10 +19,10 @@ const Services = ({ services }) => {
                     <IconComponent size={32} />
                   </div>
                   <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`services.${idx}.titel`}>{service.titel || "..."}</span>
                   </h3>
                   <p className="text-zinc-500 text-sm leading-relaxed">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`services.${idx}.beschrijving`}>{service.beschrijving || "..."}</span>
                   </p>
                 </div>
               </div>

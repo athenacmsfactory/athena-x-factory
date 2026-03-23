@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 const Section = ({ data }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const sectionOrder = data.section_order || [];
   const layoutSettings = data.layout_settings || {};
   const sectionSettings = data.section_settings || {};
@@ -51,7 +62,7 @@ const Section = ({ data }) => {
               style={sectionStyle}
             >
               <div className="absolute inset-0 z-0">
-                <img src={hero[imgKey]} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
+                <img src={getImageUrl(hero[imgKey])} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                 <div className="absolute inset-0 z-20 pointer-events-none" style={{
                   backgroundImage: 'linear-gradient(to bottom, var(--hero-overlay-start, rgba(0,0,0,0.6)), var(--hero-overlay-end, rgba(0,0,0,0.6)))'
                 }}></div>
@@ -70,7 +81,7 @@ const Section = ({ data }) => {
                 if (e.shiftKey) return; 
                 const target = document.getElementById("contact");
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+            }} data-dock-type="link" data-dock-bind="site_settings.0.header_cta_text">Contact</button>
                   </div>
                 </div>
               </div>
@@ -125,7 +136,7 @@ const Section = ({ data }) => {
                     <div key={index} className={`flex flex-col items-center text-center ${currentLayout === 'list' ? '' : (isEven ? 'md:flex-row' : 'md:flex-row-reverse')} gap-12 md:gap-20`}>
                       {imgKey && item[imgKey] && (
                         <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                          <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.${index}.${imgKey}`} />
                         </div>
                       )}
                       <div className="flex-1">
@@ -142,7 +153,7 @@ const Section = ({ data }) => {
                           </div>
                         ))}
                         {(item.link || item.link_url) && (
-                          <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                          <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                             {typeof item.link === 'string' ? item.link : "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                           </a>
                         )}

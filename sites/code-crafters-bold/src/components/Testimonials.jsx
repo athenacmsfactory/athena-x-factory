@@ -28,7 +28,7 @@ const Testimonials = ({ data, sectionName }) => {
                                 <div className="mt-auto flex items-center gap-4 border-t border-slate-100 pt-6">
                                     {imgKey && item[imgKey] && (
                                         <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm flex-shrink-0">
-                                            <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
+                                            <EditableMedia src={getImageUrl(item[imgKey])} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover" />
                                         </div>
                                     )}
                                     <div>

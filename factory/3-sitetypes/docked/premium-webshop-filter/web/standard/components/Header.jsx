@@ -36,7 +36,7 @@ function Header({ siteSettings = {} }) {
 
         {/* Action Menu */}
         <div className="hidden md:flex items-center gap-8">
-            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.cta_text">Lees Meer</a>
         </div>
       </div>
     </nav>

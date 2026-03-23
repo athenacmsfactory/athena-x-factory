@@ -13,7 +13,7 @@ const Testimonials = ({ testimonials }) => {
               <RepeaterControls file="testimonials" index={idx} isHidden={test.hidden} />
               <div className="p-12 bg-zinc-900/50 rounded-[40px] border border-white/5 flex flex-col justify-between h-full">
                 <p className="text-2xl font-medium text-zinc-300 mb-12 italic leading-relaxed tracking-tight">
-                  "<span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>"
+                  "<span data-dock-type="text" data-dock-bind={`testimonials.${idx}.titel`}>{test.titel || "..."}</span>"
                 </p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center font-black text-xs">
@@ -21,10 +21,10 @@ const Testimonials = ({ testimonials }) => {
                   </div>
                   <div>
                     <h4 className="font-black uppercase text-sm tracking-wider">
-                      <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                      <span data-dock-type="text" data-dock-bind={`testimonials.${idx}.beschrijving`}>{test.beschrijving || "..."}</span>
                     </h4>
                     <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">
-                      <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                      <span data-dock-type="text" data-dock-bind={`testimonials.${idx}.tag`}>{test.tag || "..."}</span>
                     </p>
                   </div>
                 </div>

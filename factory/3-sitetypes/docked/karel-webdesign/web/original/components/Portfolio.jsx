@@ -38,11 +38,11 @@ const Portfolio = ({ data }) => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start">
                       <h3 className="text-xl font-bold text-slate-900">
-                        <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                        <span data-dock-type="text" data-dock-bind={`portfolioItems.${idx}.titel`}>{item.titel || "..."}</span>
                       </h3>
                     </div>
                     <p className="mt-3 text-base text-slate-600 leading-relaxed">
-                      <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                      <span data-dock-type="text" data-dock-bind={`portfolioItems.${idx}.beschrijving`}>{item.beschrijving || "..."}</span>
                     </p>
                     <div className="mt-4 flex flex-wrap gap-2">
                       {techStack.map((tech, tIdx) => (

@@ -27,7 +27,7 @@ const ProductGrid = ({ data, sectionName, features = {} }) => {
                         return (
                             <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                                 <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                                    <EditableMedia src={item[imgKey]} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <EditableMedia src={getImageUrl(item[imgKey])} cmsBind={{ file: sectionName, index, key: imgKey }} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                                     <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                                 </div>
                                 <div className="p-8 flex flex-col flex-grow text-center">

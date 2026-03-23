@@ -16,10 +16,10 @@ const Contact = ({ data, settings }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
           </h2>
           <p className="mt-4 text-xl text-slate-300">
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
           </p>
         </div>
 
@@ -33,7 +33,7 @@ const Contact = ({ data, settings }) => {
               
               <div className="flex items-center space-x-4 text-white mb-4">
                 <Mail className="h-6 w-6 text-blue-200" />
-                <span><span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span></span>
+                <span><span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span></span>
               </div>
               <div className="flex items-center space-x-4 text-white">
                 <MessageSquare className="h-6 w-6 text-blue-200" />

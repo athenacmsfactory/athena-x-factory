@@ -2,6 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
 
 const Section = ({ data }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState('Alle');
   const sectionOrder = data.section_order || [];
@@ -51,7 +62,7 @@ const Section = ({ data }) => {
                 if (e.shiftKey) return; 
                 const target = document.getElementById("contact");
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+            }} data-dock-type="link" data-dock-bind="site_settings.0.header_cta_text">Contact</button>
                         
                     </div>
                 </div>
@@ -99,7 +110,7 @@ const Section = ({ data }) => {
                     return (
                       <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                         <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                          <img src={item[imgKey]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                           <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                           {item.categorie && (
                             <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-4 py-1 rounded-full text-xs font-black uppercase tracking-tighter text-accent shadow-sm">
@@ -150,7 +161,7 @@ const Section = ({ data }) => {
                      <div key={index} className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-20 items-center`}>
                        {imgKey && item[imgKey] && (
                          <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                           <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`sectionName.0.imgKey`} />
                          </div>
                        )}
                        <div className="flex-1 text-center md:text-left">
@@ -168,7 +179,7 @@ const Section = ({ data }) => {
                            </div>
                          ))}
                          {(item.link || item.link_url) && (
-                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                            <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                                 {item.link || "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                             </a>
                          )}

@@ -4,6 +4,17 @@ import MetadataConfigModal from './MetadataConfigModal';
 import { useCart } from './CartContext';
 
 const Section = ({ data }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const isDev = import.meta.env.DEV;
   const { addToCart } = useCart();
   const [activeConfigTable, setActiveConfigTable] = useState(null);
@@ -162,11 +173,11 @@ const Section = ({ data }) => {
                     </div>
                 )}
                 <h2 className="text-5xl md:text-6xl font-serif font-bold mb-8 text-[var(--color-heading)] text-center">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`sortedConfigs.${idx}.titel`}>{config.titel || "..."}</span>
                 </h2>
                 <div className="h-1.5 w-12 mx-auto mb-8 bg-accent"></div>
                 <div className="text-xl italic font-light opacity-60 text-text text-center">
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                    <span data-dock-type="text" data-dock-bind={`sortedConfigs.${idx}.beschrijving`}>{config.beschrijving || "..."}</span>
                 </div>
               </header>
 
@@ -239,7 +250,7 @@ const Section = ({ data }) => {
                         <article key={index} className={itemClass + ' w-full md:w-[calc(45%)] lg:w-[calc(30%)] min-w-[300px] flex flex-col h-full bg-surface p-6 rounded-[2.5rem] shadow-lg border border-slate-100 dark:border-white/5'}>
                             <div className="relative aspect-square rounded-[2rem] overflow-hidden mb-6">
                                 {imgKey ? (
-                                    <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                                    <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                                 ) : (
                                     <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">Geen Beeld</div>
                                 )}
@@ -283,7 +294,7 @@ const Section = ({ data }) => {
                       <article key={index} className={itemClass + ' flex flex-col ' + (isEven ? 'md:flex-row' : 'md:flex-row-reverse') + ' items-center gap-16 md:gap-24'}>
                         <div className="w-full md:w-1/2 aspect-square md:aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
                            {imgKey ? (
-                             <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                             <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                            ) : (
                              <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">Geen Afbeelding</div>
                            )}
@@ -302,7 +313,7 @@ const Section = ({ data }) => {
                       <article key={index} className={itemClass + ' flex flex-col md:flex-row items-start gap-12 border-b border-slate-100 dark:border-white/5 pb-24 last:border-0'}>
                         <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 shadow-lg">
                            {imgKey ? (
-                             <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                             <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                            ) : (
                              <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300 text-xs">Geen Foto</div>
                            )}
@@ -320,7 +331,7 @@ const Section = ({ data }) => {
                     <article key={index} className={itemClass + ' ' + (currentLayout === 'focus' && index === 0 ? 'md:col-span-3' : 'w-full md:w-[calc(45%)] lg:w-[calc(30%)] min-w-[300px]')}>
                       <div className={'relative overflow-hidden mb-10 ' + (currentLayout === 'focus' && index === 0 ? 'aspect-video rounded-[4rem]' : 'aspect-square rounded-[3rem]') + ' shadow-2xl'}>
                         {imgKey ? (
-                          <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                         ) : (
                           <div className="w-full h-full bg-slate-100 flex items-center justify-center text-slate-300">Geen Afbeelding</div>
                         )}

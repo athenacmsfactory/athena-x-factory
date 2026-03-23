@@ -15,10 +15,10 @@ const About = ({ data }) => {
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
           <div>
             <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
             </h2>
             <div className="mt-4 text-lg text-slate-500 space-y-4">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
             </div>
             
             <div className="mt-8 border-l-4 border-blue-600 pl-4 bg-slate-50 p-4 italic text-slate-600 rounded-r-lg">

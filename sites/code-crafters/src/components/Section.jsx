@@ -82,7 +82,7 @@ const Section = ({ data }) => {
                 if (e.shiftKey) return; 
                 const target = document.getElementById("contact");
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+            }} data-dock-type="link" data-dock-bind="site_settings.0.header_cta_text">Contact</button>
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const Section = ({ data }) => {
                           </div>
                         ))}
                         {(item.link || item.link_url) && (
-                          <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
+                          <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.site_name">
                             {typeof item.link === 'string' ? item.link : "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
                           </a>
                         )}

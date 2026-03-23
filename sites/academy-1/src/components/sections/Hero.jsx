@@ -29,7 +29,7 @@ const Hero = ({ id, data, settings }) => {
         <h1 
           className="text-3xl font-extrabold tracking-tight mb-4 sm:text-4xl lg:text-5xl uppercase drop-shadow-lg"
           data-dock-type="text"
-          data-dock-bind="site_settings.0.titel"
+          data-dock-bind="site_settings.0.site_name"
         >
           {data?.titel || "Verrijk je kennis"}
         </h1>

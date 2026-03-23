@@ -49,7 +49,7 @@ export default function Footer({ data }) {
               {linkedin && (
                 <li className="flex items-center gap-4">
                   <i className="fa-brands fa-linkedin text-accent w-5"></i>
-                  <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
+                  <a href={"#"} data-dock-type="link" data-dock-bind="contact.0.linkedin_url">LinkedIn</a>
                 </li>
               )}
             </ul>

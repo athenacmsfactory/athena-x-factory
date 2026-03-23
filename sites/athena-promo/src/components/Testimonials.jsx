@@ -28,7 +28,7 @@ const Testimonials = ({ data, sectionName }) => {
                                     {imgKey && item[imgKey] && (
                                         <div className="w-12 h-12 rounded-full overflow-hidden shadow-sm flex-shrink-0">
                                             <EditableMedia 
-                                                src={item[imgKey]} 
+                                                src={getImageUrl(item[imgKey])} 
                                                 className="w-full h-full object-cover" 
                                                 cmsBind={{ file: sectionName, index, key: imgKey }}
                                             />

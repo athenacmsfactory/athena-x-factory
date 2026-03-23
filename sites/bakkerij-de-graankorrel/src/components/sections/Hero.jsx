@@ -11,7 +11,7 @@ export default function Hero({ data = {}, settings = {} }) {
           <h1 
             className="text-5xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-6"
             data-dock-type="text"
-            data-dock-bind="site_settings.0.titel"
+            data-dock-bind="site_settings.0.site_name"
           >
             {settings.titel || block.titel}
           </h1>

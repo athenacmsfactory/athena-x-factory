@@ -37,7 +37,7 @@ const Hero = ({ data = {} }) => {
         <h2 
           className="text-7xl md:text-8xl lg:text-9xl font-serif text-white mb-6 leading-tight"
           data-dock-type="text" 
-          data-dock-bind="site_settings.0.titel"
+          data-dock-bind="site_settings.0.site_name"
         >
           {settings.titel || settings.bedrijfsnaam}
         </h2>

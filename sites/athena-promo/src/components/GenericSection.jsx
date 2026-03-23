@@ -60,7 +60,7 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                                     {imgKey && item[imgKey] && (
                                         <div className="w-full aspect-video overflow-hidden">
                                             <EditableMedia 
-                                                src={item[imgKey]} 
+                                                src={getImageUrl(item[imgKey])} 
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                                 cmsBind={{ file: sectionName, index, key: imgKey }}
                                             />
@@ -109,7 +109,7 @@ const GenericSection = ({ data, sectionName, layout = 'list', features = {}, sty
                                 {imgKey && item[imgKey] && (
                                     <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white/5">
                                         <EditableMedia 
-                                            src={item[imgKey]} 
+                                            src={getImageUrl(item[imgKey])} 
                                             className="w-full h-full object-cover" 
                                             cmsBind={{ file: sectionName, index, key: imgKey }}
                                         />

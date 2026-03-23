@@ -5,6 +5,17 @@ import RepeaterControls from './RepeaterControls';
  * Section Component - Nu met GEBALANCEERDE (gecentreerde) Layouts
  */
 const Section = ({ data }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const isDev = import.meta.env.DEV;
   const layouts = data.layout_settings?.[0] || {};
   const infoTable = Object.keys(data).find(k => k.toLowerCase().endsWith('_info')) || 'info';
@@ -164,7 +175,7 @@ const Section = ({ data }) => {
                       <article key={index} className={`${itemClass} flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-16 md:gap-24`}>
                         <RepeaterControls file={config.table} index={index} isHidden={isHidden} />
                         <div className="w-full md:w-1/2 aspect-square md:aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
-                           <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                         </div>
                         <div className="w-full md:w-1/2 text-center md:text-left">
                            <h3 className="text-4xl font-serif font-bold mb-6 block" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${0}.${titleKey}`}>{item[titleKey]}</h3>
@@ -179,7 +190,7 @@ const Section = ({ data }) => {
                       <article key={index} className={`${itemClass} flex flex-col md:flex-row items-start gap-12 border-b border-slate-100 dark:border-white/5 pb-24 last:border-0`}>
                         <RepeaterControls file={config.table} index={index} isHidden={isHidden} />
                         <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 shadow-lg">
-                           <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                         </div>
                         <div>
                            <h3 className="text-3xl font-serif font-bold mb-4 block" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${0}.${titleKey}`}>{item[titleKey]}</h3>
@@ -194,7 +205,7 @@ const Section = ({ data }) => {
                     <article key={index} className={`${itemClass} ${currentLayout === 'focus' && index === 0 ? 'md:col-span-3' : 'w-full md:w-[calc(45%)] lg:w-[calc(30%)] min-w-[300px]'}`}>
                       <RepeaterControls file={config.table} index={index} isHidden={isHidden} />
                       <div className={`relative overflow-hidden mb-10 ${isTeam ? 'aspect-[4/5] rounded-[4rem]' : (currentLayout === 'focus' && index === 0 ? 'aspect-video rounded-[4rem]' : 'aspect-square rounded-[3rem]')} shadow-2xl`}>
-                        <img src={item[imgKey]} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
+                        <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="config.table.toLowerCase().0.imgKey" />
                       </div>
                        <h3 className="`${currentLayout === 'focus' && index === 0 ? 'text-4xl' : 'text-2xl'" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${0}.${titleKey}`}>{item[titleKey]}</h3>
                        <p className="`leading-relaxed font-light block opacity-70 ${currentLayout === 'focus' && index === 0 ? 'text-xl' : 'line-clamp-4'" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${0}.${descKey}`}>{item[descKey]}</p>

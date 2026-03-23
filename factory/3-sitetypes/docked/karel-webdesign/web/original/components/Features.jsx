@@ -38,10 +38,10 @@ const Features = ({ data }) => {
                         </span>
                       </div>
                       <h3 className="mt-8 text-lg font-medium text-slate-900 tracking-tight">
-                        <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                        <span data-dock-type="text" data-dock-bind={`features.${idx}.titel`}>{feature.titel || "..."}</span>
                       </h3>
                       <p className="mt-5 text-base text-slate-600">
-                        <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+                        <span data-dock-type="text" data-dock-bind={`features.${idx}.beschrijving`}>{feature.beschrijving || "..."}</span>
                       </p>
                     </div>
                   </div>

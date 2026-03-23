@@ -6,17 +6,17 @@ const Hero = ({ profile }) => {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
         <div className="flex-1 text-center md:text-left z-10">
           <h2 className="text-blue-500 font-black uppercase tracking-[0.3em] mb-4 text-sm">
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
           </h2>
           <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[0.9] tracking-tighter uppercase">
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
           </h1>
           <p className="text-xl text-zinc-400 mb-10 max-w-xl leading-relaxed">
-            <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+            <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <a href="#contact" className="bg-white text-black px-10 py-5 rounded-full font-black uppercase text-sm hover:bg-blue-500 hover:text-white transition-all duration-500 flex items-center justify-center">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.titel">...</span>
+              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">...</span>
             </a>
             <a href="#projects" className="border border-white/10 px-10 py-5 rounded-full font-black uppercase text-sm hover:bg-white/5 transition-all flex items-center justify-center">
               View Work

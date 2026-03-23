@@ -76,12 +76,12 @@ const Section = ({ title, data, tableName }) => {
                 </div>
 
                 <div className="flex flex-col flex-grow">
-                  <span data-dock-type="text" data-dock-bind="site_settings.0.titel">
+                  <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">
                     {name}
                   </span>
                   
                   {description && (
-                    <span data-dock-type="text" data-dock-bind="site_settings.0.titel">
+                    <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">
                       {description}
                     </span>
                   )}

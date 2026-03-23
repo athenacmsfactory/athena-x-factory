@@ -13,11 +13,18 @@
     "startTime": "2026-03-23T12:44:28.653Z",
     "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/media-mapper-editor.log"
   },
-  "5736": {
-    "pid": 9435,
-    "id": "demo-portfolio",
+  "5982": {
+    "pid": 26031,
+    "id": "demo-consultant",
     "type": "preview",
-    "startTime": "2026-03-23T15:52:01.786Z",
-    "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/demo-portfolio-preview.log"
+    "startTime": "2026-03-23T16:26:13.449Z",
+    "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/demo-consultant-preview.log"
+  },
+  "6225": {
+    "pid": 26361,
+    "id": "jets-archive",
+    "type": "preview",
+    "startTime": "2026-03-23T16:27:15.199Z",
+    "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/jets-archive-preview.log"
   }
 }
