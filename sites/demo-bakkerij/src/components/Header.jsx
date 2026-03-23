@@ -11,7 +11,10 @@ function Header({ siteSettings = {}, navigationData = [] }) {
   const logoChar = (settings.logo_text || siteName).charAt(0).toUpperCase();
 
   // Use a reliable default logo if site_logo_image is missing
-  const displayLogo = settings.site_logo_image || "athena-icon.svg";
+  const rawLogo = settings.site_logo_image || "athena-icon.svg";
+  const displayLogo = (rawLogo && !rawLogo.startsWith('http') && !rawLogo.startsWith('/'))
+    ? `${import.meta.env.BASE_URL}images/${rawLogo}`.replace(/\/+/g, '/')
+    : rawLogo;
 
   const handleScroll = (e, url) => {
     setIsMenuOpen(false); // Close menu on click
@@ -26,7 +29,7 @@ function Header({ siteSettings = {}, navigationData = [] }) {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-500 flex items-center"
+      className="fixed top-0 left-0 right-0 z-[1000] px-6 transition-all duration-300 flex items-center overflow-hidden"
       style={{
         display: settings.header_visible === false ? 'none' : 'flex',
         backgroundColor: 'var(--header-bg, var(--color-header-bg, rgba(255,255,255,0.9)))',
@@ -35,13 +38,13 @@ function Header({ siteSettings = {}, navigationData = [] }) {
         borderBottom: 'var(--header-border, none)'
       }}
     >
-      <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
+      <div className="max-w-7xl mx-auto w-full flex justify-between items-center h-full">
         {/* Logo & Identity */}
         {(settings.header_show_logo !== false || settings.header_show_title !== false) && (
-          <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/" className="flex items-center gap-4 group h-full py-1" onClick={() => setIsMenuOpen(false)}>
 
             {settings.header_show_logo !== false && (
-              <div className="relative w-12 h-12 overflow-hidden transition-transform duration-500">
+              <div className="relative aspect-square h-full overflow-hidden transition-all duration-300">
                 <EditableMedia
                   src={displayLogo}
                   cmsBind={{ file: 'site_settings', index: 0, key: 'site_logo_image' }}
@@ -51,14 +54,14 @@ function Header({ siteSettings = {}, navigationData = [] }) {
               </div>
             )}
 
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-center overflow-hidden">
               {settings.header_show_title !== false && (
-                <span className="text-2xl font-serif font-black tracking-tight text-primary leading-none mb-1">
+                <span className="text-xl md:text-2xl font-serif font-black tracking-tight text-primary leading-none mb-0.5 truncate">
                   <EditableText value={siteName} cmsBind={{ file: 'site_settings', index: 0, key: 'site_name' }} />
                 </span>
               )}
               {settings.header_show_tagline !== false && settings.tagline && (
-                <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-bold opacity-80">
+                <span className="text-[8px] md:text-[10px] uppercase tracking-[0.2em] text-accent font-bold opacity-80 truncate">
                   <EditableText value={settings.tagline} cmsBind={{ file: 'site_settings', index: 0, key: 'tagline' }} />
                 </span>
               )}

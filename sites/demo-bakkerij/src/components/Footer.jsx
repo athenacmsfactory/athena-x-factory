@@ -77,7 +77,7 @@ export default function Footer({ data }) {
         <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
           <p>&copy; {new Date().getFullYear()} {naam}. Alle rechten voorbehouden.</p>
           <div className="flex items-center gap-2 opacity-50">
-            <img src="./athena-icon.svg" alt="Athena Logo" className="w-5 h-5" />
+            <img src={`${import.meta.env.BASE_URL}athena-icon.svg`.replace(/\/+/g, '/')} alt="Athena Logo" className="w-5 h-5" />
             <span>Gemaakt met Athena CMS Factory</span>
           </div>
         </div>

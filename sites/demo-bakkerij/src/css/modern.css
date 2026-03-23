@@ -41,7 +41,6 @@
 @layer base {
   :root {
     color-scheme: light;
-    scroll-behavior: smooth;
 
     /* Explicit defaults so Dock can override */
     --color-primary: #0f172a;
