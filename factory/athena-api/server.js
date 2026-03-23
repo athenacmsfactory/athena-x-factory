@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import multer from 'multer';
 import cors from 'cors';
 import 'dotenv/config';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // Managers & Libs
 import { AthenaConfigManager } from '../5-engine/lib/ConfigManager.js';
@@ -95,6 +96,49 @@ const upload = multer({ storage });
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// --- UNIFIED PREVIEW PROXY ---
+// Deze proxy zorgt ervoor dat alle sites (External & Native) via poort 5000 bereikbaar zijn.
+// Dit voorkomt CORS-issues en poort-blokkades op Chromebooks.
+const siteProxy = createProxyMiddleware({
+    router: (req) => {
+        // Detecteer site ID uit /previews/:id of /:id
+        const parts = req.originalUrl.split('/').filter(Boolean);
+        let id = parts[0] === 'previews' ? parts[1] : parts[0];
+        
+        if (!id) return null;
+        
+        // Check of de site een geregistreerde poort heeft
+        // We gebruiken fs.readFileSync direct om race conditions met site-ports.json te vermijden
+        const registryPath = path.join(root, 'factory/config/site-ports.json');
+        if (fs.existsSync(registryPath)) {
+            try {
+                const ports = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+                if (ports[id]) return `http://localhost:${ports[id]}`;
+            } catch (e) { }
+        }
+        return null;
+    },
+    changeOrigin: true,
+    ws: true,
+    logLevel: 'warn',
+    onError: (err, req, res) => {
+        res.status(502).send(`Site Preview Proxy Error: Is de site server actief? (${err.message})`);
+    }
+});
+
+// Proxy voor /previews en voor alle bekende site prefixes
+// We laden de lijst dynamisch uit de config om de API niet te blokkeren
+const knownSitesPath = path.join(root, 'factory/config/site-ports.json');
+const knownSites = fs.existsSync(knownSitesPath) ? JSON.parse(fs.readFileSync(knownSitesPath, 'utf8')) : {};
+
+const sitePrefixes = Object.keys(knownSites).map(id => `/${id}`);
+
+app.use(['/previews', ...sitePrefixes], (req, res, next) => {
+    if (req.originalUrl.startsWith('/api')) return next();
+    return siteProxy(req, res, next);
+});
+
 app.use(express.static(root));
 
 // --- STRATEGY CHAT API ---

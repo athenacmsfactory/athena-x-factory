@@ -10,6 +10,7 @@ const ROOT_DIR = path.resolve(__dirname, '../../');
 const INPUT_SITES_DIR = path.resolve(ROOT_DIR, 'inputsites');
 const SITETYPES_DIR = path.resolve(ROOT_DIR, 'factory/3-sitetypes/docked');
 const INPUT_DATA_DIR = path.resolve(ROOT_DIR, 'input');
+const SITES_DIR = path.resolve(ROOT_DIR, 'sites');
 
 /**
  * Athenafier Engine
@@ -26,13 +27,17 @@ async function main() {
         return;
     }
 
-    const sitePath = path.join(INPUT_SITES_DIR, targetSite);
+    let sitePath = path.join(INPUT_SITES_DIR, targetSite);
     if (!fs.existsSync(sitePath)) {
-        console.error(`Error: Site '${targetSite}' not found in inputsites/`);
+        sitePath = path.join(SITES_DIR, targetSite);
+    }
+    
+    if (!fs.existsSync(sitePath)) {
+        console.error(`Error: Site '${targetSite}' not found in inputsites/ or sites/`);
         return;
     }
 
-    console.log(`\n🚀 Athena-fying: ${targetSite}...`);
+    console.log(`\n🚀 Athena-fying: ${targetSite} (Path: ${sitePath})...`);
     
     // 1. Analyze the site structure
     await analyzeSite(targetSite, sitePath);
