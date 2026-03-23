@@ -139,6 +139,28 @@
                 return;
             }
 
+            if (key === 'header_opacity' || key === 'header_transparantie') {
+                // In real-time we don't always have the full color context easily, but we can update the alpha of the current --header-bg if it's rgba
+                // Or better: just set a dedicated --header-opacity and let CSS handle it
+                const opacity = value <= 1 ? value : value / 100;
+                document.documentElement.style.setProperty('--header-opacity', opacity);
+                
+                // If we want instant feedback without color-parsing complexity here:
+                const currentBg = getComputedStyle(document.documentElement).getPropertyValue('--color-header-bg').trim();
+                if (currentBg.startsWith('#')) {
+                    const r = parseInt(currentBg.slice(1, 3), 16);
+                    const g = parseInt(currentBg.slice(3, 5), 16);
+                    const b = parseInt(currentBg.slice(5, 7), 16);
+                    document.documentElement.style.setProperty('--header-bg', `rgba(${r}, ${g}, ${b}, ${opacity})`);
+                }
+                return;
+            }
+
+            if (key === 'hero_padding_top') {
+                document.documentElement.style.setProperty('--hero-padding-top', value + 'px');
+                return;
+            }
+
             if (key === 'header_visible') {
                 const nav = document.querySelector('nav.fixed.top-0');
                 if (nav) nav.style.display = value ? 'flex' : 'none';

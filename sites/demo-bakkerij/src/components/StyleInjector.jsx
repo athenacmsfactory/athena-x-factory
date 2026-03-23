@@ -42,28 +42,49 @@ const StyleInjector = ({ siteSettings }) => {
       }
     });
 
-    if (settings.global_radius) root.style.setProperty('--radius-custom', settings.global_radius);
+    // 3. Spacing & Layout
+    if (settings.content_top_offset !== undefined) root.style.setProperty('--content-top-offset', settings.content_top_offset + 'px');
+    if (settings.header_height !== undefined) root.style.setProperty('--header-height', settings.header_height + 'px');
+    if (settings.hero_padding_top !== undefined) root.style.setProperty('--hero-padding-top', settings.hero_padding_top + 'px');
 
-    // Hero overlay: convert opacity to rgba values used by Section.jsx gradient
+    // 4. Header Styling (Transparency & Opacity)
+    const headerColor = settings.header_color || '#ffffff';
+    const opacityValue = settings.header_opacity ?? settings.header_transparantie ?? 95;
+    const headerOpacity = (opacityValue <= 1) ? opacityValue : (opacityValue / 100);
+    
+    const hexToRgba = (hex, alpha) => {
+      if (!hex || !hex.startsWith('#')) return `rgba(255, 255, 255, ${alpha})`;
+      let r, g, b;
+      if (hex.length === 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+      } else if (hex.length === 7) {
+        r = parseInt(hex.slice(1, 3), 16);
+        g = parseInt(hex.slice(3, 5), 16);
+        b = parseInt(hex.slice(5, 7), 16);
+      } else {
+        return `rgba(255, 255, 255, ${alpha})`;
+      }
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    if (settings.header_transparent === true) {
+      root.style.setProperty('--header-bg', 'transparent');
+      root.style.setProperty('--header-blur', 'none');
+      root.style.setProperty('--header-border', 'none');
+    } else {
+      root.style.setProperty('--header-bg', hexToRgba(headerColor, headerOpacity));
+      root.style.removeProperty('--header-blur');
+      root.style.removeProperty('--header-border');
+    }
+
+    // 5. Hero & Card Specifics
     if (settings.hero_overlay_opacity !== undefined) {
       let opacity = parseFloat(settings.hero_overlay_opacity);
       if (isNaN(opacity)) opacity = 0.8;
       root.style.setProperty('--hero-overlay-start', `rgba(0, 0, 0, ${opacity})`);
       root.style.setProperty('--hero-overlay-end', `rgba(0, 0, 0, ${opacity * 0.4})`);
-    }
-
-    if (settings.content_top_offset !== undefined) root.style.setProperty('--content-top-offset', settings.content_top_offset + 'px');
-    if (settings.header_height !== undefined) root.style.setProperty('--header-height', settings.header_height + 'px');
-
-    // Header transparency
-    if (settings.header_transparent === true) {
-      root.style.setProperty('--header-bg', 'transparent');
-      root.style.setProperty('--header-blur', 'none');
-      root.style.setProperty('--header-border', 'none');
-    } else if (settings.header_transparent === false) {
-      root.style.removeProperty('--header-bg');
-      root.style.removeProperty('--header-blur');
-      root.style.removeProperty('--header-border');
     }
 
   }, [settings]);

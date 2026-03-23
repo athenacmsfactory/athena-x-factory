@@ -5,6 +5,12 @@ const Section = ({ data }) => {
   const { addToCart } = useCart();
   const sectionOrder = data.section_order || [];
 
+  const getImageUrl = (filename) => {
+    if (!filename) return '/images/placeholder.jpg';
+    if (filename.startsWith('http')) return filename;
+    return `${import.meta.env.BASE_URL}images/${filename}`.replace(/\/+/g, '/');
+  };
+
   // Meld aan de Dock welke secties we hebben
   useEffect(() => {
     if (window.athenaScan) {
@@ -26,9 +32,10 @@ const Section = ({ data }) => {
               key={idx} 
               data-dock-section="basisgegevens"
               className="relative h-[90vh] flex items-center justify-center overflow-hidden"
+              style={{ paddingTop: 'var(--hero-padding-top, 0px)' }}
             >
               <div className="absolute inset-0 z-0">
-                <img src={hero.hero_afbeelding} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="basisgegevens.0.hero_afbeelding" />
+                <img src={getImageUrl(hero.hero_afbeelding)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="basisgegevens.0.hero_afbeelding" />
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
               </div>
               <div className="relative z-10 text-center px-6 max-w-4xl">
@@ -70,17 +77,17 @@ const Section = ({ data }) => {
                         style={{ borderRadius: 'var(--radius-custom)', boxShadow: 'var(--shadow-main)' }}
                       >
                         <div className="relative aspect-square overflow-hidden mb-8 shadow-inner flex-shrink-0" style={{ borderRadius: 'calc(var(--radius-custom) * 0.8)' }}>
-                          <img src={item.product_foto_url} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-dock-type="media" data-dock-bind="producten.0.product_foto_url" />
+                          <img src={getImageUrl(item.product_foto_url)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-dock-type="media" data-dock-bind={`producten.${index}.product_foto_url`} />
                           <div className="absolute top-6 right-6 bg-accent text-white px-5 py-2 rounded-full font-bold text-lg shadow-lg">
                             €{priceValue.toFixed(2)}
                           </div>
                         </div>
                         <div className="flex-grow text-left flex flex-col">
                           <h3 className="text-2xl font-bold mb-3 text-[var(--color-heading)] min-h-[4rem] flex items-center">
-                            <span data-dock-type="text" data-dock-bind="producten.0.naam">{item.naam}</span>
+                            <span data-dock-type="text" data-dock-bind={`producten.${index}.naam`}>{item.naam}</span>
                           </h3>
                           <p className="text-sm opacity-60 line-clamp-3 mb-6 leading-relaxed flex-grow">
-                            <span data-dock-type="text" data-dock-bind="producten.0.korte_beschrijving">{item.korte_beschrijving}</span>
+                            <span data-dock-type="text" data-dock-bind={`producten.${index}.korte_beschrijving`}>{item.korte_beschrijving}</span>
                           </p>
                         </div>
                         <button 
