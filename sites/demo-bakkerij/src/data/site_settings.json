@@ -6,6 +6,6 @@
   "light_primary_color": "#FF9900",
   "site_logo_image": "demo-bakkerij-logo-1.png",
   "header_transparantie": 0,
-  "header_visible": true,
+  "header_visible": false,
   "header_height": 101
 }
