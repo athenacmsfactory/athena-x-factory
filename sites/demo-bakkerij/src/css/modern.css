@@ -57,7 +57,7 @@
     --shadow-main: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 
     /* Shared Layout Defaults */
-    --content-top-offset: 80px;
+    --content-top-offset: 0px;
     --header-height: 80px;
     --hero-padding-top: 0px;
   }

@@ -24,13 +24,13 @@ const Section = ({ data }) => {
         const items = data[sectionName] || [];
         if (items.length === 0) return null;
 
-        // 1. Hero Sectie (Basisgegevens)
-        if (sectionName === 'basisgegevens') {
+        // 1. Hero Sectie
+        if (sectionName === 'hero') {
           const hero = items[0];
           return (
             <section 
               key={idx} 
-              data-dock-section="basisgegevens"
+              data-dock-section="hero"
               className="relative flex items-center justify-center overflow-hidden"
               style={{ 
                 marginTop: 'var(--hero-padding-top, 0px)',
@@ -39,19 +39,19 @@ const Section = ({ data }) => {
               }}
             >
               <div className="absolute inset-0 z-0">
-                <img src={getImageUrl(hero.hero_afbeelding)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="basisgegevens.0.hero_afbeelding" />
+                <img src={getImageUrl(hero.hero_afbeelding)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="hero.0.hero_afbeelding" />
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
               </div>
               <div className="relative z-10 text-center px-6 max-w-4xl">
                 <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-8 drop-shadow-xl">
-                  <span data-dock-type="text" data-dock-bind="basisgegevens.0.hero_header">{hero.hero_header}</span>
+                  <span data-dock-type="text" data-dock-bind="hero.0.hero_header">{hero.hero_header}</span>
                 </h1>
                 <div className="h-1.5 w-24 bg-accent mx-auto mb-8"></div>
                 <button 
                   onClick={() => document.getElementById('producten')?.scrollIntoView({behavior: 'smooth'})}
                   className="bg-white text-black px-10 py-4 rounded-full font-bold hover:bg-accent hover:text-white transition-all shadow-2xl"
                 >
-                  Ontdek onze pralines
+                  Ontdek onze producten
                 </button>
               </div>
             </section>
@@ -65,7 +65,8 @@ const Section = ({ data }) => {
               key={idx} 
               id="producten" 
               data-dock-section="producten"
-              className="py-32 px-6 bg-background"
+              className="px-6 bg-background"
+              style={{ paddingBlock: 'var(--section-spacing, 8rem)' }}
             >
               <div className="max-w-7xl mx-auto text-center">
                 <h2 className="text-5xl font-serif font-bold mb-4 text-[var(--color-heading)]">Onze Collectie</h2>
@@ -115,7 +116,8 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="sterke_punten"
-              className="py-24 bg-black text-white"
+              className="bg-black text-white"
+              style={{ paddingBlock: 'calc(var(--section-spacing, 6rem) * 0.75)' }}
             >
               <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
                 {items.map((item, index) => (
@@ -124,7 +126,7 @@ const Section = ({ data }) => {
                        <i className={`fa-solid ${item.icoon_naam || 'fa-star'} text-3xl`}></i>
                     </div>
                     <h4 className="text-xl font-bold mb-2">
-                      <span data-dock-type="text" data-dock-bind="sterke_punten.0.titel">{item.titel}</span>
+                      <span data-dock-type="text" data-dock-bind={`sterke_punten.${index}.titel`}>{item.titel}</span>
                     </h4>
                   </div>
                 ))}

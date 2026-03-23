@@ -33,7 +33,7 @@ async function init() {
     }
 
     // Fallback for specific hardcoded tables if they are not in section_order
-    ['basisgegevens', 'categorieen', 'producten', 'sterke_punten'].forEach(table => {
+    ['hero', 'categorieen', 'producten', 'sterke_punten'].forEach(table => {
         if (!data[table]) {
             const tableData = getData(table);
             if (tableData) data[table] = Array.isArray(tableData) ? tableData : [tableData];

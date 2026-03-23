@@ -4,21 +4,6 @@
       "site_name": "Demo Bakkerij"
     }
   ],
-  "basisgegevens": [
-    {
-      "config_id": "",
-      "site_naam": "Bakkerij Artisanaal",
-      "hero_header": "De Geur van Vers Brood, de Smaak van Geluk.",
-      "hero_afbeelding": "hero.png",
-      "order_email": "bestelling@bakkerij-artisanaal.be",
-      "valuta_code": "EURO",
-      "blogposts": {
-        "titel": "Ons Nieuwe Zuurdesembrood",
-        "inhoud": "Ons nieuwe zuurdesembrood is gemaakt met de beste ingrediënten en een speciale zuurdesem die ons brood een unieke smaak geeft.",
-        "afbeelding": "zuurdesembrood.jpg"
-      }
-    }
-  ],
   "categorieen": [
     {
       "categorie_id": 1,
@@ -40,9 +25,11 @@
     "site_name": "demo-bakkerij"
   },
   "hero": {
-    "hero_hoogte": 301,
-    "hero_overlay_transparantie": 0.23,
-    "hero_padding_top": -139
+    "hero_header": "De Geur van Vers Brood, de Smaak van Geluk.",
+    "hero_afbeelding": "hero.png",
+    "hero_height": "90vh",
+    "hero_overlay_opacity": 0.4,
+    "hero_padding_top": 0
   },
   "klantbeoordelingen": [
     {
@@ -262,11 +249,8 @@
     }
   },
   "section_order": [
-    "basisgegevens",
-    "categorieen",
+    "hero",
     "producten",
-    "product_specificaties",
-    "klantbeoordelingen",
     "sterke_punten"
   ],
   "section_settings": {
@@ -274,14 +258,14 @@
   },
   "site_settings": {
     "site_name": "demo-bakkerij",
-    "hero_height": "85vh",
+    "hero_height": 1000,
     "hero_max_height": "150vh",
     "hero_aspect_ratio": "16/9",
     "light_primary_color": "#FF9900",
     "site_logo_image": "demo-bakkerij-logo-1.png",
     "header_transparantie": 0,
-    "header_visible": false,
-    "header_height": 101
+    "header_visible": true,
+    "header_height": 81
   },
   "sterke_punten": [
     {
@@ -295,6 +279,6 @@
     "site_name": "demo-bakkerij",
     "primary_color": "#FF9900",
     "content_top_offset": 0,
-    "global_padding": 12
+    "global_padding": 19
   }
 }

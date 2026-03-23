@@ -14,10 +14,10 @@
     "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/media-mapper-editor.log"
   },
   "5459": {
-    "pid": 31812,
+    "pid": 6827,
     "id": "demo-bakkerij",
     "type": "preview",
-    "startTime": "2026-03-23T13:09:22.390Z",
+    "startTime": "2026-03-23T14:16:07.334Z",
     "logFile": "/home/kareltestspecial/0-IT/3-DEV/myAgent/athena-y/factory/output/logs/demo-bakkerij-preview.log"
   }
 }
