@@ -127,6 +127,65 @@ const SectionManagerPanel = (props) => {
 
             <div className="pt-4 border-t border-slate-100 space-y-4">
                 <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Eigen Kleuren Gebruiken</label>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <label className="text-[9px] font-black uppercase text-slate-400 block">Sectie BG</label>
+                        <div className="flex items-center gap-2">
+                            <input 
+                                type="color" 
+                                value={getSectionSetting(selectedSection, 'bg_color', '#ffffff')} 
+                                onChange={(e) => onUpdateSectionSetting(selectedSection, 'bg_color', e.target.value)}
+                                className="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0 overflow-hidden"
+                            />
+                            <input 
+                                type="text" 
+                                value={getSectionSetting(selectedSection, 'bg_color', '')} 
+                                onChange={(e) => onUpdateSectionSetting(selectedSection, 'bg_color', e.target.value)}
+                                placeholder="Auto"
+                                className="flex-1 min-w-0 bg-white border border-slate-200 rounded px-2 py-1.5 text-[10px] font-mono"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-[9px] font-black uppercase text-slate-400 block">Card BG</label>
+                        <div className="flex items-center gap-2">
+                            <input 
+                                type="color" 
+                                value={getSectionSetting(selectedSection, 'card_bg_color', '#ffffff')} 
+                                onChange={(e) => onUpdateSectionSetting(selectedSection, 'card_bg_color', e.target.value)}
+                                className="w-8 h-8 rounded border border-slate-200 cursor-pointer p-0 overflow-hidden"
+                            />
+                            <input 
+                                type="text" 
+                                value={getSectionSetting(selectedSection, 'card_bg_color', '')} 
+                                onChange={(e) => onUpdateSectionSetting(selectedSection, 'card_bg_color', e.target.value)}
+                                placeholder="Auto"
+                                className="flex-1 min-w-0 bg-white border border-slate-200 rounded px-2 py-1.5 text-[10px] font-mono"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-4">
+                    <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Witte Tekst Gebruiken</label>
+                    <label htmlFor={`toggle-text-white-${selectedSection}`} className="relative inline-flex items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            id={`toggle-text-white-${selectedSection}`}
+                            className="sr-only peer"
+                            checked={getSectionSetting(selectedSection, 'text_white', false)}
+                            onChange={(e) => onUpdateSectionSetting(selectedSection, 'text_white', e.target.checked)}
+                        />
+                        <div className={`w-10 h-5 rounded-full transition-all relative ${getSectionSetting(selectedSection, 'text_white') ? 'bg-blue-600' : 'bg-slate-300'}`}>
+                            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${getSectionSetting(selectedSection, 'text_white') ? 'left-6' : 'left-1'}`}></div>
+                        </div>
+                    </label>
+                </div>
+
+                <div className="flex items-center justify-between pt-2">
                     <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Eigen Spacing Gebruiken</label>
                     <label htmlFor={`toggle-custom-padding-${selectedSection}`} className="relative inline-flex items-center cursor-pointer">
                         <input

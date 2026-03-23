@@ -1,32 +1,45 @@
 [
   {
-    "id": "basisgegevens",
-    "title": "basisgegevens",
-    "subtitle": "Overzicht van basisgegevens"
+    "id": "hero",
+    "title": "Welkom",
+    "subtitle": "Hero sectie",
+    "bg_color": "",
+    "card_bg_color": ""
   },
   {
     "id": "categorieen",
-    "title": "categorieen",
-    "subtitle": "Overzicht van categorieen"
+    "title": "Categorieën",
+    "subtitle": "Onze chocoladesoorten",
+    "bg_color": "",
+    "card_bg_color": ""
   },
   {
     "id": "producten",
-    "title": "producten",
-    "subtitle": "Overzicht van producten"
-  },
-  {
-    "id": "product_specificaties",
-    "title": "product specificaties",
-    "subtitle": "Overzicht van product_specificaties"
-  },
-  {
-    "id": "klantbeoordelingen",
-    "title": "klantbeoordelingen",
-    "subtitle": "Overzicht van klantbeoordelingen"
+    "title": "Onze Collectie",
+    "subtitle": "Handgemaakte meesterwerken",
+    "bg_color": "",
+    "card_bg_color": "#ffffff"
   },
   {
     "id": "sterke_punten",
-    "title": "sterke punten",
-    "subtitle": "Overzicht van sterke_punten"
+    "title": "Onze Beloftes",
+    "subtitle": "Waar we voor staan",
+    "bg_color": "#1a365d",
+    "card_bg_color": "",
+    "text_white": true
+  },
+  {
+    "id": "klantbeoordelingen",
+    "title": "Recensies",
+    "subtitle": "Wat onze klanten zeggen",
+    "bg_color": "",
+    "card_bg_color": ""
+  },
+  {
+    "id": "footer",
+    "title": "Footer",
+    "subtitle": "Site informatie",
+    "bg_color": "",
+    "card_bg_color": ""
   }
 ]

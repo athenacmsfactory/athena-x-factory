@@ -20,6 +20,21 @@ const Section = ({ data }) => {
         const items = data[sectionName] || [];
         if (items.length === 0) return null;
 
+        // Geavanceerde Sectie-instellingen (v8.6+)
+        const allSettings = data.section_settings || [];
+        const settings = (Array.isArray(allSettings) 
+          ? allSettings.find(s => s.id === sectionName) 
+          : allSettings[sectionName]) || {};
+
+        const sectionStyles = {
+          backgroundColor: settings.bg_color || 'transparent',
+          '--color-card-bg': settings.card_bg_color || 'var(--color-card-bg)',
+          paddingTop: settings.use_custom_padding ? `${settings.padding}px` : undefined,
+          paddingBottom: settings.use_custom_padding ? `${settings.padding}px` : undefined,
+        };
+
+        const sectionClasses = `relative ${settings.text_white ? 'text-white' : 'text-[var(--color-text)]'}`;
+
         // 1. Hero Sectie
         if (sectionName === 'hero') {
           const hero = items[0];
@@ -27,7 +42,8 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="hero"
-              className="relative h-[90vh] flex items-center justify-center overflow-hidden"
+              className={`${sectionClasses} h-[90vh] flex items-center justify-center overflow-hidden`}
+              style={sectionStyles}
             >
               <div className="absolute inset-0 z-0">
                 <EditableMedia 
@@ -62,7 +78,8 @@ const Section = ({ data }) => {
               key={idx} 
               id="producten" 
               data-dock-section="producten"
-              className="py-32 px-6 bg-background"
+              className={`${sectionClasses} py-32 px-6`}
+              style={sectionStyles}
             >
               <div className="max-w-7xl mx-auto text-center">
                 <h2 className="text-5xl font-serif font-bold mb-4 text-[var(--color-heading)]">Onze Collectie</h2>
@@ -118,7 +135,8 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="sterke_punten"
-              className="py-24 bg-[#1a365d] text-white"
+              className={`${sectionClasses} py-24`}
+              style={sectionStyles}
             >
               <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16">
                 {items.map((item, index) => (
