@@ -33,6 +33,7 @@ function App() {
   const [activeServers, setActiveServers] = useState([])
   const [systemStatus, setSystemStatus] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [autoStop, setAutoStop] = useState(() => localStorage.getItem('athena-auto-stop') !== 'false')
 
   useEffect(() => {
     refreshData()
@@ -138,7 +139,25 @@ function App() {
       <div className="flex-1 flex flex-col overflow-hidden bg-athena-dark">
         <header className="h-12 bg-athena-panel border-b border-athena-border px-5 flex justify-between items-center flex-shrink-0 shadow-sm">
           <h2 className="text-[13px] font-semibold text-white uppercase tracking-wider">{currentView.replace('-', ' ')}</h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            {currentView === 'sites' && (
+              <div className="flex items-center gap-2 mr-4 bg-black/20 px-3 py-1.5 rounded border border-athena-border/50">
+                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Auto-Stop</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer" 
+                    checked={autoStop} 
+                    onChange={(e) => {
+                      const val = e.target.checked;
+                      setAutoStop(val);
+                      localStorage.setItem('athena-auto-stop', val);
+                    }} 
+                  />
+                  <div className="w-7 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-athena-accent"></div>
+                </label>
+              </div>
+            )}
             <button 
               onClick={copySiteNames}
               className="px-3 py-1.5 text-[11px] font-bold bg-[#21262d] border border-athena-border text-slate-400 hover:text-athena-accent rounded transition-colors"
@@ -178,10 +197,11 @@ function App() {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                       {sites.filter(s => s.isNative && !s.name.startsWith('test-')).map((site, idx) => (
-                        <SiteCard 
+                         <SiteCard 
                           key={`native-${idx}`} 
                           site={site} 
                           activeServer={activeServers.find(s => s.siteName === site.name)}
+                          autoStop={autoStop}
                           onRefresh={refreshData}
                           onSEO={(name) => { setSelectedMarketingSite(name); setIsMarketingOpen(true); }}
                           onSheet={(siteObj) => { setSelectedSheetSite(siteObj); setIsSheetOpen(true); }}
@@ -203,10 +223,11 @@ function App() {
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                             {sites.filter(s => !s.isNative && s.siteType !== 'static-legacy' && (s.isInstalled || s.name.includes('academy') || s.name.includes('bakkerij'))).map((site, idx) => (
-                              <LegacySiteCard 
+                               <LegacySiteCard 
                                 key={`app-${idx}`} 
                                 site={site} 
                                 activeServer={activeServers.find(s => s.siteName === site.name)}
+                                autoStop={autoStop}
                                 onRefresh={refreshData}
                               />
                             ))}
@@ -223,10 +244,11 @@ function App() {
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                             {sites.filter(s => !s.isNative && s.siteType === 'static-legacy').map((site, idx) => (
-                              <LegacySiteCard 
+                               <LegacySiteCard 
                                 key={`static-${idx}`} 
                                 site={site} 
                                 activeServer={activeServers.find(s => s.siteName === site.name)}
+                                autoStop={autoStop}
                                 onRefresh={refreshData}
                               />
                             ))}
@@ -243,10 +265,11 @@ function App() {
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 opacity-60 grayscale">
                             {sites.filter(s => (!s.isNative && !s.isInstalled && s.siteType !== 'static-legacy' && !s.name.includes('academy') && !s.name.includes('bakkerij')) || (s.isNative && s.name.startsWith('test-'))).map((site, idx) => (
-                              <LegacySiteCard 
+                               <LegacySiteCard 
                                 key={`archive-${idx}`} 
                                 site={site} 
                                 activeServer={activeServers.find(s => s.siteName === site.name)}
+                                autoStop={autoStop}
                                 onRefresh={refreshData}
                               />
                             ))}

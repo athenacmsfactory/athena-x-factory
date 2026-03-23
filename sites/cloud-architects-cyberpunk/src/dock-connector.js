@@ -99,6 +99,19 @@
     window.addEventListener('message', async (event) => {
         const { type, key, value, section, direction, file, index } = event.data;
 
+        // Data Sync Request (v8.8+)
+        if (type === 'DOCK_REQUEST_SYNC') {
+            const siteData = lastKnownData || {};
+            const val = (siteData[file] && siteData[file][index]) ? siteData[file][index][key] : (siteData[file] ? siteData[file][key] : null);
+
+            window.parent.postMessage({
+                type: 'SITE_SYNC_RESPONSE',
+                key: key,
+                value: val
+            }, '*');
+            return;
+        }
+
         // Color Update
         if (type === 'DOCK_UPDATE_COLOR') {
             const isDark = document.documentElement.classList.contains('dark');

@@ -22,7 +22,11 @@ export const ApiService = {
   getSites: () => fetch(`${API_BASE}/sites`).then(res => res.json()),
   getSiteStructure: (id) => fetch(`${API_BASE}/sites/${id}/structure`).then(res => res.json()),
   getSiteStatus: (name) => fetch(`${API_BASE}/sites/${name}/status`).then(res => res.json()),
-  startSiteDev: (id) => fetch(`${API_BASE}/sites/${id}/preview`, { method: 'POST' }).then(res => res.json()),
+  startSiteDev: (id, options = {}) => fetch(`${API_BASE}/sites/${id}/preview`, { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(options)
+  }).then(res => res.json()),
   athenifySite: (id) => fetch(`${API_BASE}/sites/${id}/athenify`, { method: 'POST' }).then(res => res.json()),
   stopSiteServer: (port) => fetch(`${API_BASE}/servers/kill/${port}`, { method: 'POST' }).then(res => res.json()),
   stopAllSiteServers: () => fetch(`${API_BASE}/servers/stop-all`, { method: 'POST' }).then(res => res.json()),

@@ -1,87 +1,111 @@
 import React from 'react';
+import EditableText from './EditableText';
 
-export default function Footer({ data }) {
-  const settingsSource = data?.site_settings || {};
-  const settings = Array.isArray(settingsSource) ? (settingsSource[0] || {}) : settingsSource;
-  const contactInfo = data?.contact?.[0] || {};
-  
-  const naam = settings.site_name || 'cloud-architects';
-  const email = contactInfo.email || settings.email || '';
-  const locatie = contactInfo.location || '';
-  const btw = contactInfo.btw_nummer || contactInfo.btw || '';
-  const linkedin = contactInfo.linkedin_url || contactInfo.linkedin || '';
-
+const Footer = ({ data = {}, siteSettings = {} }) => {
   return (
-    <footer className="py-24 bg-slate-900 text-slate-400 border-t border-slate-800 relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -ml-32 -mb-32"></div>
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 mb-20">
+    <footer className="bg-[#050505] pt-24 pb-12 border-t border-primary/20 relative overflow-hidden">
+      {/* Matrix-like Scanline Effect */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-0 bg-[length:100%_2px,3px_100%]"></div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           
-          {/* Brand Identity */}
-          <div className="space-y-6">
-            <h3 className="text-3xl font-serif font-bold text-white">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">{naam}</span>
-            </h3>
-            {settings.tagline && (
-              <p className="text-lg leading-relaxed font-light">
-                <span data-dock-type="text" data-dock-bind="site_settings.0.tagline">{settings.tagline}</span>
-              </p>
-            )}
-          </div>
+          {/* System Identity */}
+          <div className="md:col-span-5 space-y-8">
+            <div className="flex items-center gap-4">
+               <div className="w-12 h-12 bg-primary flex items-center justify-center skew-x-[-12deg]">
+                 <span className="text-black font-black text-2xl skew-x-[12deg]">
+                   {siteSettings.bedrijfsnaam?.charAt(0) || "C"}
+                 </span>
+               </div>
+               <div className="flex flex-col">
+                 <span className="text-2xl font-serif font-black tracking-tighter text-primary uppercase">
+                   <EditableText bind="_site_settings.bedrijfsnaam" value={siteSettings.bedrijfsnaam} />
+                 </span>
+               </div>
+            </div>
+            
+            <p className="text-slate-400 text-lg leading-relaxed max-w-md font-mono border-l-2 border-secondary pl-6 py-2">
+              <EditableText bind="footer.brand_description" value={data.brand_description} />
+            </p>
 
-          {/* Contact Details */}
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Contact</h4>
-            <ul className="space-y-4">
-              {email && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-solid fa-envelope text-accent w-5"></i>
-                  <span data-dock-type="text" data-dock-bind="contact.0.email">{email}</span>
-                </li>
-              )}
-              {locatie && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-solid fa-location-dot text-accent w-5"></i>
-                  <span data-dock-type="text" data-dock-bind="contact.0.location">{locatie}</span>
-                </li>
-              )}
-              {linkedin && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-brands fa-linkedin text-accent w-5"></i>
-                  <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
-                </li>
-              )}
-            </ul>
-          </div>
-
-          {/* Legal / Company Info */}
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Bedrijfsgegevens</h4>
-            <div className="space-y-4">
-              {btw && (
-                <p className="flex items-center gap-2">
-                  <span className="text-slate-500">BTW:</span> 
-                  <span data-dock-type="text" data-dock-bind="contact.0.btw_nummer">{btw}</span>
-                </p>
-              )}
-              <p className="text-sm font-light leading-relaxed">
-                <span data-dock-type="text" data-dock-bind="site_settings.0.footer_text">{settings.footer_text || 'Professionele website geleverd door Athena CMS Factory.'}</span>
-              </p>
+            <div className="flex gap-4">
+              {['linkedin', 'github', 'twitter'].map(platform => (
+                <a 
+                  key={platform}
+                  href={siteSettings.socials?.[platform] || "#"} 
+                  className="w-12 h-12 bg-black border border-primary/30 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all hover:shadow-[0_0_15px_rgba(0,243,255,0.5)] group"
+                >
+                  <i className={`fa-brands fa-${platform} group-hover:scale-110 transition-transform`}></i>
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Core access nodes */}
+          <div className="md:col-span-4 space-y-8">
+            <h4 className="text-xs uppercase tracking-[0.4em] text-secondary font-black flex items-center gap-2">
+              <span className="w-2 h-2 bg-secondary animate-pulse"></span>
+              Sys.Contact
+            </h4>
+            <div className="space-y-6 font-mono text-slate-300">
+              <div className="flex items-center gap-4 group cursor-pointer">
+                <div className="w-10 h-10 border border-primary/20 flex items-center justify-center group-hover:border-primary transition-colors">
+                  <i className="fa-solid fa-terminal text-primary text-xs"></i>
+                </div>
+                <span className="group-hover:text-primary transition-colors">
+                  <EditableText bind="_site_settings.email" value={siteSettings.email} />
+                </span>
+              </div>
+              <div className="flex items-center gap-4 group cursor-pointer">
+                <div className="w-10 h-10 border border-primary/20 flex items-center justify-center group-hover:border-primary transition-colors">
+                  <i className="fa-solid fa-signal text-primary text-xs"></i>
+                </div>
+                <span className="group-hover:text-primary transition-colors">
+                  <EditableText bind="_site_settings.telefoon" value={siteSettings.telefoon} />
+                </span>
+              </div>
+              <div className="flex items-center gap-4 group cursor-pointer">
+                <div className="w-10 h-10 border border-primary/20 flex items-center justify-center group-hover:border-primary transition-colors">
+                  <i className="fa-solid fa-map-pin text-primary text-xs"></i>
+                </div>
+                <span className="group-hover:text-primary transition-colors">
+                  <EditableText bind="_site_settings.adres" value={siteSettings.adres} />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Cyber CTA */}
+          <div className="md:col-span-3">
+             <div className="p-8 border-2 border-primary/50 bg-black relative group overflow-hidden">
+                <div className="absolute top-0 right-0 w-8 h-8 bg-primary/20 border-l border-b border-primary"></div>
+                <h4 className="text-xl font-black text-primary mb-4 uppercase tracking-tighter">Initialize Link</h4>
+                <p className="text-[10px] text-slate-500 mb-8 font-mono">ESTABLISHING SECURE PROTOCOL FOR ARCHITECTURAL OVERRIDE...</p>
+                <button className="w-full py-4 bg-primary text-black font-black uppercase tracking-widest hover:bg-secondary transition-colors relative overflow-hidden group/btn">
+                  <span className="relative z-10">CONNECT_ROOT</span>
+                  <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-500"></div>
+                </button>
+             </div>
+          </div>
         </div>
 
-        {/* Copyright Bar */}
-        <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
-          <p>&copy; {new Date().getFullYear()} {naam}. Alle rechten voorbehouden.</p>
-          <div className="flex items-center gap-2 opacity-50">
-            <img src="./athena-icon.svg" alt="Athena Logo" className="w-5 h-5" />
-            <span>Gemaakt met Athena CMS Factory</span>
+        <div className="pt-8 border-t border-primary/10 flex flex-col md:flex-row justify-between items-center gap-6 text-slate-500 text-[10px] font-mono tracking-widest uppercase">
+          <EditableText bind="footer.copyright" value={data.copyright} />
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-primary transition-colors flex items-center gap-2">
+              <span className="w-1 h-1 bg-primary rounded-full"></span>
+              Privacy_Manifesto
+            </a>
+            <a href="#" className="hover:text-primary transition-colors flex items-center gap-2">
+               <span className="w-1 h-1 bg-primary rounded-full"></span>
+               Control_Terms
+            </a>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

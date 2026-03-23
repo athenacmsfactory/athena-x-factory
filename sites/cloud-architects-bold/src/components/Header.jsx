@@ -40,11 +40,11 @@ function Header({ siteSettings = {}, navigationData = [] }) {
         {(settings.header_show_logo !== false || settings.header_show_title !== false) && (
           <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsMenuOpen(false)}>
 
-            {settings.header_show_logo !== false && (
+            {settings.logo && (
               <div className="relative w-12 h-12 overflow-hidden transition-transform duration-500">
                 <EditableMedia
-                  src={displayLogo}
-                  cmsBind={{ file: 'site_settings', index: 0, key: 'site_logo_image' }}
+                  src={settings.logo}
+                  cmsBind={{ file: '_site_settings', index: 0, key: 'logo' }}
                   className="w-full h-full object-contain"
                   fallback={logoChar}
                 />
@@ -52,14 +52,12 @@ function Header({ siteSettings = {}, navigationData = [] }) {
             )}
 
             <div className="flex flex-col">
-              {settings.header_show_title !== false && (
-                <span className="text-2xl font-serif font-black tracking-tight text-primary leading-none mb-1">
-                  <EditableText value={siteName} cmsBind={{ file: 'site_settings', index: 0, key: 'site_name' }} />
-                </span>
-              )}
-              {settings.header_show_tagline !== false && settings.tagline && (
+              <span className="text-2xl font-serif font-black tracking-tight text-primary leading-none mb-1">
+                <EditableText value={settings.bedrijfsnaam || siteName} cmsBind={{ file: '_site_settings', index: 0, key: 'bedrijfsnaam' }} />
+              </span>
+              {settings.tagline && (
                 <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-bold opacity-80">
-                  <EditableText value={settings.tagline} cmsBind={{ file: 'site_settings', index: 0, key: 'tagline' }} />
+                  <EditableText value={settings.tagline} cmsBind={{ file: '_site_settings', index: 0, key: 'tagline' }} />
                 </span>
               )}
             </div>

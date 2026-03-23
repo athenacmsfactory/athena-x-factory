@@ -1,87 +1,101 @@
 import React from 'react';
+import EditableText from './EditableText';
+import EditableMedia from './EditableMedia';
 
-export default function Footer({ data }) {
-  const settingsSource = data?.site_settings || {};
-  const settings = Array.isArray(settingsSource) ? (settingsSource[0] || {}) : settingsSource;
-  const contactInfo = data?.contact?.[0] || {};
-  
-  const naam = settings.site_name || 'cloud-architects';
-  const email = contactInfo.email || settings.email || '';
-  const locatie = contactInfo.location || '';
-  const btw = contactInfo.btw_nummer || contactInfo.btw || '';
-  const linkedin = contactInfo.linkedin_url || contactInfo.linkedin || '';
+const Footer = ({ data = {}, siteSettings = {} }) => {
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    const base = import.meta.env.BASE_URL || '/';
+    return (base + '/images/' + url).replace(/\/+/g, '/');
+  };
 
   return (
-    <footer className="py-24 bg-slate-900 text-slate-400 border-t border-slate-800 relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -ml-32 -mb-32"></div>
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-20 mb-20">
+    <footer className="relative bg-[var(--color-background)] pt-24 pb-12 overflow-hidden">
+      {/* Decorative Blur Blobs */}
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           
-          {/* Brand Identity */}
-          <div className="space-y-6">
-            <h3 className="text-3xl font-serif font-bold text-white">
-              <span data-dock-type="text" data-dock-bind="site_settings.0.site_name">{naam}</span>
-            </h3>
-            {settings.tagline && (
-              <p className="text-lg leading-relaxed font-light">
-                <span data-dock-type="text" data-dock-bind="site_settings.0.tagline">{settings.tagline}</span>
-              </p>
-            )}
-          </div>
-
-          {/* Contact Details */}
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Contact</h4>
-            <ul className="space-y-4">
-              {email && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-solid fa-envelope text-accent w-5"></i>
-                  <span data-dock-type="text" data-dock-bind="contact.0.email">{email}</span>
-                </li>
-              )}
-              {locatie && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-solid fa-location-dot text-accent w-5"></i>
-                  <span data-dock-type="text" data-dock-bind="contact.0.location">{locatie}</span>
-                </li>
-              )}
-              {linkedin && (
-                <li className="flex items-center gap-4">
-                  <i className="fa-brands fa-linkedin text-accent w-5"></i>
-                  <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</a>
-                </li>
-              )}
-            </ul>
-          </div>
-
-          {/* Legal / Company Info */}
-          <div className="space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-accent">Bedrijfsgegevens</h4>
-            <div className="space-y-4">
-              {btw && (
-                <p className="flex items-center gap-2">
-                  <span className="text-slate-500">BTW:</span> 
-                  <span data-dock-type="text" data-dock-bind="contact.0.btw_nummer">{btw}</span>
-                </p>
-              )}
-              <p className="text-sm font-light leading-relaxed">
-                <span data-dock-type="text" data-dock-bind="site_settings.0.footer_text">{settings.footer_text || 'Professionele website geleverd door Athena CMS Factory.'}</span>
-              </p>
+          {/* Brand Info */}
+          <div className="md:col-span-5 space-y-6">
+            <div className="flex items-center gap-4">
+              <img 
+                src={getImageUrl(siteSettings.logo_url || "logo.png")} 
+                alt="Logo" 
+                className="h-12 w-auto object-contain brightness-110"
+              />
+              <div className="flex flex-col">
+                <span className="text-2xl font-serif font-black tracking-tight text-primary">
+                  <EditableText bind="_site_settings.bedrijfsnaam" value={siteSettings.bedrijfsnaam} />
+                </span>
+              </div>
+            </div>
+            <p className="text-slate-500 text-lg leading-relaxed max-w-md font-light italic">
+              <EditableText bind="footer.brand_description" value={data.brand_description} />
+            </p>
+            <div className="flex gap-4">
+              {['linkedin', 'github', 'twitter'].map(platform => (
+                <a 
+                  key={platform}
+                  href={siteSettings.socials?.[platform] || "#"} 
+                  className="w-10 h-10 rounded-xl bg-white/50 backdrop-blur-md border border-white/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all shadow-sm"
+                >
+                  <i className={`fa-brands fa-${platform}`}></i>
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Contact Details */}
+          <div className="md:col-span-4 space-y-8">
+            <h4 className="text-xs uppercase tracking-[0.3em] text-accent font-bold">Contact</h4>
+            <div className="space-y-4 text-slate-600">
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-envelope text-primary"></i>
+                </div>
+                <EditableText bind="_site_settings.email" value={siteSettings.email} />
+              </div>
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-phone text-primary"></i>
+                </div>
+                <EditableText bind="_site_settings.telefoon" value={siteSettings.telefoon} />
+              </div>
+              <div className="flex items-center gap-4 group">
+                <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-location-dot text-primary"></i>
+                </div>
+                <EditableText bind="_site_settings.adres" value={siteSettings.adres} />
+              </div>
+            </div>
+          </div>
+
+          {/* CTA / Newsletter */}
+          <div className="md:col-span-3">
+             <div className="p-8 rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/40 shadow-xl relative overflow-hidden group">
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+                <h4 className="text-xl font-bold text-primary mb-4">Let's build together</h4>
+                <p className="text-xs text-slate-500 mb-6 leading-relaxed">Ready to transform your cloud infrastructure?</p>
+                <button className="w-full py-3 bg-[var(--color-button-bg)] text-white rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                  GET STARTED
+                </button>
+             </div>
+          </div>
         </div>
 
-        {/* Copyright Bar */}
-        <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
-          <p>&copy; {new Date().getFullYear()} {naam}. Alle rechten voorbehouden.</p>
-          <div className="flex items-center gap-2 opacity-50">
-            <img src="./athena-icon.svg" alt="Athena Logo" className="w-5 h-5" />
-            <span>Gemaakt met Athena CMS Factory</span>
+        <div className="pt-8 border-t border-slate-200/50 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
+          <EditableText bind="footer.copyright" value={data.copyright} />
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
           </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

@@ -14,16 +14,16 @@ const App = ({ data }) => {
   const content = (
     <DisplayConfigProvider data={data}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
-          <StyleInjector siteSettings={data['site_settings']} />
+        <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500 selection:bg-primary selection:text-black">
+          <StyleInjector siteSettings={data._style_config} />
           
-          <Header primaryTable={data[primaryTable]} tableName={primaryTable} siteSettings={data['site_settings']} />
+          <Header siteSettings={data._site_settings} />
           
           <main style={{ paddingTop: 'var(--content-top-offset, 0px)' }}>
             <Section data={data} />
           </main>
 
-          <Footer data={data} />
+          <Footer data={data.footer} siteSettings={data._site_settings} />
         </div>
       </Router>
     </DisplayConfigProvider>
