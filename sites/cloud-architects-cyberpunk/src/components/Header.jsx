@@ -37,34 +37,32 @@ function Header({ siteSettings = {}, navigationData = [] }) {
     >
       <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
         {/* Logo & Identity */}
-        {(settings.header_show_logo !== false || settings.header_show_title !== false) && (
-          <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsMenuOpen(false)}>
+        <Link to="/" className="flex items-center gap-4 group" onClick={() => setIsMenuOpen(false)}>
+          <div className="relative w-12 h-12 overflow-hidden border border-primary/30 group-hover:border-primary transition-colors">
+            <EditableMedia
+              src={siteSettings.header_logo_url || siteSettings.logo_url || "logo.png"}
+              cmsBind={{ file: '_site_settings', index: 0, key: 'header_logo_url' }}
+              className="w-full h-full object-contain filter hue-rotate-180"
+              fallback={siteSettings.bedrijfsnaam?.charAt(0) || "C"}
+            />
+            <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
+          </div>
 
-            {settings.header_show_logo !== false && (
-              <div className="relative w-12 h-12 overflow-hidden transition-transform duration-500">
-                <EditableMedia
-                  src={displayLogo}
-                  cmsBind={{ file: 'site_settings', index: 0, key: 'site_logo_image' }}
-                  className="w-full h-full object-contain"
-                  fallback={logoChar}
-                />
-              </div>
-            )}
-
-            <div className="flex flex-col">
-              {settings.header_show_title !== false && (
-                <span className="text-2xl font-serif font-black tracking-tight text-primary leading-none mb-1">
-                  <EditableText value={siteName} cmsBind={{ file: 'site_settings', index: 0, key: 'site_name' }} />
-                </span>
-              )}
-              {settings.header_show_tagline !== false && settings.tagline && (
-                <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-bold opacity-80">
-                  <EditableText value={settings.tagline} cmsBind={{ file: 'site_settings', index: 0, key: 'tagline' }} />
-                </span>
-              )}
-            </div>
-          </Link>
-        )}
+          <div className="flex flex-col">
+            <span className="text-2xl font-serif font-black tracking-tighter text-primary leading-none mb-1 uppercase">
+              <EditableText 
+                value={siteSettings.bedrijfsnaam || "Cloud Architects"} 
+                cmsBind={{ file: '_site_settings', index: 0, key: 'bedrijfsnaam' }} 
+              />
+            </span>
+            <span className="text-[9px] uppercase tracking-[0.4em] text-secondary font-bold opacity-90 glitch-text">
+              <EditableText 
+                value={siteSettings.tagline} 
+                cmsBind={{ file: '_site_settings', index: 0, key: 'tagline' }} 
+              />
+            </span>
+          </div>
+        </Link>
 
         {/* Desktop Action Menu */}
         <div className="hidden md:flex items-center gap-8">

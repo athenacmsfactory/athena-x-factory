@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ApiService } from '../services/ApiService';
 import { useToast } from '../services/ToastContext';
 
-export default function SiteCard({ site, activeServer, onRefresh, onSEO, onSheet }) {
+export default function SiteCard({ site, activeServer, autoStop, onRefresh, onSEO, onSheet }) {
   const { addToast } = useToast();
   const isRunning = !!activeServer;
   const status = site.status || 'local';
@@ -18,7 +18,7 @@ export default function SiteCard({ site, activeServer, onRefresh, onSEO, onSheet
       } else {
         addToast(`Starten van server voor ${site.name}...`, 'info');
       }
-      await ApiService.startSiteDev(site.name);
+      await ApiService.startSiteDev(site.name, { stopOthers: autoStop });
       setIsHydrating(false);
       setTimeout(onRefresh, 1000);
     } catch (e) {

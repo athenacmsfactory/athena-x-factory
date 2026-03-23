@@ -11,18 +11,34 @@ async function init() {
   try {
     
     const dataModules = import.meta.glob('./data/*.json', { eager: true });
-    const getData = (name) => {
-        const key = Object.keys(dataModules).find(k => k.toLowerCase().endsWith(`/${name.toLowerCase()}.json`));
-        return key ? dataModules[key].default : null;
-    };
-    data['section_order'] = getData('section_order') || [];
-    data['site_settings'] = getData('site_settings') || {};
-    data['display_config'] = getData('display_config') || { sections: {} };
-    data['layout_settings'] = getData('layout_settings') || {};
-    for (const sectionName of data['section_order']) {
-        const sectionData = getData(sectionName);
-        data[sectionName] = sectionData ? (Array.isArray(sectionData) ? sectionData : [sectionData]) : [];
-    }
+    const siteData = {};
+    Object.entries(dataModules).forEach(([path, module]) => {
+      const key = path.split('/').pop().replace('.json', '');
+      const content = module.default;
+      siteData[key] = content;
+    });
+
+    // Robust Unwrapping Pattern
+    const unwrap = (val) => (Array.isArray(val) ? (val[0] || {}) : (val || {}));
+
+    Object.assign(data, {
+      ...siteData,
+      _site_settings: unwrap(siteData._site_settings || siteData.site_settings),
+      _style_config: unwrap(siteData._style_config || siteData.style_config),
+      section_order: siteData.section_order || ["hero", "expertise", "projects", "packages"]
+    });
+
+    // Ensure section data is always handled as an array for the Section component
+    const coreSections = ['hero', 'expertise', 'projects', 'packages'];
+    coreSections.forEach(s => {
+      if (data[s] && !Array.isArray(data[s])) {
+        data[s] = [data[s]];
+      } else if (!data[s]) {
+        // Fallback for basis -> hero
+        if (s === 'hero' && siteData.basis) data[s] = Array.isArray(siteData.basis) ? siteData.basis : [siteData.basis];
+        else data[s] = [];
+      }
+    });
     if (window.athenaScan) window.athenaScan(data);
   } catch (e) {
     console.error("Data laad fout:", e);

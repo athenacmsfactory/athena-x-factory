@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import EditableText from './EditableText';
+import EditableMedia from './EditableMedia';
 
 const Section = ({ data }) => {
   const getImageUrl = (url) => {
@@ -9,22 +11,18 @@ const Section = ({ data }) => {
     return (base + '/images/' + url).replace(new RegExp('/+', 'g'), '/');
   };
 
-  const sectionOrder = data.section_order || [];
-  const layoutSettings = data.layout_settings || {};
-  const sectionSettings = data.section_settings || {};
-
-  const iconMap = {
-    'table': 'fa-table-columns',
-    'zap': 'fa-bolt-lightning',
-    'smartphone': 'fa-mobile-screen-button',
-    'laptop': 'fa-laptop',
-    'gear': 'fa-gear',
-    'check': 'fa-circle-check',
-    'star': 'fa-star',
-    'globe': 'fa-globe',
-    'users': 'fa-users',
-    'rocket': 'fa-rocket'
+  const resolveContent = (item, type) => {
+    if (!item) return '';
+    switch (type) {
+      case 'title': return item.titel || item.title || item.project_title || item.package_name || item.naam || '';
+      case 'subtitle': return item.subtitel || item.subtitle || item.client_name || item.boven_titel || '';
+      case 'text': return item.tekst || item.text || item.description || item.beschrijving || item.summary || item.result || '';
+      case 'image': return item.afbeelding || item.image || item.image_url || item.foto || item.bg_image || '';
+      default: return '';
+    }
   };
+
+  const sectionOrder = data.section_order?.length > 0 ? data.section_order : ['hero', 'expertise', 'packages', 'projects'];
 
   useEffect(() => {
     if (window.athenaScan) {
@@ -34,51 +32,65 @@ const Section = ({ data }) => {
 
   return (
     <div className="flex flex-col">
-      {sectionOrder.filter(name => name !== 'site_settings').map((sectionName, idx) => {
+      {sectionOrder.map((sectionName, idx) => {
         const items = data[sectionName] || [];
-        if (items.length === 0) return null;
+        if (items.length === 0 && sectionName !== 'hero') return null;
 
-        const currentSettings = sectionSettings[sectionName] || {};
-        const sectionBgColor = currentSettings.backgroundColor || null;
-        const sectionStyle = sectionBgColor ? { backgroundColor: sectionBgColor } : {};
-        const currentLayout = layoutSettings[sectionName] || 'list';
+        // Geavanceerde Sectie-instellingen (v8.6+)
+        const allSettings = data.section_settings || [];
+        const settings = (Array.isArray(allSettings) 
+          ? allSettings.find(s => s.id === sectionName) 
+          : (allSettings[sectionName] || (allSettings[idx] && allSettings[idx].id === sectionName ? allSettings[idx] : {}))) || {};
+
+        const sectionStyles = {
+          backgroundColor: settings.bg_color || undefined,
+          '--color-card-bg': settings.card_bg_color || undefined,
+          paddingTop: settings.use_custom_padding ? `${settings.padding}px` : undefined,
+          paddingBottom: settings.use_custom_padding ? `${settings.padding}px` : undefined,
+        };
+
+        const sectionClasses = `relative ${settings.text_white ? 'text-white' : 'text-[var(--color-text)]'}`;
 
         // --- 1. HERO SECTION ---
-        if (sectionName === 'basis' || sectionName === 'basis' || sectionName === 'hero') {
-          const hero = items[0];
-          const heroTitle = hero.title || hero.titel || hero.hero_header || hero.site_naam;
-          const heroSubtitle = hero.subtitle || hero.ondertitel || hero.introductie;
-          const imgKey = Object.keys(hero).find(k => /foto|afbeelding|url|image|img/i.test(k)) || 'image';
+        if (sectionName === 'hero') {
+          const hero = items[0] || data.basis?.[0] || {};
+          const title = resolveContent(hero, 'title');
+          const subtitle = resolveContent(hero, 'subtitle') || resolveContent(hero, 'text');
+          const img = resolveContent(hero, 'image');
 
           return (
             <section
               key={idx}
-              id="hero"
-              data-dock-section={sectionName}
-              className="relative w-full h-auto min-h-[var(--hero-height,85vh)] max-h-[var(--hero-max-height,150vh)] aspect-[var(--hero-aspect-ratio,16/9)] flex items-center justify-center overflow-hidden bg-[var(--color-hero-bg)] pt-24"
-              style={sectionStyle}
+              data-dock-section="hero"
+              className={`${sectionClasses} min-h-[90vh] flex items-center justify-center overflow-hidden bg-black pt-24`}
+              style={sectionStyles}
             >
               <div className="absolute inset-0 z-0">
-                <img src={getImageUrl(hero[imgKey])} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
-                <div className="absolute inset-0 z-20 pointer-events-none" style={{
-                  backgroundImage: 'linear-gradient(to bottom, var(--hero-overlay-start, rgba(0,0,0,0.6)), var(--hero-overlay-end, rgba(0,0,0,0.6)))'
-                }}></div>
+                <EditableMedia 
+                   src={getImageUrl(img)} 
+                   className="w-full h-full object-cover opacity-60" 
+                   cmsBind={{ file: 'hero', index: 0, key: 'afbeelding' }} 
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
               </div>
-              <div className="relative z-10 text-center px-6 max-w-5xl">
-                {!hero[imgKey] && <div className="h-2 w-32 bg-accent mx-auto mb-10 rounded-full shadow-lg shadow-accent/50"></div>}
-                <h1 className="text-5xl md:text-8xl font-serif font-bold text-white mb-8 leading-tight drop-shadow-2xl">
-                  <span data-dock-type="text" data-dock-bind={`${sectionName}.0.Object.keys(hero).find(k`}>{heroTitle}</span>
+              <div className="relative z-10 text-center px-6 max-w-6xl">
+                <div className="inline-block px-4 py-1.5 bg-accent text-white rounded-full text-[10px] font-black uppercase tracking-[0.4em] mb-12 animate-fade-in">
+                   <EditableText value={resolveContent(hero, 'subtitle') || 'Future Proof'} cmsBind={{ file: 'hero', index: 0, key: 'boven_titel' }} />
+                </div>
+                <h1 className="text-6xl md:text-9xl font-serif font-black mb-12 leading-[0.9] tracking-tighter uppercase transition-all duration-700">
+                  <EditableText value={title} cmsBind={{ file: 'hero', index: 0, key: 'titel' }} />
                 </h1>
                 <div className="flex flex-col items-center gap-12">
-                  <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow-lg font-light italic">
-                    <span data-dock-type="text" data-dock-bind={`${sectionName}.0.Object.keys(hero).find(k`}>{heroSubtitle}</span>
+                  <p className="text-xl md:text-3xl max-w-3xl mx-auto leading-relaxed font-light italic opacity-90">
+                    <EditableText value={subtitle} cmsBind={{ file: 'hero', index: 0, key: 'subtitel' }} />
                   </p>
-                  <div className="flex flex-wrap justify-center gap-4">
-                    <button onClick={(e) => { 
-                if (e.shiftKey) return; 
-                const target = document.getElementById("contact");
-                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: "smooth" }); }
-            }} data-dock-type="link" data-dock-bind="site_settings.0.titel">{}</button>
+                  <div className="flex flex-wrap justify-center gap-6">
+                    <button className="bg-accent text-white px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-xs hover:scale-105 transition-transform shadow-2xl shadow-accent/40">
+                       <EditableText value={hero.knop_tekst || 'Start Project'} cmsBind={{ file: 'hero', index: 0, key: 'knop_tekst' }} />
+                    </button>
+                    <button className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-10 py-5 rounded-full font-black uppercase tracking-[0.2em] text-xs hover:bg-white/20 transition-all">
+                       Expertise
+                    </button>
                   </div>
                 </div>
               </div>
@@ -86,74 +98,93 @@ const Section = ({ data }) => {
           );
         }
 
-        // --- 2. GENERIC SECTION (DEFAULT) ---
-        return (
-          <section key={idx} id={sectionName} data-dock-section={sectionName} className="py-24 px-6 bg-[var(--color-background)]" style={sectionStyle}>
-            <div className="max-w-6xl mx-auto">
-              <div className="flex flex-col items-center mb-16 text-center">
-                <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-4 capitalize">
-                  {sectionName.replace(/_/g, ' ')}
-                </h2>
-                <div className="h-1.5 w-24 bg-accent rounded-full"></div>
-              </div>
+        // --- 2. PACKAGES SECTION ---
+        if (sectionName === 'packages') {
+          return (
+            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyles}>
+               <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-24">
+                  <h2 className="text-5xl md:text-7xl font-serif font-black tracking-tighter uppercase mb-6">
+                     <EditableText value={settings.title || 'Solutions'} cmsBind={{ file: 'section_settings', index: idx, key: 'title' }} />
+                  </h2>
+                  <div className="h-2 w-24 bg-accent mx-auto"></div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                  {items.map((item, index) => {
+                    const isPopular = item.popular === true || item.popular === 'true';
+                    const title = resolveContent(item, 'title');
+                    const subtitle = resolveContent(item, 'subtitle');
+                    const price = item.prijs || item.price || '';
 
-              <div className={currentLayout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12' : 'space-y-20'}>
-                {items.map((item, index) => {
-                  const titleKey = Object.keys(item).find(k => /naam|titel|onderwerp|header|title/i.test(k));
-                  const textKeys = Object.keys(item).filter(k => k !== titleKey && !/foto|afbeelding|url|image|img|link|id|icon/i.test(k));
-                  const imgKey = Object.keys(item).find(k => /foto|afbeelding|url|image|img/i.test(k));
-                  const isEven = index % 2 === 0;
-
-                  // --- GRID LAYOUT ---
-                  if (currentLayout === 'grid') {
-                    const iconClass = item.icon ? (iconMap[item.icon.toLowerCase()] || `fa-${item.icon.toLowerCase()}`) : null;
                     return (
-                      <div key={index} className="flex flex-col items-center text-center bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100 hover:shadow-2xl transition-all duration-300">
-                        {iconClass && (
-                          <div className="w-20 h-20 bg-accent/10 rounded-3xl flex items-center justify-center mb-8 text-accent text-4xl shadow-inner">
-                            <i className={`fa-solid ${iconClass}`}></i>
-                          </div>
-                        )}
-                        {titleKey && (
-                          <h3 className="text-2xl font-bold text-primary mb-4 leading-tight">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${titleKey}`}>{item[titleKey]}</span>
+                      <div key={index} className={`flex flex-col h-full p-12 rounded-none border-4 transition-all duration-500 hover:-translate-y-2 ${isPopular ? 'bg-secondary border-black text-black shadow-[12px_12px_0px_#000]' : 'bg-[var(--color-card-bg)] border-[var(--color-text)] shadow-[8px_8px_0px_var(--color-text)]'}`}>
+                        <div className="mb-12">
+                          <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">
+                            <EditableText value={title} cmsBind={{ file: sectionName, index, key: 'titel' }} />
                           </h3>
-                        )}
-                        {textKeys.map(tk => (
-                          <div key={tk} className="text-slate-600 text-lg leading-relaxed line-clamp-4">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${tk}`}>{item[tk]}</span>
-                          </div>
-                        ))}
+                          <p className="text-sm font-bold uppercase tracking-widest opacity-60">
+                            <EditableText value={subtitle} cmsBind={{ file: sectionName, index, key: 'subtitel' }} />
+                          </p>
+                        </div>
+                        <div className="mb-12 flex items-baseline gap-2">
+                           <span className="text-6xl font-black tracking-tighter">
+                             <EditableText value={price} cmsBind={{ file: sectionName, index, key: 'prijs' }} />
+                           </span>
+                           <span className="text-xs font-black uppercase tracking-widest opacity-60">/{item.periode || 'mo'}</span>
+                        </div>
+                        <ul className="space-y-4 mb-12 flex-1">
+                          {(item.vinkjes || '').split(';').map((vink, vIdx) => (
+                            <li key={vIdx} className="flex items-start gap-4 text-sm font-bold">
+                              <i className="fa-solid fa-bolt text-accent mt-1"></i>
+                              <span>{vink}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <button className={`w-full py-5 font-black uppercase tracking-widest text-xs transition-all ${isPopular ? 'bg-black text-white hover:bg-black/90' : 'bg-accent text-white hover:bg-accent/90'}`}>
+                           Get Started
+                        </button>
                       </div>
                     );
-                  }
+                  })}
+                </div>
+               </div>
+            </section>
+          );
+        }
 
-                  // --- LIST / ALTERNATING LAYOUT ---
+        // --- 3. GENERIC GRID SECTION (Expertise, Projects) ---
+        return (
+          <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyles}>
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col items-center mb-24 text-center">
+                <h2 className="text-5xl md:text-7xl font-serif font-black tracking-tighter uppercase mb-6">
+                  <EditableText value={settings.title || sectionName} cmsBind={{ file: 'section_settings', index: idx, key: 'title' }} />
+                </h2>
+                <div className="h-2 w-24 bg-accent"></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                {items.map((item, index) => {
+                  const title = resolveContent(item, 'title');
+                  const text = resolveContent(item, 'text');
+                  const img = resolveContent(item, 'image');
+
                   return (
-                    <div key={index} className={`flex flex-col items-center text-center ${currentLayout === 'list' ? '' : (isEven ? 'md:flex-row' : 'md:flex-row-reverse')} gap-12 md:gap-20`}>
-                      {imgKey && item[imgKey] && (
-                        <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.${index}.${imgKey}`} />
+                    <div key={index} className="flex flex-col items-start p-0 rounded-none overflow-hidden group">
+                      {img && (
+                        <div className="w-full aspect-video overflow-hidden mb-10 border-4 border-black shadow-[8px_8px_0px_#000] rotate-1 group-hover:rotate-0 transition-transform duration-500">
+                          <EditableMedia 
+                             src={getImageUrl(img)} 
+                             className="w-full h-full object-cover" 
+                             cmsBind={{ file: sectionName, index, key: 'afbeelding' }} 
+                          />
                         </div>
                       )}
-                      <div className="flex-1">
-                        {titleKey && (
-                          <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
-                            <h3 className="text-3xl font-serif font-bold text-primary leading-tight flex-1">
-                              <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${titleKey}`}>{item[titleKey]}</span>
-                            </h3>
-                          </div>
-                        )}
-                        {textKeys.map(tk => (
-                          <div key={tk} className="text-xl leading-relaxed text-slate-600 mb-6 font-light">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${tk}`}>{item[tk]}</span>
-                          </div>
-                        ))}
-                        {(item.link || item.link_url) && (
-                          <a href={"#"} data-dock-type="link" data-dock-bind="site_settings.0.titel">
-                            {typeof item.link === 'string' ? item.link : "Lees meer"} <i className="fa-solid fa-arrow-right text-sm ml-1"></i>
-                          </a>
-                        )}
+                      <h3 className="text-3xl font-black uppercase tracking-tighter mb-6 group-hover:text-accent transition-colors">
+                        <EditableText value={title} cmsBind={{ file: sectionName, index, key: 'titel' }} />
+                      </h3>
+                      <div className="text-lg leading-relaxed font-bold opacity-70">
+                        <EditableText value={text} cmsBind={{ file: sectionName, index, key: 'tekst' }} />
                       </div>
                     </div>
                   );

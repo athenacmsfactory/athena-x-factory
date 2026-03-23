@@ -1,7 +1,7 @@
 import { ApiService } from '../services/ApiService';
 import { useToast } from '../services/ToastContext';
 
-export default function LegacySiteCard({ site, activeServer, onRefresh }) {
+export default function LegacySiteCard({ site, activeServer, autoStop, onRefresh }) {
   const { addToast } = useToast();
   const isRunning = !!activeServer;
   const isStatic = site.siteType === 'static-legacy';
@@ -9,7 +9,7 @@ export default function LegacySiteCard({ site, activeServer, onRefresh }) {
   const handleStart = async () => {
     try {
       addToast(`Site ${site.name} aan het opstarten...`, 'info');
-      await ApiService.startSiteDev(site.name);
+      await ApiService.startSiteDev(site.name, { stopOthers: autoStop });
       setTimeout(onRefresh, 1000);
     } catch (e) {
       addToast("Fout bij opstarten: " + e.message, 'error');
