@@ -2,12 +2,16 @@ import React, { useEffect } from 'react';
 
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(new RegExp('/+', 'g'), '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   
@@ -37,7 +41,7 @@ const Section = ({ data }) => {
           return (
             <section key={idx} id="hero" data-dock-section="basisgegevens" className="relative w-full h-auto min-h-[var(--hero-height,85vh)] max-h-[var(--hero-max-height,150vh)] aspect-[var(--hero-aspect-ratio,16/9)] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
-                <img src={hero.hero_afbeelding || hero.foto_url} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind="basisgegevens.0.hero.hero_afbeelding" />
+                <img src={getImageUrl(hero.hero_afbeelding || hero.foto_url)} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind="basisgegevens.0.hero.hero_afbeelding" />
                 <div className="absolute inset-0 z-20 pointer-events-none" style={{ 
                   backgroundImage: 'linear-gradient(to bottom, var(--hero-overlay-start, rgba(0,0,0,0.6)), var(--hero-overlay-end, rgba(0,0,0,0.6)))' 
                 }}></div>
@@ -78,12 +82,12 @@ const Section = ({ data }) => {
                     return (
                       <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                         <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
+                          <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`${sectionName}.0.${imgKey}`} />
                           <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                         </div>
                         <div className="p-8 flex flex-col flex-grow text-center">
                           <h3 className="text-2xl font-bold mb-4 text-primary min-h-[4rem] flex items-center justify-center">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.0.titleKey`}>{item[titleKey]}</span>
+                            <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${titleKey}`}>{item[titleKey]}</span>
                           </h3>
                           <div className="text-accent font-bold mt-auto text-3xl mb-6">€{priceValue.toFixed(2)}</div>
                           <div className="flex flex-col gap-3">
@@ -121,21 +125,21 @@ const Section = ({ data }) => {
                      <div key={index} className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-20 items-center`}>
                        {imgKey && item[imgKey] && (
                          <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.${imgKey}`} />
                          </div>
                        )}
                        <div className="flex-1 text-center md:text-left">
                          {titleKey && (
                            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
                                <h3 className="text-3xl font-serif font-bold text-primary leading-tight flex-1">
-                                 <span data-dock-type="text" data-dock-bind={`${sectionName}.0.titleKey`}>{item[titleKey]}</span>
+                                 <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${titleKey}`}>{item[titleKey]}</span>
                                </h3>
                                
                            </div>
                          )}
                          {textKeys.map(tk => (
                            <div key={tk} className="text-xl leading-relaxed text-slate-600 mb-6 font-light">
-                             <span data-dock-type="text" data-dock-bind={`${sectionName}.0.tk`}>{item[tk]}</span>
+                             <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${tk}`}>{item[tk]}</span>
                            </div>
                          ))}
                          {(item.link || item.link_url) && (

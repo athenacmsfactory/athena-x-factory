@@ -3,12 +3,16 @@ import EditableText from './EditableText';
 import EditableMedia from './EditableMedia';
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(new RegExp('/+', 'g'), '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   const resolveContent = (item, type) => {
@@ -68,7 +72,7 @@ const Section = ({ data }) => {
             <section
               key={idx}
               data-dock-section="hero"
-              className={`${sectionClasses} min-h-[90vh] flex items-center justify-center overflow-hidden bg-black pt-24`}
+              className={`sectionClasses min-h-[90vh] flex items-center justify-center overflow-hidden bg-black pt-24`}
               style={sectionStyles}
             >
               <div className="absolute inset-0 z-0">
@@ -107,7 +111,7 @@ const Section = ({ data }) => {
         // --- 2. PACKAGES SECTION ---
         if (sectionName === 'packages') {
           return (
-            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyles}>
+            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`sectionClasses py-32 px-6`} style={sectionStyles}>
                <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-24">
                   <h2 className="text-5xl md:text-7xl font-serif font-black tracking-tighter uppercase mb-6">
@@ -160,7 +164,7 @@ const Section = ({ data }) => {
 
         // --- 3. GENERIC GRID SECTION (Expertise, Projects) ---
         return (
-          <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyles}>
+          <section key={idx} id={sectionName} data-dock-section={sectionName} className={`sectionClasses py-32 px-6`} style={sectionStyles}>
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-col items-center mb-24 text-center">
                 <h2 className="text-5xl md:text-7xl font-serif font-black tracking-tighter uppercase mb-6">

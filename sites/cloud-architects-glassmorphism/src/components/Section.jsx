@@ -3,12 +3,16 @@ import EditableText from './EditableText';
 import EditableMedia from './EditableMedia';
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(/\/+/g, '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   const resolveContent = (item, type) => {
@@ -78,7 +82,7 @@ const Section = ({ data }) => {
             <section
               key={idx}
               data-dock-section="hero"
-              className={`${sectionClasses} min-h-[90vh] flex items-center justify-center overflow-hidden pt-24 bg-slate-900`}
+              className={`sectionClasses min-h-[90vh] flex items-center justify-center overflow-hidden pt-24 bg-slate-900`}
               style={sectionStyles}
             >
               <div className="absolute inset-0 z-0 opacity-40">
@@ -110,7 +114,7 @@ const Section = ({ data }) => {
         // --- 2. PACKAGES SECTION ---
         if (sectionName === 'packages') {
           return (
-            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyles}>
+            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`sectionClasses py-32 px-6`} style={sectionStyles}>
                <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-24">
                   <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
@@ -191,10 +195,10 @@ const Section = ({ data }) => {
                         </div>
                         <div className="w-full md:w-1/2 space-y-8">
                           <h3 className="text-4xl md:text-5xl font-serif font-bold text-primary leading-tight">
-                            <EditableText bind={`${sectionName}.${index}.titel`} value={title} />
+                            <EditableText bind={`${sectionName}.index.titel`} value={title} />
                           </h3>
                           <p className="text-xl text-slate-600 leading-relaxed font-light italic">
-                            <EditableText bind={`${sectionName}.${index}.beschrijving`} value={text} />
+                            <EditableText bind={`${sectionName}.index.beschrijving`} value={text} />
                           </p>
                           <button className="flex items-center gap-4 text-primary font-bold tracking-widest uppercase text-sm group/btn">
                             View Case Study
@@ -218,7 +222,7 @@ const Section = ({ data }) => {
         if (sectionName === 'expertise') { // Explicitly handle expertise here, or make it truly generic
           const sectionStyle = sectionStyles; // Renamed to avoid conflict with sectionStyles
           return (
-            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`${sectionClasses} py-32 px-6`} style={sectionStyle}>
+            <section key={idx} id={sectionName} data-dock-section={sectionName} className={`sectionClasses py-32 px-6`} style={sectionStyle}>
               <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col items-center mb-20 text-center">
                   <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">

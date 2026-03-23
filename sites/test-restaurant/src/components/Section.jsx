@@ -2,6 +2,17 @@ import React from 'react';
 import EditableImage from './EditableImage';
 
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const sections = [{"table":"Menu"},{"table":"Team"},{"table":"Contact"}];
 
   return (
@@ -30,14 +41,14 @@ const Section = ({ data }) => {
                   const desc = descKey ? item[descKey] : "";
 
                   const rawImg = imgKey ? item[imgKey] : null;
-                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/${rawImg}`) : null;
+                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/rawImg`) : null;
 
                   return (
                     <article key={index} className="reveal group bg-white rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-50 flex flex-col">
                       <div className="relative h-72 overflow-hidden bg-slate-100">
                         {imgSrc ? (
                           <EditableImage 
-                            src={imgSrc} 
+                            src={getImageUrl(imgSrc)} 
                             alt={title} 
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                             cmsBind={{ file: sec.table, index: item.absoluteIndex, key: imgKey }}

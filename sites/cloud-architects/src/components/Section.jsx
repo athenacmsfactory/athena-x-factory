@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(new RegExp('/+', 'g'), '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   const sectionOrder = data.section_order || [];
@@ -58,7 +62,7 @@ const Section = ({ data }) => {
               className="relative w-full h-auto min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-24"
             >
               <div className="absolute inset-0 z-0">
-                <img src={getImageUrl(hero[imgKey] || "site-logo.svg")} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
+                <img src={getImageUrl(hero[imgKey] || "site-logo.svg")} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.${imgKey}`} />
                 <div className="absolute inset-0 z-20 pointer-events-none" style={{
                   backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.35), rgba(0,0,0,0.15))'
                 }}></div>
@@ -139,16 +143,16 @@ const Section = ({ data }) => {
                             <i className={`fa-solid ${item.icon ? (iconMap[item.icon.toLowerCase()] || `fa-${item.icon.toLowerCase()}`) : 'fa-box'}`}></i>
                           </div>
                           <h3 className="text-2xl font-bold text-primary mb-2">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.titel}`}>{item.titel || item.package_name}</span>
+                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.titel`}>{item.titel || item.package_name}</span>
                           </h3>
                           <p className="text-slate-500 text-sm italic font-light">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.subtitel}`}>{item.subtitel || item.subtitle}</span>
+                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.subtitel`}>{item.subtitel || item.subtitle}</span>
                           </p>
                         </div>
                         <div className="mb-8 pb-8 border-b border-slate-100 flex items-baseline gap-1">
                           <span className="text-2xl font-bold text-primary">{item.valuta || '€'}</span>
                           <span className="text-5xl font-black text-primary tracking-tight">
-                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.prijs}`}>{item.prijs || item.price}</span>
+                            <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.prijs`}>{item.prijs || item.price}</span>
                           </span>
                           <span className="text-slate-400 text-sm font-medium">{item.periode}</span>
                         </div>
@@ -191,22 +195,22 @@ const Section = ({ data }) => {
                     <div key={index} className="flex flex-col items-center text-center bg-slate-50 p-10 rounded-[2.5rem] shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300">
                       {img && (
                         <div className="w-full aspect-[4/3] rounded-[2rem] overflow-hidden mb-8 shadow-inner">
-                          <img src={getImageUrl(img)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.${index}.${item.afbeelding}`} />
+                          <img src={getImageUrl(img)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.${index}.${item}.afbeelding`} />
                         </div>
                       )}
                       {title && (
                         <h3 className="text-2xl font-bold text-primary mb-2">
-                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.titel}`}>{title}</span>
+                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.titel`}>{title}</span>
                         </h3>
                       )}
                       {subtitle && (
                         <p className="text-accent text-sm font-bold uppercase tracking-widest mb-4">
-                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.subtitel}`}>{subtitle}</span>
+                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.subtitel`}>{subtitle}</span>
                         </p>
                       )}
                       {text && (
                         <div className="text-slate-600 text-lg leading-relaxed">
-                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item.tekst}`}>{text}</span>
+                          <span data-dock-type="text" data-dock-bind={`${sectionName}.${index}.${item}.tekst`}>{text}</span>
                         </div>
                       )}
                     </div>

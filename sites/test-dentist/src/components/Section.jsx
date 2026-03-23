@@ -6,6 +6,17 @@ import EditableImage from './EditableImage';
  * Organized and clean medical sections
  */
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const sectionConfigs = [
     { table: "behandelingen", title: "Onze Behandelingen", subtitle: "Gespecialiseerde zorg voor elk gebit" },
     { table: "team", title: "Uw Behandelteam", subtitle: "Ervaren specialisten staan voor u klaar" },
@@ -50,7 +61,7 @@ const Section = ({ data }) => {
                   const descKey = Object.keys(item).filter(k => k !== 'absoluteIndex').find(k => /beschrijving|uitleg|functie/i.test(k));
                   
                   const rawImg = item[imgKey];
-                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/${rawImg}`) : null;
+                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/rawImg`) : null;
 
                   return (
                     <article 
@@ -67,7 +78,7 @@ const Section = ({ data }) => {
                             : 'w-16 h-16 rounded-2xl bg-accent/5 flex items-center justify-center p-3'
                         }`}>
                           <EditableImage 
-                            src={imgSrc} 
+                            src={getImageUrl(imgSrc)} 
                             alt={item[titleKey]} 
                             className={`w-full h-full ${isTeam ? 'object-cover' : 'object-contain opacity-80'}`}
                             cmsBind={{ file: config.table, index: item.absoluteIndex, key: imgKey }}

@@ -3,12 +3,16 @@ import EditableText from './EditableText';
 import EditableMedia from './EditableMedia';
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(/\/+/g, '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   const resolveContent = (item, type) => {
@@ -137,10 +141,10 @@ const Section = ({ data }) => {
                         <div className="relative z-10 space-y-6">
                           <span className="text-xs font-mono text-secondary font-bold tracking-widest block">0X0{index+1}</span>
                           <h3 className="text-3xl font-black text-white leading-tight uppercase group-hover:text-primary transition-colors">
-                            <EditableText bind={`${sectionName}.${index}.titel`} value={title} />
+                            <EditableText bind={`${sectionName}.index.titel`} value={title} />
                           </h3>
                           <p className="text-slate-400 font-mono text-sm leading-relaxed border-l border-primary/20 pl-6 group-hover:border-primary transition-colors">
-                            <EditableText bind={`${sectionName}.${index}.tekst`} value={text} />
+                            <EditableText bind={`${sectionName}.index.tekst`} value={text} />
                           </p>
                         </div>
                       </div>
@@ -182,10 +186,10 @@ const Section = ({ data }) => {
                         </div>
                         <div className="w-full md:w-2/5 space-y-10">
                           <h3 className="text-5xl font-black text-white leading-none uppercase tracking-tighter italic">
-                            <EditableText bind={`${sectionName}.${index}.titel`} value={title} />
+                            <EditableText bind={`${sectionName}.index.titel`} value={title} />
                           </h3>
                           <p className="text-xl text-slate-400 font-mono border-b border-primary/10 pb-10">
-                            <EditableText bind={`${sectionName}.${index}.beschrijving`} value={text} />
+                            <EditableText bind={`${sectionName}.index.beschrijving`} value={text} />
                           </p>
                           <button className="flex items-center gap-6 text-primary font-black uppercase tracking-[0.4em] text-xs hover:text-secondary transition-colors group/btn">
                             [EXECUTE_READ]

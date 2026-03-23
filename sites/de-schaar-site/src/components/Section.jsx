@@ -4,6 +4,17 @@ import EditableText from './EditableText';
 import EditableMedia from './EditableMedia';
 
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const isDev = import.meta.env.DEV;
   const [activeConfigTable, setActiveConfigTable] = useState(null);
   // Robust layout reading (handle both array and object)
@@ -167,7 +178,7 @@ const Section = ({ data }) => {
               key={idx}
               id={config.table.toLowerCase()}
               data-dock-section={config.table.toLowerCase()}
-              className={`${bgClass} ${visibilityClass} relative transition-all duration-500 px-6`}
+              className={`bgClass visibilityClass relative transition-all duration-500 px-6`}
               style={{ paddingTop: `${paddingValue * 4}px`, paddingBottom: `${paddingValue * 4}px` }}
             >
               {!isVisible && isDev && <div className="absolute top-4 right-4 bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold uppercase z-50">Hidden Section</div>}
@@ -189,14 +200,14 @@ const Section = ({ data }) => {
                         <div className="flex items-center gap-6 mb-10">
                           <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg shrink-0">
                             <EditableMedia 
-                              src={group.afbeelding} 
+                              src={getImageUrl(group.afbeelding)} 
                               className="w-full h-full object-cover" 
                               cmsBind={{ file: 'diensten_hoofdgroepen', index: group.originalIndex, key: 'afbeelding' }} 
                             />
                           </div>
                           <div className="flex-1">
                             <h3 className="text-3xl font-serif font-bold text-accent uppercase tracking-[0.2em]">
-                              <span data-dock-type="text" data-dock-bind={`diensten_hoofdgroepen.${group.originalIndex}.naam`}>{group.naam}</span>
+                              <span data-dock-type="text" data-dock-bind={`diensten_hoofdgroepen.group.originalIndex.naam`}>{group.naam}</span>
                             </h3>
                             <div className="h-1 w-12 bg-accent/30 mt-2"></div>
                           </div>
@@ -206,13 +217,13 @@ const Section = ({ data }) => {
                           {group.items.map((item, iIdx) => (
                             <div key={iIdx} className="group/item relative">
                               <div className="flex justify-between items-baseline gap-4 mb-1">
-                                <span className="text-lg font-medium text-text group-hover/item:text-accent transition-colors duration-300" data-dock-type="text" data-dock-bind={`tarieven.${item.absoluteIndex}.dienst_naam`}>{item.dienst_naam}</span>
+                                <span className="text-lg font-medium text-text group-hover/item:text-accent transition-colors duration-300" data-dock-type="text" data-dock-bind={`tarieven.${item}.absoluteIndex.dienst_naam`}>{item.dienst_naam}</span>
                                 <div className="flex-1 border-b border-dotted border-slate-300 dark:border-white/10 mx-2 relative top-[-4px] opacity-40"></div>
                                 <div className="flex items-center gap-2">
                                   <span className="text-[10px] uppercase tracking-widest opacity-40 font-bold whitespace-nowrap">
                                     <EditableText value={item.prijs_indicatie} cmsBind={{ file: 'tarieven', index: item.absoluteIndex, key: 'prijs_indicatie' }} />
                                   </span>
-                                  <span className="font-serif font-bold text-xl text-text" data-dock-type="text" data-dock-bind={`tarieven.${item.absoluteIndex}.basis_prijs`}>{item.basis_prijs}</span>
+                                  <span className="font-serif font-bold text-xl text-text" data-dock-type="text" data-dock-bind={`tarieven.${item}.absoluteIndex.basis_prijs`}>{item.basis_prijs}</span>
                                 </div>
                               </div>
                               {item.gradatie_afhankelijk && (
@@ -237,7 +248,7 @@ const Section = ({ data }) => {
             key={idx}
             id={config.table.toLowerCase()}
             data-dock-section={config.table.toLowerCase()}
-            className={`${bgClass} ${visibilityClass} relative transition-all duration-500 px-6`}
+            className={`bgClass visibilityClass relative transition-all duration-500 px-6`}
             style={{ paddingTop: `${paddingValue * 4}px`, paddingBottom: `${paddingValue * 4}px` }}
           >
             {!isVisible && isDev && <div className="absolute top-4 right-4 bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold uppercase z-50">Hidden Section</div>}
@@ -325,7 +336,7 @@ const Section = ({ data }) => {
 
                         const TagName = tagName;
                         return (
-                          <TagName key={i} className={className} data-dock-type="text" data-dock-bind={`${config.table.toLowerCase()}.${index}.${k}`}>{item[k]}</TagName>
+                          <TagName key={i} className={className} data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${index}.${k}`}>{item[k]}</TagName>
                         );
                       })}
                     </div>
@@ -340,10 +351,10 @@ const Section = ({ data }) => {
                       <div key={index} className={itemClass + " w-full max-w-2xl mx-auto"}>
                         <div className="flex justify-between items-end border-b border-dotted border-slate-300 dark:border-white/20 pb-4">
                           <div className="flex-1">
-                            {titleKey && <span className="text-lg font-medium block text-text" data-dock-type="text" data-dock-bind={`${config.table.toLowerCase()}.${index}.${titleKey}`}>{item[titleKey]}</span>}
-                            {descKey && <span className="text-sm opacity-60 block mt-1 text-text" data-dock-type="text" data-dock-bind={`${config.table.toLowerCase()}.${index}.${descKey}`}>{item[descKey]}</span>}
+                            {titleKey && <span className="text-lg font-medium block text-text" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${index}.${titleKey}`}>{item[titleKey]}</span>}
+                            {descKey && <span className="text-sm opacity-60 block mt-1 text-text" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${index}.descKey`}>{item[descKey]}</span>}
                           </div>
-                          <span className="font-serif font-bold text-lg text-text ml-4" data-dock-type="text" data-dock-bind={`${config.table.toLowerCase()}.${index}.${priceKey}`}>{item[priceKey]}</span>
+                          <span className="font-serif font-bold text-lg text-text ml-4" data-dock-type="text" data-dock-bind={`config.table.toLowerCase().${index}.priceKey`}>{item[priceKey]}</span>
                         </div>
                       </div>
                     );
@@ -356,7 +367,7 @@ const Section = ({ data }) => {
                         {imgKey && (
                           <div className="w-full md:w-1/2 aspect-square md:aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
                             <EditableMedia 
-                              src={item[imgKey] || item.afbeelding || item.foto} 
+                              src={getImageUrl(item[imgKey] || item.afbeelding || item.foto)} 
                               className="w-full h-full object-cover" 
                               cmsBind={{ file: config.table.toLowerCase(), index, key: imgKey }} 
                             />
@@ -371,11 +382,11 @@ const Section = ({ data }) => {
 
                   if (currentLayout === 'list') {
                     return (
-                      <article key={index} className={itemClass + ' flex flex-col md:flex-row items-start border-b border-slate-100 dark:border-white/5 last:border-0'} style={{ paddingBottom: `${listGap}px`, marginBottom: `${listGap}px` }}>
+                      <article key={index} className={itemClass + ' flex flex-col md:flex-row items-start border-b border-slate-100 dark:border-white/5 last:border-0'} style={{ paddingBottom: `listGappx`, marginBottom: `listGappx` }}>
                         {imgKey && (
                           <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0 shadow-lg">
                             <EditableMedia 
-                              src={item[imgKey] || item.afbeelding || item.foto} 
+                              src={getImageUrl(item[imgKey] || item.afbeelding || item.foto)} 
                               className="w-full h-full object-cover" 
                               cmsBind={{ file: config.table.toLowerCase(), index, key: imgKey }} 
                             />
@@ -393,7 +404,7 @@ const Section = ({ data }) => {
                       {imgKey && (
                         <div className={'relative overflow-hidden mb-10 ' + (currentLayout === 'focus' && index === 0 ? 'aspect-video rounded-[4rem]' : 'aspect-square rounded-[3rem]') + ' shadow-2xl'}>
                           <EditableMedia 
-                            src={item[imgKey] || item.afbeelding || item.foto} 
+                            src={getImageUrl(item[imgKey] || item.afbeelding || item.foto)} 
                             className="w-full h-full object-cover" 
                             cmsBind={{ file: config.table.toLowerCase(), index, key: imgKey }} 
                           />

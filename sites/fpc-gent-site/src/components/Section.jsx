@@ -10,7 +10,7 @@ export default function Section({ data, pageFile, sectionIndex }) {
 
     // Helper voor het ophalen van styles per veld
     const getStyles = (key) => {
-        const styleKey = `${pageFile}:${sectionIndex}:${key}`;
+        const styleKey = `pageFile:sectionIndex:${key}`;
         const f = styleBindings[styleKey];
         if (!f) return {};
         
@@ -38,7 +38,7 @@ export default function Section({ data, pageFile, sectionIndex }) {
         case 'hero':
             return (
                 <section 
-                    data-dock-section={`section-${sectionIndex} (hero)`}
+                    data-dock-section={`section-sectionIndex (hero)`}
                     className="bg-white text-slate-900 py-20 md:py-32 px-6 relative overflow-hidden border-b border-slate-100"
                 >
                     <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
@@ -85,7 +85,7 @@ export default function Section({ data, pageFile, sectionIndex }) {
         case 'features':
             return (
                 <section 
-                    data-dock-section={`section-${sectionIndex} (cards)`}
+                    data-dock-section={`section-sectionIndex (cards)`}
                     className="py-24 bg-slate-50 px-6"
                 >
                     <div className="max-w-7xl mx-auto">
@@ -105,14 +105,14 @@ export default function Section({ data, pageFile, sectionIndex }) {
                                     
                                     if (isExternal(itemLink)) {
                                         return (
-                                            <a href={itemLink} target="_blank" rel="noreferrer" className={`${className} hover:border-blue-300`}>
+                                            <a href={itemLink} target="_blank" rel="noreferrer" className={`className hover:border-blue-300`}>
                                                 {children}
                                             </a>
                                         );
                                     }
                                     
                                     return (
-                                        <Link to={itemLink} className={`${className} hover:border-blue-300`}>
+                                        <Link to={itemLink} className={`className hover:border-blue-300`}>
                                             {children}
                                         </Link>
                                     );
@@ -158,7 +158,7 @@ export default function Section({ data, pageFile, sectionIndex }) {
         case 'contact':
             return (
                 <section 
-                    data-dock-section={`section-${sectionIndex} (contact)`}
+                    data-dock-section={`section-sectionIndex (contact)`}
                     className="py-24 bg-slate-900 text-white px-6"
                 >
                     <div className="max-w-4xl mx-auto text-center">
@@ -196,7 +196,7 @@ export default function Section({ data, pageFile, sectionIndex }) {
             const hasImage = !!content.afbeelding;
             return (
                 <section 
-                    data-dock-section={`section-${sectionIndex} (text)`}
+                    data-dock-section={`section-sectionIndex (text)`}
                     className="py-20 bg-white px-6"
                 >
                     <div className={`max-w-7xl mx-auto flex flex-col ${hasImage ? 'md:flex-row' : ''} gap-16 items-center`}>

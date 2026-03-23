@@ -2,6 +2,17 @@ import React from 'react';
 import EditableImage from './EditableImage';
 
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const sections = [{"table":"Projecten"},{"table":"Diensten"},{"table":"Ervaring"}];
 
   return (
@@ -25,13 +36,13 @@ const Section = ({ data }) => {
                   const descKey = Object.keys(item).filter(k => k !== 'absoluteIndex').find(k => k.toLowerCase().includes('beschrijving') || k.toLowerCase().includes('uitleg'));
 
                   const rawImg = item[imgKey];
-                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/${rawImg}`) : '/placeholder.jpg';
+                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/rawImg`) : '/placeholder.jpg';
 
                   return (
                     <article key={index} className="reveal group" style={{ transitionDelay: `${index * 150}ms` }}>
                       <div className="relative aspect-video mb-8 overflow-hidden rounded-3xl shadow-2xl">
                         <EditableImage 
-                          src={imgSrc} 
+                          src={getImageUrl(imgSrc)} 
                           alt={item[titleKey]} 
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                           cmsBind={{ file: sec.table, index: item.absoluteIndex, key: imgKey }}

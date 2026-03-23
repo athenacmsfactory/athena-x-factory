@@ -2,12 +2,16 @@ import React, { useEffect } from 'react';
 
 
 const Section = ({ data }) => {
-  const getImageUrl = (url) => {
+        const getImageUrl = (url) => {
     if (!url) return '';
     if (typeof url === 'object') url = url.text || url.url || '';
     if (url.startsWith('http') || url.startsWith('data:')) return url;
     const base = import.meta.env.BASE_URL || '/';
-    return (base + '/images/' + url).replace(new RegExp('/+', 'g'), '/');
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
   };
 
   
@@ -51,7 +55,7 @@ const Section = ({ data }) => {
           return (
             <section key={idx} data-dock-section="basisgegevens" className="relative w-full h-auto min-h-[var(--hero-height,85vh)] max-h-[var(--hero-max-height,150vh)] aspect-[var(--hero-aspect-ratio,16/9)] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0">
-                {showImage && <img src={hero.hero_afbeelding || hero.foto_url} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind="basisgegevens.0.hero.hero_afbeelding" />}
+                {showImage && <img src={getImageUrl(hero.hero_afbeelding || hero.foto_url)} className="w-full h-full object-cover object-top" data-dock-type="media" data-dock-bind="basisgegevens.0.hero.hero_afbeelding" />}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
               </div>
               <div className="relative z-10 text-center px-6 max-w-5xl">
@@ -94,7 +98,7 @@ const Section = ({ data }) => {
             <section key={idx} data-dock-section={sectionName} className="py-24 px-6" style={{ backgroundColor: 'var(--color-background)' }}>
               <div className="max-w-7xl mx-auto">
                 <h2 className="text-4xl font-serif font-bold mb-16 text-center text-primary uppercase tracking-widest">
-                   <span data-dock-type="text" data-dock-bind={`section_settings.${sectionSettingIndex}.${title}`}>{displayTitle}</span>
+                   <span data-dock-type="text" data-dock-bind={`section_settings.sectionSettingIndex.title`}>{displayTitle}</span>
                 </h2>
                 <div className="flex flex-wrap justify-center gap-12">
                   {items.map((item, index) => {
@@ -107,14 +111,14 @@ const Section = ({ data }) => {
                       <article key={index} className="flex flex-col bg-surface rounded-[2.5rem] shadow-xl overflow-hidden transition-all hover:-translate-y-2 hover:shadow-2xl group border border-slate-100">
                         {imgKey && (
                             <div className="aspect-square overflow-hidden flex-shrink-0 relative">
-                                <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
+                                <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-dock-type="media" data-dock-bind={`${sectionName}.0.${imgKey}`} />
                                 <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
                             </div>
                         )}
                         <div className="p-8 flex flex-col flex-grow text-center">
                           {titleKey && (
                             <h3 className="text-2xl font-bold mb-4 text-primary min-h-[4rem] flex items-center justify-center">
-                                <span data-dock-type="text" data-dock-bind={`${sectionName}.0.titleKey`}>{item[titleKey]}</span>
+                                <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${titleKey}`}>{item[titleKey]}</span>
                             </h3>
                           )}
                           {showPrice && <div className="text-accent font-bold mt-auto text-3xl mb-6">€{priceValue.toFixed(2)}</div>}
@@ -146,7 +150,7 @@ const Section = ({ data }) => {
             <div className="max-w-6xl mx-auto">
               <div className="flex flex-col items-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-primary text-center mb-4 capitalize">
-                  <span data-dock-type="text" data-dock-bind={`section_settings.${sectionSettingIndex}.${title}`}>{displayTitle}</span>
+                  <span data-dock-type="text" data-dock-bind={`section_settings.sectionSettingIndex.title`}>{displayTitle}</span>
                 </h2>
                 <div className="h-1.5 w-24 bg-accent rounded-full"></div>
               </div>
@@ -166,14 +170,14 @@ const Section = ({ data }) => {
                      <div key={index} className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-12 md:gap-20 items-center`}>
                        {imgKey && item[imgKey] && (
                          <div className="w-full md:w-1/2 aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl rotate-1 group hover:rotate-0 transition-transform duration-500 border-8 border-white">
-                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.imgKey`} />
+                           <img src={getImageUrl(item[imgKey])} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind={`${sectionName}.0.${imgKey}`} />
                          </div>
                        )}
                        <div className="flex-1 text-center md:text-left">
                          {titleKey && (
                            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
                                <h3 className="text-3xl font-serif font-bold text-primary leading-tight flex-1">
-                                 <span data-dock-type="text" data-dock-bind={`${sectionName}.0.titleKey`}>{item[titleKey]}</span>
+                                 <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${titleKey}`}>{item[titleKey]}</span>
                                </h3>
                                
                                <a href={getGoogleSearchUrl(item[titleKey], item[researcherKey])} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full transition-all text-sm font-bold self-start md:self-center">
@@ -188,7 +192,7 @@ const Section = ({ data }) => {
                          )}
                          {textKeys.map(tk => (
                            <div key={tk} className="text-xl leading-relaxed text-slate-600 mb-6 font-light">
-                             <span data-dock-type="text" data-dock-bind={`${sectionName}.0.tk`}>{item[tk]}</span>
+                             <span data-dock-type="text" data-dock-bind={`${sectionName}.0.${tk}`}>{item[tk]}</span>
                            </div>
                          ))}
                          {item.link && (

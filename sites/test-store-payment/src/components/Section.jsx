@@ -7,6 +7,17 @@ import ProductCard from './ProductCard';
  * Upgraded for React 19 & Tailwind CSS v4
  */
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const shopInfo = data.Winkel_Instellingen?.[0] || {};
   const valuta = shopInfo.valuta || "€";
 
@@ -68,13 +79,13 @@ const Section = ({ data }) => {
                     const imgKey = Object.keys(item).filter(k => k !== 'absoluteIndex').find(k => /foto|afbeelding|image/i.test(k));
                     const name = item.naam || item.titel || "Collectie";
                     const rawImg = item[imgKey];
-                    const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/${rawImg}`) : null;
+                    const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/rawImg`) : null;
 
                     return (
                       <div key={index} className="group relative h-[400px] rounded-3xl overflow-hidden shadow-soft cursor-pointer">
                         {imgSrc && (
                           <EditableImage 
-                            src={imgSrc} 
+                            src={getImageUrl(imgSrc)} 
                             alt={name} 
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             cmsBind={{ file: config.table, index: item.absoluteIndex, key: imgKey }}

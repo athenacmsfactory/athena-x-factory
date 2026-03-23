@@ -4,6 +4,17 @@ import EditableMedia from './EditableMedia';
 import EditableText from './EditableText';
 
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   const { addToCart } = useCart();
   const sectionOrder = data.section_order || [];
 
@@ -42,12 +53,12 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="hero"
-              className={`${sectionClasses} h-[90vh] flex items-center justify-center overflow-hidden`}
+              className={`sectionClasses h-[90vh] flex items-center justify-center overflow-hidden`}
               style={sectionStyles}
             >
               <div className="absolute inset-0 z-0">
                 <EditableMedia 
-                  src={hero.afbeelding} 
+                  src={getImageUrl(hero.afbeelding)} 
                   className="w-full h-full object-cover" 
                   cmsBind={{ file: 'hero', index: 0, key: 'afbeelding' }} 
                 />
@@ -78,7 +89,7 @@ const Section = ({ data }) => {
               key={idx} 
               id="producten" 
               data-dock-section="producten"
-              className={`${sectionClasses} py-32 px-6`}
+              className={`sectionClasses py-32 px-6`}
               style={sectionStyles}
             >
               <div className="max-w-7xl mx-auto text-center">
@@ -98,7 +109,7 @@ const Section = ({ data }) => {
                       >
                         <div className="relative aspect-square overflow-hidden mb-8 shadow-inner flex-shrink-0" style={{ borderRadius: 'calc(var(--radius-custom) * 0.8)' }}>
                           <EditableMedia 
-                            src={imgSrc} 
+                            src={getImageUrl(imgSrc)} 
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                             cmsBind={{ file: 'producten', index, key: 'product_foto_url' }} 
                           />
@@ -135,7 +146,7 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="sterke_punten"
-              className={`${sectionClasses} py-24`}
+              className={`sectionClasses py-24`}
               style={sectionStyles}
             >
               <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16">

@@ -7,6 +7,17 @@ import Card from './ui/Card'; // Fixed Import Path
  * Upgraded for React 19 & Tailwind CSS v4
  */
 const Section = ({ data }) => {
+        const getImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url === 'object') url = url.text || url.url || '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    const base = import.meta.env.BASE_URL || '/';
+    if (url.startsWith(base) && base !== '/') return url;
+    const isRootPublic = url.startsWith('./') || url.endsWith('.svg') || url.endsWith('.ico') || url === 'site-logo.svg' || url === 'athena-icon.svg';
+    const hasImagesPrefix = url.includes('/images/') || url.startsWith('images/');
+    const pathPrefix = (isRootPublic || hasImagesPrefix) ? '' : 'images/';
+    return (base + pathPrefix + url.replace('./', '')).replace(new RegExp('/+', 'g'), '/');
+  };
   // We definiëren de secties die we willen tonen
   const sectionConfigs = [
     { table: "Specialisaties", title: "Onze Specialisaties", subtitle: "Hoogwaardige zorg door expertise" },
@@ -55,7 +66,7 @@ const Section = ({ data }) => {
                   const descKey = Object.keys(item).filter(k => k !== 'absoluteIndex').find(k => /beschrijving|uitleg|functie/i.test(k));
                   
                   const rawImg = item[imgKey];
-                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/${rawImg}`) : null;
+                  const imgSrc = rawImg ? (rawImg.startsWith('http') ? rawImg : `${import.meta.env.BASE_URL}images/rawImg`) : null;
 
                   // Render Logic
                   if (isArtsen) {
@@ -64,7 +75,7 @@ const Section = ({ data }) => {
                          {imgKey && rawImg && (
                             <div className="relative overflow-hidden mb-6 w-48 h-48 rounded-full border-8 border-white shadow-soft group-hover:border-accent/10 transition-colors">
                               <EditableImage 
-                                src={imgSrc} 
+                                src={getImageUrl(imgSrc)} 
                                 alt={item[titleKey]} 
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                 cmsBind={{ file: config.table, index: item.absoluteIndex, key: imgKey }}
@@ -89,7 +100,7 @@ const Section = ({ data }) => {
                       {imgKey && rawImg && (
                         <div className="relative overflow-hidden mb-6 w-full h-48 rounded-2xl">
                           <EditableImage 
-                            src={imgSrc} 
+                            src={getImageUrl(imgSrc)} 
                             alt={item[titleKey]} 
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             cmsBind={{ file: config.table, index: item.absoluteIndex, key: imgKey }}
