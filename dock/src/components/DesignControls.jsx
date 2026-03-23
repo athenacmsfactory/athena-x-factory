@@ -192,9 +192,15 @@ export default function DesignControls({
                 />
                 <Slider 
                     label="Hero Height" 
-                    value={parseInt(localData.hero_hoogte || 600)} 
+                    value={parseInt(localData.hero_hoogte || localData.hero_height || 600)} 
                     min={300} max={1000} unit="px" 
-                    onChange={(v) => { handlePreview('hero_hoogte', v); handleSave('hero_hoogte', v); }} 
+                    onChange={(v) => { handlePreview('hero_height', v); handleSave('hero_height', v); }} 
+                />
+                <Slider 
+                    label="Hero Padding Top" 
+                    value={parseInt(localData.hero_padding_top || 0)} 
+                    min={-200} max={200} unit="px" 
+                    onChange={(v) => { handlePreview('hero_padding_top', v); handleSave('hero_padding_top', v); }} 
                 />
             </div>
             

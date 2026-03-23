@@ -41,7 +41,8 @@
   },
   "hero": {
     "hero_hoogte": 301,
-    "hero_overlay_transparantie": 0.23
+    "hero_overlay_transparantie": 0.23,
+    "hero_padding_top": -139
   },
   "klantbeoordelingen": [
     {
@@ -279,7 +280,7 @@
     "light_primary_color": "#FF9900",
     "site_logo_image": "demo-bakkerij-logo-1.png",
     "header_transparantie": 0,
-    "header_visible": true,
+    "header_visible": false,
     "header_height": 101
   },
   "sterke_punten": [

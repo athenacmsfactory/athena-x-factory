@@ -79,10 +79,17 @@ const StyleInjector = ({ siteSettings }) => {
       root.style.removeProperty('--header-border');
     }
 
-    // 5. Hero & Card Specifics
-    if (settings.hero_overlay_opacity !== undefined) {
-      let opacity = parseFloat(settings.hero_overlay_opacity);
+    // 5. Hero Specifics
+    const heroHeight = settings.hero_hoogte || settings.hero_height;
+    if (heroHeight) {
+      const val = typeof heroHeight === 'number' ? heroHeight + 'px' : heroHeight;
+      root.style.setProperty('--hero-height', val);
+    }
+
+    if (settings.hero_overlay_opacity !== undefined || settings.hero_overlay_transparantie !== undefined) {
+      let opacity = parseFloat(settings.hero_overlay_opacity ?? settings.hero_overlay_transparantie);
       if (isNaN(opacity)) opacity = 0.8;
+      if (opacity > 1) opacity = opacity / 100;
       root.style.setProperty('--hero-overlay-start', `rgba(0, 0, 0, ${opacity})`);
       root.style.setProperty('--hero-overlay-end', `rgba(0, 0, 0, ${opacity * 0.4})`);
     }

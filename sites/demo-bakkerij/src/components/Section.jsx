@@ -31,8 +31,12 @@ const Section = ({ data }) => {
             <section 
               key={idx} 
               data-dock-section="basisgegevens"
-              className="relative h-[90vh] flex items-center justify-center overflow-hidden"
-              style={{ paddingTop: 'var(--hero-padding-top, 0px)' }}
+              className="relative flex items-center justify-center overflow-hidden"
+              style={{ 
+                marginTop: 'var(--hero-padding-top, 0px)',
+                height: 'var(--hero-height, 90vh)',
+                minHeight: 'var(--hero-height, 90vh)'
+              }}
             >
               <div className="absolute inset-0 z-0">
                 <img src={getImageUrl(hero.hero_afbeelding)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="basisgegevens.0.hero_afbeelding" />

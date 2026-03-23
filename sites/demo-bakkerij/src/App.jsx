@@ -14,7 +14,7 @@ const Layout = ({ data, children }) => {
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text)] transition-colors duration-500">
       <StyleInjector siteSettings={data['site_settings']} />
       <Header primaryTable={data.basisgegevens} siteSettings={data['site_settings']} />
-      <main style={{ paddingTop: 'var(--content-top-offset, 80px)' }}>{children}</main>
+      <main style={{ paddingTop: 'var(--content-top-offset)' }}>{children}</main>
       <Footer primaryTable={data.basisgegevens} />
       <CartOverlay />
     </div>
