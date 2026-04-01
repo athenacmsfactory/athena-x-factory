@@ -10,12 +10,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FACTORY_ROOT = path.resolve(__dirname, '../..');
-const SITES_DIR = path.join(FACTORY_ROOT, 'sites');
-const VAULT_ROOT = path.join(FACTORY_ROOT, '../../vault');
+const FACTORY_ROOT = path.resolve(__dirname, '../../..');
+const SITES_DIR = path.resolve(FACTORY_ROOT, 'athena/sites');
+const VAULT_ROOT = path.resolve(FACTORY_ROOT, 'vault');
 const VAULT_SITES = VAULT_ROOT;
-const OUTPUT_FILE = path.join(FACTORY_ROOT, 'dock/public/sites.json');
-const PORTS_FILE = path.join(FACTORY_ROOT, 'config/site-ports.json');
+const OUTPUT_FILE = path.join(FACTORY_ROOT, 'athena/dock/public/sites.json');
+const PORTS_FILE = path.join(FACTORY_ROOT, 'athena/config/site-ports.json');
 
 async function syncRegistry() {
     console.log("🔍 Scanning Factory & Vault for sites...");
@@ -58,13 +58,15 @@ async function syncRegistry() {
                 id: project,
                 name: configData.projectName || project,
                 siteType: configData.siteType || 'unknown',
-                generatedAt: configData.generatedAt || null,
+                isAthena: fs.existsSync(configPath) || fs.existsSync(deployPath),
+                isNative: !isVault,
+                status: isVault ? 'parked' : (deployData.status || 'local'),
                 governance_mode: configData.governance_mode || 'dev-mode',
                 repoUrl: deployData.repoUrl || null,
                 liveUrl: deployData.liveUrl || null,
                 localUrl: localUrl,
                 port: port,
-                status: isVault ? 'parked' : (deployData.status || 'local')
+                generatedAt: configData.generatedAt || null
             });
         }
     };
@@ -72,15 +74,8 @@ async function syncRegistry() {
     scanDir(SITES_DIR, false);
     scanDir(VAULT_SITES, true);
 
-    // Deduplicate (Factory wins if same ID exists in both, which shouldn't happen)
-    const uniqueRegistry = [];
-    const seen = new Set();
-    registry.forEach(site => {
-        if (!seen.has(site.id)) {
-            uniqueRegistry.push(site);
-            seen.add(site.id);
-        }
-    });
+    // No deduplication to allow sites to appear in both Werkplaats and Vault if physically present in both
+    const uniqueRegistry = registry;
 
     // Sort: live first, then alphabetical
     uniqueRegistry.sort((a, b) => {

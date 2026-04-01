@@ -86,6 +86,7 @@ export class SiteController {
             const sitePath = path.join(dir, site);
             const deployFile = path.join(sitePath, 'project-settings', 'deployment.json');
             const sheetFile = path.join(sitePath, 'project-settings', 'url-sheet.json');
+            const configPath = path.join(sitePath, 'athena-config.json');
 
             let status = 'local';
             let deployData = null;
@@ -126,7 +127,6 @@ export class SiteController {
                        fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.js'));
             
             if (!isV9) {
-                const configPath = path.join(sitePath, 'athena-config.json');
                 if (fs.existsSync(configPath)) {
                     try {
                         const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -137,6 +137,7 @@ export class SiteController {
                 }
             }
 
+            const isAthena = fs.existsSync(configPath) || fs.existsSync(deployFile);
             const isInstalled = fs.existsSync(path.join(sitePath, 'node_modules'));
 
             return {
@@ -145,13 +146,16 @@ export class SiteController {
                 path: sitePath,
                 type: isNative ? 'native' : 'external',
                 isNative, // <--- Explicit property for Dashboard filtering
+                isAthena, // <--- New flag to hide Modernize button for Athena projects
                 status: status,
                 isDataEmpty,
                 isV9, // <--- New flag for Evolution v9 sites
                 isInstalled, // <--- Added for hydratation status
-                deployData: deployData,
+                repoUrl: deployData?.repoUrl || null,
+                liveUrl: deployData?.liveUrl || null,
                 sheetUrl: sheetData?.url || null,
-                lastUpdate: deployData?.timestamp || deployData?.deployedAt || null
+                lastUpdate: deployData?.timestamp || deployData?.deployedAt || null,
+                deployData: deployData // <--- Keep full object for legacy support
             };
         });
     }
@@ -579,7 +583,7 @@ export class SiteController {
     }
 
     /**
-     * Move a site from Werkplaats to Vault
+     * Archive a site from Werkplaats to Vault (COPY instead of Move)
      */
     async park(id) {
         const source = path.join(this.sitesDir, id);
@@ -595,20 +599,37 @@ export class SiteController {
         if (fs.existsSync(target)) {
             // Backup existing if duplicate
             const backup = path.join(this.sitesExternalDir, `${id}_backup_${Date.now()}`);
-            console.log(`⚠️  Target already exists in Vault. Backing up existing to: ${backup}`);
+            console.log(`⚠️  Archive specimen already exists in Vault. Backing up existing to: ${backup}`);
             fs.renameSync(target, backup);
         }
 
-        console.log(`📦 Parking ${id} to Vault...`);
-        fs.renameSync(source, target);
+        console.log(`📦 Archiving ${id} to Vault (Copying)...`);
+        // We use cp -r for cross-volume/cross-directory safety
+        execSync(`cp -r "${source}" "${target}"`);
         
         // Update registry
         await this.execService.runEngineScript('sync-sites-registry.js', []);
-        return { success: true, message: `Site '${id}' succesvol geparkeerd in de Vault.` };
+        return { success: true, message: `Site '${id}' succesvol gearchiveerd in de Vault.` };
     }
 
     /**
-     * Move a site from Vault to Werkplaats
+     * Delete a site physically from Werkplaats
+     */
+    async deleteSite(id) {
+        const source = path.join(this.sitesDir, id);
+
+        if (!fs.existsSync(source)) throw new Error(`Site '${id}' niet gevonden in Werkplaats.`);
+
+        console.log(`🗑️  Deleting site ${id} from Werkplaats...`);
+        fs.rmSync(source, { recursive: true, force: true });
+
+        // Update registry
+        await this.execService.runEngineScript('sync-sites-registry.js', []);
+        return { success: true, message: `Site '${id}' is verwijderd uit de actieve Werkplaats.` };
+    }
+
+    /**
+     * Activate a site from Vault to Werkplaats (COPY instead of Move)
      */
     async unpark(id) {
         const source = path.join(this.sitesExternalDir, id);
@@ -625,8 +646,8 @@ export class SiteController {
             throw new Error(`Site '${id}' bestaat al in de Werkplaats. Verwijder deze eerst of hernoem hem.`);
         }
 
-        console.log(`🛠️  Unparking ${id} to Werkplaats...`);
-        fs.renameSync(source, target);
+        console.log(`🛠️  Activating ${id} from Vault (Copying)...`);
+        execSync(`cp -r "${source}" "${target}"`);
 
         // Update registry
         await this.execService.runEngineScript('sync-sites-registry.js', []);

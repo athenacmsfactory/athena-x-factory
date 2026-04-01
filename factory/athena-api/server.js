@@ -285,6 +285,7 @@ app.post('/api/sites/:id/safe-pull', async (req, res) => res.json(await siteCtrl
 app.get('/api/sites/:id/compare-sources', async (req, res) => res.json(await siteCtrl.compareSiteSources(req.params.id)));
 app.post('/api/sites/:id/park', async (req, res) => res.json(await siteCtrl.park(req.params.id)));
 app.post('/api/sites/:id/unpark', async (req, res) => res.json(await siteCtrl.unpark(req.params.id)));
+app.post('/api/sites/:id/delete', async (req, res) => res.json(await siteCtrl.deleteSite(req.params.id)));
 app.post('/api/system/pull', async (req, res) => res.json(await siteCtrl.safePullFromGitHub(req.params.id)));
 
 app.get('/api/system/automation/status', (req, res) => res.json(autoCtrl.getStatus()));
@@ -392,16 +393,12 @@ app.get('/api/roadmaps', (req, res) => {
         }
     } else {
         res.json({
-            tracks: [
-                {
-                    title: "Roadmaps niet gevonden",
-                    id: "not-found",
-                    description: `Bestand niet gevonden op: ${roadmapPath}`,
-                    difficulty: "N/A",
-                    time: "N/A",
-                    steps: []
-                }
-            ]
+            title: "Roadmap niet beschikbaar",
+            id: "not-found",
+            description: "Er is nog geen roadmap.json geconfigureerd.",
+            difficulty: "N/A",
+            time: "N/A",
+            steps: []
         });
     }
 });
