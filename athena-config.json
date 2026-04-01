@@ -1,0 +1,13 @@
+{
+  "paths": {
+    "root": "/home/kareltestspecial/0-IT/4-pj/x-v9/athena",
+    "sites": "/home/kareltestspecial/0-IT/4-pj/x-v9/athena/sites",
+    "sitesExternal": "/home/kareltestspecial/0-IT/4-pj/x-v9/vault",
+    "output": "/home/kareltestspecial/0-IT/4-pj/x-v9/athena/output",
+    "logs": "/home/kareltestspecial/0-IT/4-pj/x-v9/athena/output/logs"
+  },
+  "server": {
+    "port": 5000,
+    "dashboardPort": 5001
+  }
+}
