@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLego, bindProps } from '../lib/LegoUtils';
+import { useLego, bindProps, getImageUrl } from '../lib/LegoUtils';
 
 function StandardHero({ data, sectionName = 'hero' }) {
   const item = data?.[0] || {};
@@ -12,7 +12,7 @@ function StandardHero({ data, sectionName = 'hero' }) {
     <section id={sectionName} className="relative h-[90vh] flex items-center justify-center overflow-hidden" data-dock-section={sectionName}>
       <div className="absolute inset-0">
         <img 
-          src={image.content} 
+          src={getImageUrl(image.content)} 
           alt="Hero" 
           className="w-full h-full object-cover" 
           {...bindProps(image, sectionName, 0, 'media')}
