@@ -1,0 +1,23 @@
+{
+  "5003": {
+    "pid": 7764,
+    "id": "layout-editor",
+    "type": "editor",
+    "startTime": "2026-04-01T11:15:24.117Z",
+    "logFile": "/home/kareltestspecial/0-IT/4-pj/athena-v9-evolution/y/factory/output/logs/layout-editor-editor.log"
+  },
+  "5100": {
+    "pid": 16268,
+    "id": "auto-bakery-final",
+    "type": "preview",
+    "startTime": "2026-04-01T12:00:11.344Z",
+    "logFile": "/home/kareltestspecial/0-IT/4-pj/athena-v9-evolution/y/factory/output/logs/auto-bakery-final-preview.log"
+  },
+  "5101": {
+    "pid": 17522,
+    "id": "karel-it-service",
+    "type": "preview",
+    "startTime": "2026-04-01T12:08:57.539Z",
+    "logFile": "/home/kareltestspecial/0-IT/4-pj/athena-v9-evolution/y/factory/output/logs/karel-it-service-preview.log"
+  }
+}

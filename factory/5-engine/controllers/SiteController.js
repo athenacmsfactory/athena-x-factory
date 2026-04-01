@@ -73,7 +73,11 @@ export class SiteController {
     }
 
     _scanDir(dir, isNative) {
-        if (!dir || !fs.existsSync(dir)) return [];
+        console.log(`🔍 Scanning ${isNative ? 'NATIVE' : 'EXTERNAL'} directory: ${dir}`);
+        if (!dir || !fs.existsSync(dir)) {
+            console.log(`⚠️  Directory does not exist: ${dir}`);
+            return [];
+        }
         const sites = fs.readdirSync(dir).filter(f => 
             fs.statSync(path.join(dir, f)).isDirectory() && !f.startsWith('.') && f !== 'athena-cms'
         );
@@ -117,13 +121,22 @@ export class SiteController {
                 sheetData = JSON.parse(fs.readFileSync(sheetFile, 'utf8'));
             }
 
+            // v9.1 Evolution Detection
+            const isV9 = fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.jsx')) || 
+                         fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.js'));
+
+            const isInstalled = fs.existsSync(path.join(sitePath, 'node_modules'));
+
             return {
                 id: site,
                 name: site,
                 path: sitePath,
                 type: isNative ? 'native' : 'external',
+                isNative, // <--- Explicit property for Dashboard filtering
                 status: status,
                 isDataEmpty,
+                isV9, // <--- New flag for Evolution v9 sites
+                isInstalled, // <--- Added for hydratation status
                 deployUrl: deployData?.url || null,
                 sheetUrl: sheetData?.url || null,
                 lastUpdate: deployData?.timestamp || null

@@ -8,7 +8,7 @@ function StandardHeader({ siteSettings, sectionName = '_site_settings' }) {
   return (
     <header className="fixed top-0 w-full h-20 bg-white/90 backdrop-blur-md z-50 flex items-center px-8 border-b border-slate-100">
       <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-3">
+        <a href="#" className="flex items-center gap-3">
           <img 
             src={logo.startsWith('http') ? logo : `./${logo}`} 
             alt="Logo" 
@@ -22,10 +22,10 @@ function StandardHeader({ siteSettings, sectionName = '_site_settings' }) {
           >
             {settings.site_name || 'Athena v9.0'}
           </span>
-        </Link>
+        </a>
         <nav className="hidden md:flex gap-8 font-medium text-slate-600">
-           <a href="#about" className="hover:text-primary transition-colors">Over Ons</a>
-           <a href="#services" className="hover:text-primary transition-colors">Diensten</a>
+           <a href="#over_ons" className="hover:text-primary transition-colors">Over Ons</a>
+           <a href="#features" className="hover:text-primary transition-colors">Diensten</a>
            <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
         </nav>
       </div>

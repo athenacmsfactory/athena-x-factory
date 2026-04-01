@@ -189,14 +189,37 @@ function App() {
                      <StatBox label="Live op GitHub" value={sites.filter(s => s.status === 'live' || s.deployData?.liveUrl).length} color="text-athena-accent" />
                   </div>
 
-                  {/* NATIVE ATHENA SITES */}
+                  {/* ATHENA v9 EVOLUTION SITES */}
+                  {sites.some(s => s.isV9) && (
+                    <div className="mb-10">
+                      <h3 className="text-[11px] font-black text-athena-accent uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 bg-athena-accent rounded-sm rotate-45 animate-pulse"></span>
+                        Evolution v9.x (Modernized)
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                        {sites.filter(s => s.isV9).map((site, idx) => (
+                          <SiteCard 
+                            key={`v9-${idx}`} 
+                            site={site} 
+                            activeServer={activeServers.find(s => s.siteName === site.name)}
+                            autoStop={autoStop}
+                            onRefresh={refreshData}
+                            onSEO={(name) => { setSelectedMarketingSite(name); setIsMarketingOpen(true); }}
+                            onSheet={(siteObj) => { setSelectedSheetSite(siteObj); setIsSheetOpen(true); }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* NATIVE ATHENA SITES (LEGACY V8) */}
                   <div>
                     <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-athena-accent rounded-full animate-pulse"></span>
-                      Native Athena Projects
+                      <span className="w-2 h-2 bg-slate-500 rounded-full"></span>
+                      Standard Athena Projects
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                      {sites.filter(s => s.isNative && !s.name.startsWith('test-')).map((site, idx) => (
+                      {sites.filter(s => s.isNative && !s.isV9 && !s.name.startsWith('test-')).map((site, idx) => (
                          <SiteCard 
                           key={`native-${idx}`} 
                           site={site} 

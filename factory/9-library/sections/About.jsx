@@ -1,5 +1,4 @@
-import React from 'react';
-import { useLego, bindProps } from '../lib/LegoUtils';
+import { useLego, bindProps, getImageUrl } from '../lib/LegoUtils';
 
 function AboutSection({ data, sectionName = 'about' }) {
   const item = data?.[0] || {};
@@ -27,7 +26,7 @@ function AboutSection({ data, sectionName = 'about' }) {
         </div>
         <div className="aspect-video rounded-3xl bg-slate-100 overflow-hidden shadow-xl group">
            <img 
-             src={image.content} 
+             src={getImageUrl(image.content)} 
              alt="About" 
              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
              {...bindProps(image, sectionName, 0, 'media')}
