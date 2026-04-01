@@ -38,6 +38,25 @@ export default function SheetModal({ isOpen, site, onClose }) {
     } catch (e) { addToast("Netwerkfout.", "error") }
     setLoading(false)
   }
+  
+  const handleAutoProvision = async () => {
+    setLoading(true)
+    addToast("Bezig met het automatisch aanmaken van een Google Sheet...", "info")
+    try {
+      const res = await ApiService.autoProvision(site.name)
+      if (res.success) {
+        addToast("Google Sheet succesvol aangemaakt!", "success")
+        // The script might return the new sheetUrl, let's refresh
+        const structure = await ApiService.getSiteStructure(site.name)
+        if (structure && structure.sheetUrl) {
+          setSheetUrl(structure.sheetUrl)
+        }
+      } else {
+        addToast("Fout bij aanmaken: " + (res.error || res.message), "error")
+      }
+    } catch (e) { addToast("Provisioning fout.", "error") }
+    setLoading(false)
+  }
 
   const handlePull = async () => {
     setLoading(true)
@@ -79,6 +98,23 @@ export default function SheetModal({ isOpen, site, onClose }) {
           </h2>
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Project: {site.name}</p>
         </div>
+
+        {/* Provision Banner */}
+        {!sheetUrl && (
+          <div className="mx-6 mt-6 p-4 bg-athena-accent/5 border border-athena-accent/20 rounded-sm flex items-center justify-between gap-4 animate-in slide-in-from-top-2 duration-500">
+            <div>
+              <p className="text-[10px] font-black text-athena-accent uppercase tracking-widest">Nog geen sheet gekoppeld?</p>
+              <p className="text-slate-500 text-[9px] font-bold mt-0.5">Laat Athena automatisch een spreadsheet voor je inrichten.</p>
+            </div>
+            <button
+              onClick={handleAutoProvision}
+              disabled={loading}
+              className="px-4 py-2 bg-athena-accent text-white text-[9px] font-black uppercase rounded-sm hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+            >
+              {loading ? "BEZIG..." : "PROVISION NEW"}
+            </button>
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-8 space-y-8">

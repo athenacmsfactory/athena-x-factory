@@ -7,11 +7,14 @@ const IconSend = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height
 
 function ContactSection({ data, sectionName = 'contact' }) {
   const item = data?.[0] || {
+    titel: 'Laten we bouwen.',
+    beschrijving: 'Klaar om de volgende stap te zetten met de Lego Factory?',
     email: 'info@athenafactory.be',
-    telefoon: '+32 400 00 00 00',
-    adres: 'Gent, België'
+    telefoon: '+32 400 00 00 00'
   };
 
+  const title = useLego(item, 'titel', 'Laten we bouwen.');
+  const desc = useLego(item, 'beschrijving', 'Klaar om de volgende stap te zetten.');
   const email = useLego(item, 'email', 'info@athenafactory.be');
   const phone = useLego(item, 'telefoon', '+32 400 00 00 00');
 
@@ -19,8 +22,18 @@ function ContactSection({ data, sectionName = 'contact' }) {
     <section id={sectionName} className="py-24 px-8 bg-slate-900 text-white" data-dock-section={sectionName}>
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-20">
         <div>
-          <h2 className="text-5xl font-black mb-8 tracking-tighter">Laten we bouwen.</h2>
-          <p className="text-slate-400 text-xl mb-12">Klaar om de volgende stap te zetten met de Lego Factory?</p>
+          <h2 
+            className="text-5xl font-black mb-8 tracking-tighter"
+            {...bindProps(title, sectionName)}
+          >
+            {title.content}
+          </h2>
+          <p 
+            className="text-slate-400 text-xl mb-12"
+            {...bindProps(desc, sectionName)}
+          >
+            {desc.content}
+          </p>
 
           <div className="space-y-6">
             <div className="flex items-center gap-6">

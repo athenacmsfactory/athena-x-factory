@@ -5,11 +5,17 @@
  */
 
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import { AthenaDataManager } from './lib/DataManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const ROOT = path.resolve(__dirname, '..');
+
+// Laad credentials uit .env
+dotenv.config({ path: path.join(ROOT, '.env') });
 
 async function run() {
     const projectName = process.argv[2];
@@ -18,8 +24,7 @@ async function run() {
         process.exit(1);
     }
 
-    const root = path.resolve(__dirname, '..');
-    const manager = new AthenaDataManager(root);
+    const manager = new AthenaDataManager(ROOT);
 
     try {
         await manager.syncToSheet(projectName);

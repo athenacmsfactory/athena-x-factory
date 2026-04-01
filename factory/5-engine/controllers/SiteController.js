@@ -121,9 +121,21 @@ export class SiteController {
                 sheetData = JSON.parse(fs.readFileSync(sheetFile, 'utf8'));
             }
 
-            // v9.1 Evolution Detection
-            const isV9 = fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.jsx')) || 
-                         fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.js'));
+            // v9.2 Evolution Detection (Local LegoUtils OR v9- config)
+            let isV9 = fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.jsx')) || 
+                       fs.existsSync(path.join(sitePath, 'src/lib/LegoUtils.js'));
+            
+            if (!isV9) {
+                const configPath = path.join(sitePath, 'athena-config.json');
+                if (fs.existsSync(configPath)) {
+                    try {
+                        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+                        if (config.siteType && config.siteType.startsWith('v9-')) {
+                            isV9 = true;
+                        }
+                    } catch (e) { /* ignore config errors */ }
+                }
+            }
 
             const isInstalled = fs.existsSync(path.join(sitePath, 'node_modules'));
 
@@ -500,5 +512,69 @@ export class SiteController {
      */
     runScript(script, args) {
         return this.execService.runEngineScript(script, args);
+    }
+
+    /**
+     * Get site structure (athena-config.json and sheet info)
+     */
+    getSiteStructure(id) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        if (!fs.existsSync(siteDir)) throw new Error("Site niet gevonden.");
+
+        const configPath = path.join(siteDir, 'athena-config.json');
+        const sheetPath = path.join(siteDir, 'project-settings', 'url-sheet.json');
+
+        const structure = {
+            name: id,
+            config: fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {},
+            sheetUrl: null
+        };
+
+        if (fs.existsSync(sheetPath)) {
+            const sheetData = JSON.parse(fs.readFileSync(sheetPath, 'utf8'));
+            structure.sheetUrl = sheetData.url;
+        }
+
+        return structure;
+    }
+
+    /**
+     * Link a Google Sheet to a site
+     */
+    async linkSheet(id, sheetUrl) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        if (!fs.existsSync(siteDir)) throw new Error("Site niet gevonden.");
+
+        const projectSettingsDir = path.join(siteDir, 'project-settings');
+        if (!fs.existsSync(projectSettingsDir)) fs.mkdirSync(projectSettingsDir, { recursive: true });
+
+        const sheetPath = path.join(projectSettingsDir, 'url-sheet.json');
+        const sheetData = { url: sheetUrl, updatedAt: new Date().toISOString() };
+        
+        fs.writeFileSync(sheetPath, JSON.stringify(sheetData, null, 2));
+        return { success: true, sheetUrl };
+    }
+
+    /**
+     * Pull data from Google Sheet
+     */
+    async pullFromSheet(id) {
+        return this.execService.runEngineScript('sync-sheet-to-json.js', [id]);
+    }
+
+    /**
+     * Push data to Google Sheet
+     */
+    async syncToSheet(id) {
+        return this.execService.runEngineScript('sync-json-to-sheet.js', [id]);
+    }
+
+    /**
+     * Auto-provision a Google Sheet
+     */
+    async autoProvision(id) {
+        return this.execService.runEngineScript('auto-sheet-provisioner.js', [id]);
     }
 }

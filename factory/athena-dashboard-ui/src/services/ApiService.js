@@ -41,6 +41,10 @@ export const ApiService = {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sheetUrl })
   }).then(res => res.json()),
+  
+  autoProvision: (id) => fetch(`${API_BASE}/sites/${id}/auto-provision`, {
+    method: 'POST'
+  }).then(res => res.json()),
 
   pullFromSheet: (id) => fetch(`${API_BASE}/sites/${id}/pull-from-sheet`, {
     method: 'POST'

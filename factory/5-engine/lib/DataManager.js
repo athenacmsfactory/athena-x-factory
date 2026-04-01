@@ -21,11 +21,15 @@ export class AthenaDataManager {
     resolvePaths(projectName) {
         const safeName = projectName.toLowerCase().replace(/\s+/g, '-');
         
-        let siteDir = path.resolve(this.root, '../sites', safeName);
-        if (!fs.existsSync(siteDir)) {
-            const altSiteDir = path.resolve(this.root, '../sites', `${safeName}-site`);
-            if (fs.existsSync(altSiteDir)) siteDir = altSiteDir;
-        }
+        const possibleSiteDirs = [
+            path.resolve(this.root, '../../werkplaats', safeName),
+            path.resolve(this.root, '../sites', safeName),
+            path.resolve(this.root, '../sites-external', safeName),
+            path.resolve(this.root, '../../werkplaats', `${safeName}-site`),
+            path.resolve(this.root, '../sites', `${safeName}-site`)
+        ];
+
+        let siteDir = possibleSiteDirs.find(d => fs.existsSync(d)) || possibleSiteDirs[0];
 
         const inputDir = path.resolve(this.root, '../input', safeName);
         
@@ -43,22 +47,36 @@ export class AthenaDataManager {
      * Get Google Auth client
      */
     getAuth() {
+        // 1. Try OAuth2 User Auth via .env (New standard for v9)
+        const clientId = process.env.GOOGLE_CLIENT_ID;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+        const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
+
+        if (clientId && clientSecret && refreshToken) {
+            console.log("🔑 Using OAuth2 User Authentication (from .env)");
+            const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
+            oauth2Client.setCredentials({ refresh_token: refreshToken });
+            return oauth2Client;
+        }
+
+        // 2. Fallback: Service Account JSON
         let serviceAccountPath = path.join(this.root, 'sheet-service-account.json');
         if (!fs.existsSync(serviceAccountPath)) {
             serviceAccountPath = path.join(this.root, 'service-account.json');
         }
 
-        if (!fs.existsSync(serviceAccountPath)) {
-            throw new Error("❌ No sheet-service-account.json or service-account.json found in the root.");
+        if (fs.existsSync(serviceAccountPath)) {
+            console.log("🔑 Using Service Account Authentication (from JSON)");
+            return new google.auth.GoogleAuth({
+                keyFile: serviceAccountPath,
+                scopes: [
+                    'https://www.googleapis.com/auth/spreadsheets',
+                    'https://www.googleapis.com/auth/drive'
+                ],
+            });
         }
 
-        return new google.auth.GoogleAuth({
-            keyFile: serviceAccountPath,
-            scopes: [
-                'https://www.googleapis.com/auth/spreadsheets',
-                'https://www.googleapis.com/auth/drive.metadata.readonly'
-            ],
-        });
+        throw new Error("❌ No Google Authentication found. Set GOOGLE_REFRESH_TOKEN in .env or provide service-account.json");
     }
 
     /**
@@ -167,14 +185,14 @@ export class AthenaDataManager {
         }
 
         const urlConfig = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-        const firstUrl = (urlConfig._system || Object.values(urlConfig)[0]).editUrl;
+        const firstUrl = urlConfig.url || (urlConfig._system || Object.values(urlConfig)[0]).editUrl;
         const spreadsheetId = firstUrl.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
 
         if (!spreadsheetId) {
              throw new Error("❌ Could not determine Spreadsheet ID from url-sheet.json.");
         }
 
-        const auth = await this.getAuth().getClient();
+        const auth = this.getAuth();
         const sheets = google.sheets({ version: 'v4', auth });
 
         console.log(`📡 Authenticated Pull for '${projectName}' (ID: ${spreadsheetId})...`);
@@ -506,7 +524,7 @@ export class AthenaDataManager {
         const urlConfig = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
         
         // Get Spreadsheet ID from the first editUrl
-        const firstUrl = (urlConfig._system || Object.values(urlConfig)[0]).editUrl;
+        const firstUrl = urlConfig.url || (urlConfig._system || Object.values(urlConfig)[0]).editUrl;
         const spreadsheetId = firstUrl.match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
 
         if (!spreadsheetId) {

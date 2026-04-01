@@ -45,7 +45,7 @@ import { generateWithAI } from '../5-engine/core/ai-engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const root = path.resolve(__dirname, '../../..');
+const root = path.resolve(__dirname, '..');
 
 // --- INITIALIZATION ---
 const configManager = new AthenaConfigManager(root);
@@ -245,6 +245,10 @@ app.post('/api/projects/remote-delete', async (req, res) => {
 // --- SITE API ---
 app.get('/api/sites', (req, res) => res.json(siteCtrl.list()));
 app.get('/api/sites/:id/structure', (req, res) => res.json(siteCtrl.getSiteStructure(req.params.id)));
+app.post('/api/sites/:id/link-sheet', async (req, res) => res.json(await siteCtrl.linkSheet(req.params.id, req.body.sheetUrl)));
+app.post('/api/sites/:id/auto-provision', async (req, res) => res.json(await siteCtrl.autoProvision(req.params.id)));
+app.post('/api/sites/:id/pull-from-sheet', async (req, res) => res.json(await siteCtrl.pullFromSheet(req.params.id)));
+app.post('/api/sites/:id/sync-to-sheet', async (req, res) => res.json(await siteCtrl.syncToSheet(req.params.id)));
 app.get('/api/sites/all-deployments', (req, res) => res.json(siteCtrl.getAllDeployments()));
 app.get('/api/styles', (req, res) => res.json(siteCtrl.getStyles()));
 app.get('/api/layouts/:track/:type', (req, res) => res.json(siteCtrl.getLayouts(`${req.params.track}/${req.params.type}`)));
