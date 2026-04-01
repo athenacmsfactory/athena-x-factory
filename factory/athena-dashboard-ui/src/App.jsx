@@ -280,14 +280,14 @@ function App() {
                       )}
 
                       {/* 3. Incomplete / Data Archives / Tests */}
-                      {(sites.filter(s => (!s.isNative && !s.isInstalled && s.siteType !== 'static-legacy' && !s.name.includes('academy') && !s.name.includes('bakkerij')) || (s.isNative && s.name.startsWith('test-'))).length > 0) && (
+                      {(sites.filter(s => (!s.isNative && !s.isInstalled && s.siteType !== 'static-legacy' && !s.name.includes('academy') && !s.name.includes('bakkerij')) || (s.isNative && s.name.startsWith('test-') && !s.isV9)).length > 0) && (
                         <div>
                           <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
                             <span className="w-2 h-2 bg-slate-600 rounded-full"></span>
                             Data & Archive (Incomplete / Tests)
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 opacity-60 grayscale">
-                            {sites.filter(s => (!s.isNative && !s.isInstalled && s.siteType !== 'static-legacy' && !s.name.includes('academy') && !s.name.includes('bakkerij')) || (s.isNative && s.name.startsWith('test-'))).map((site, idx) => (
+                            {sites.filter(s => (!s.isNative && !s.isInstalled && s.siteType !== 'static-legacy' && !s.name.includes('academy') && !s.name.includes('bakkerij')) || (s.isNative && s.name.startsWith('test-') && !s.isV9)).map((site, idx) => (
                                <LegacySiteCard 
                                 key={`archive-${idx}`} 
                                 site={site} 

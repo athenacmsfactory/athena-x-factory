@@ -32,17 +32,17 @@ export class AthenaConfigManager {
             },
             paths: {
                 root: this.root,
-                factory: path.join(this.root, 'factory'),
-                sites: path.join(this.root, 'werkplaats'),
-                sitesExternal: path.join(this.root, 'sites-external'),
-                vault: path.join(this.root, '../athena-vault-v8-1/sites'),
-                input: path.join(this.root, 'input'),
-                logs: path.join(this.root, 'factory/output/logs'),
-                config: path.join(this.root, 'factory/config'),
-                templates: path.join(this.root, 'factory/2-templates'),
-                sitetypes: path.join(this.root, 'factory/3-sitetypes'),
-                engine: path.join(this.root, 'factory/5-engine'),
-                skills: path.join(this.root, 'factory/SKILLS')
+                factory: this.root,
+                sites: path.join(this.root, '../../werkplaats'),
+                sitesExternal: path.join(this.root, '../sites-external'),
+                vault: path.join(this.root, '../../../../athena-vault-v8-1/sites'),
+                input: path.join(this.root, '../input'),
+                logs: path.join(this.root, 'output/logs'),
+                config: path.join(this.root, 'config'),
+                templates: path.join(this.root, '2-templates'),
+                sitetypes: path.join(this.root, '3-sitetypes'),
+                engine: path.join(this.root, '5-engine'),
+                skills: path.join(this.root, 'SKILLS')
             },
             github: {
                 user: env.GITHUB_USER || '',

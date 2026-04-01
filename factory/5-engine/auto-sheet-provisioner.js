@@ -107,14 +107,14 @@ export async function provisionSheet(projectName, clientEmail = null) {
             };
         });
 
-        // Probeer beide varianten: [projectName] en [projectName]-site
-        let siteDir = path.resolve(ROOT, '../sites', projectName);
-        if (!fs.existsSync(siteDir)) {
-            const altSiteDir = path.resolve(ROOT, '../sites', `${projectName}-site`);
-            if (fs.existsSync(altSiteDir)) {
-                siteDir = altSiteDir;
-            }
-        }
+        // Probeer beide varianten: [projectName] en [projectName]-site in sites en werkplaats
+        const possibleDirs = [
+            path.resolve(ROOT, '../../werkplaats', projectName),
+            path.resolve(ROOT, '../sites', projectName),
+            path.resolve(ROOT, '../../werkplaats', `${projectName}-site`),
+            path.resolve(ROOT, '../sites', `${projectName}-site`)
+        ];
+        let siteDir = possibleDirs.find(d => fs.existsSync(d)) || possibleDirs[0];
 
         const projectSettingsDir = path.join(siteDir, 'project-settings');
         if (!fs.existsSync(projectSettingsDir)) fs.mkdirSync(projectSettingsDir, { recursive: true });
