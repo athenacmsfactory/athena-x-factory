@@ -95,3 +95,11 @@ The Vault (`../athena-vault-v8-1/`) is a **Cold Storage** environment. To ensure
   - **Object Synchronization:** The Google Sheets API (v4) in `RAW` mode cannot process nested objects (e.g., color/font CMS objects). This results in `Invalid values[x][y]: struct_value` errors.
   - **Solution:** `DataManager.js` must always extract primitives (`.text`, `.title`, `.label`) or stringify objects before syncing.
   - **Build Integrity:** Corrupt/empty Sheets can overwrite local data during the GitHub Actions build via `fetch-data.js`. Always verify Sheet sync success before a production push.
+
+## 🎓 Lessons Learned (April 2026 - KDClaw)
+- **Playground Stability**: On this Chromebook, pnpm workspaces can corrupt Vite/Tailwind v4 builds. For rapid visual prototyping, use the **CDN-based playground** (React 18/19 + Tailwind CDN) in /tmp/ to bypass node_modules inheritance conflicts.
+- **Athena V9.2 Standard**: Every component MUST use:
+    - `data-dock-bind="veld_naam"` for primitives.
+    - `data-dock-group="lijst_naam.index"` for array items.
+    - Dutch keys with prefixes: `tekst_`, `afbeelding_`, `lijst_`, `keuze_`, `cijfer_`.
+- **JSX Terminal Writing**: When writing JSX via `printf` or `cat`, ALWAYS escape dollar signs in template literals (\$i) to prevent bash interpolation errors.
