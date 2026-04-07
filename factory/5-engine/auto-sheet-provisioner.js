@@ -107,11 +107,8 @@ export async function provisionSheet(projectName, clientEmail = null) {
             };
         });
 
-        // Probeer beide varianten: [projectName] en [projectName]-site in sites en werkplaats
         const possibleDirs = [
-            path.resolve(ROOT, '../../werkplaats', projectName),
             path.resolve(ROOT, '../sites', projectName),
-            path.resolve(ROOT, '../../werkplaats', `${projectName}-site`),
             path.resolve(ROOT, '../sites', `${projectName}-site`)
         ];
         let siteDir = possibleDirs.find(d => fs.existsSync(d)) || possibleDirs[0];
