@@ -10,12 +10,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const FACTORY_ROOT = path.resolve(__dirname, '../../..');
-const SITES_DIR = path.resolve(FACTORY_ROOT, 'athena/sites');
-const VAULT_ROOT = path.resolve(FACTORY_ROOT, 'vault');
+const ROOT = path.resolve(__dirname, '../..');
+const SITES_DIR = path.resolve(ROOT, 'sites');
+const VAULT_ROOT = path.resolve(ROOT, '../vault');
 const VAULT_SITES = VAULT_ROOT;
-const OUTPUT_FILE = path.join(FACTORY_ROOT, 'athena/dock/public/sites.json');
-const PORTS_FILE = path.join(FACTORY_ROOT, 'athena/config/site-ports.json');
+const OUTPUT_FILE = path.resolve(ROOT, 'dock/public/sites.json');
+const PORTS_FILE = path.resolve(ROOT, 'config/site-ports.json');
 
 async function syncRegistry() {
     console.log("🔍 Scanning Factory & Vault for sites...");

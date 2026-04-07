@@ -100,7 +100,7 @@ export default function athenaEditorPlugin() {
                 }
 
                 // 2. Fallback: Overwrite active CSS file (Old Method)
-                const factoryCssDir = path.resolve(rootDir, '../../factory/2-templates/boilerplate/docked/css');
+                const factoryCssDir = path.resolve(rootDir, '../../factory/2-templates/skeletons/css');
                 const sourceCssPath = path.join(factoryCssDir, value);
 
                 if (fs.existsSync(sourceCssPath)) {

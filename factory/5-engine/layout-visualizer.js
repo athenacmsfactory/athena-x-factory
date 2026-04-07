@@ -20,7 +20,7 @@ function generateStandardComponents(sitetype, layoutName, mapping) {
     return {
         "App.jsx": "import React from 'react';\nimport Header from './components/Header';\nimport Section from './components/Section';\n\nconst App = ({ data }) => (\n  <div className=\"min-h-screen bg-white\">\n    <Header data={data} />\n    <main>\n      <Section data={data} />\n    </main>\n  </div>\n);\n\nexport default App;",
         "Header.jsx": "import React from 'react';\n\nconst Header = ({ data }) => {\n  const settings = data.site_settings?.[0] || {};\n  return (\n    <header className=\"p-6 flex justify-between items-center border-b\">\n      <h1 className=\"text-xl font-bold\">{settings.site_name || 'Athena Site'}</h1>\n    </header>\n  );\n};\n\nexport default Header;",
-        "Section.jsx": generateSectionComponent({ data_structure: mapping.sections.map(s => ({ table_name: s })) }, 'docked'),
+        "Section.jsx": generateSectionComponent({ data_structure: mapping.sections.map(s => ({ table_name: s })) }, 'unified'),
         "index.css": "@import \"tailwindcss\";\n\n@theme {\n  --color-accent: #007acc;\n}"
     };
 }
@@ -122,7 +122,7 @@ async function startVisualizer() {
     // API: List Available Types (Scans both tracks)
     app.get('/api/types', async (req, res) => {
         try {
-            const tracks = ['docked', 'autonomous'];
+            const tracks = ['unified', 'autonomous'];
             let allTypes = [];
             for (const track of tracks) {
                 const trackDir = path.join(siteTypesDir, track);
@@ -253,8 +253,8 @@ async function startVisualizer() {
             await fs.writeFile(path.join(targetDir, 'components', 'Section.jsx'), components['Section.jsx'] || (components.components ? components.components['Section.jsx'] : ''));
 
             // Voor SPA tracks, voeg main.jsx toe indien nodig
-            if (selectedSitetype.startsWith('docked') && !existsSync(path.join(targetDir, 'main.jsx'))) {
-                const boilerplateMain = await fs.readFile(path.join(root, '2-templates/boilerplate/docked/main.jsx'), 'utf8');
+            if (selectedSitetype.startsWith('unified') && !existsSync(path.join(targetDir, 'main.jsx'))) {
+                const boilerplateMain = await fs.readFile(path.join(root, '2-templates/skeletons/main.jsx'), 'utf8');
                 await fs.writeFile(path.join(targetDir, 'main.jsx'), boilerplateMain);
             }
             res.json({ success: true });

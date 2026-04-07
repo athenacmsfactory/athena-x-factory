@@ -20,7 +20,7 @@ export class AthenaSecretManager {
     async syncSecrets(repo) {
         if (!repo) throw new Error("Geen repository opgegeven voor secret sync.");
 
-        const envPath = path.join(this.root, 'factory/.env');
+        const envPath = path.join(this.root, '.env');
         if (!fs.existsSync(envPath)) throw new Error(".env bestand niet gevonden.");
 
         const envContent = fs.readFileSync(envPath, 'utf8');

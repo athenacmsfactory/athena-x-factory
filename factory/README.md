@@ -1,41 +1,40 @@
-# Athena CMS Factory
+# 🏗️ Athena CMS Factory
 
-This repository contains the core logic for the Athena CMS Factory, a Node.js-based tool for generating static websites using Google Gemini for AI-driven content structuring.
+This directory contains the central engine and assets for the Athena CMS Factory (v10.1 Unified). It is designed to generate high-end React 19 websites using the **Lego-Bricks** methodology and **Zero-UI** skeletons.
 
-## Project Structure
+## 🏛️ V10 Directory Structure
 
-The factory is organized into five main directories:
+The factory is now 100% flattened and unified:
 
--   `5-engine/`: Contains all core logic, including the interactive wizards and the project generation engine.
--   `2-templates/`: Holds all templates and components specific to each site-type.
--   `input/`: A workspace for providing input data for the AI parsers.
--   `../sites/`: The sibling directory where all generated websites are created.
--   `3-sitetypes/`: The directory where all site-type blueprints are stored.
+-   **`5-engine/`**: The core operational intelligence (Site Wizards, CLI, Generators).
+-   **`2-templates/`**:
+    -   `skeletons/`: Unified technical bases (MPA, SPA, WebShop).
+    -   `components/legos/`: Centralized library of atomic UI bricks.
+-   **`3-sitetypes/`**: The pure data registry containing 28+ industry blueprints.
+-   **`6-utilities/`**: Management scripts for batch-updates, audits, and site alignment.
+-   **`athena-api/`**: The backend orchestrator for the Athena Dashboard.
+-   **`output/`**: Centralized storage for logs, temporary generation artifacts, and site overviews.
 
-## Usage: The Dual-Wizard System
+## 🚀 Key Workflows
 
-The factory's workflow is managed by two specialized, interactive wizards.
-
-### 1. Creating a New Website
-
-To generate a new website from an **existing site-type**, use the **Site Wizard**. This tool will guide you through selecting a project name, providing content, and choosing a layout and visual style.
-
-**Start the Site Wizard:**
-(Run from the root of the `athena/factory` directory)
+### 1. Starting the Factory Environment
+Use the root launcher to start all necessary services (Dashboard, Dock, API):
 ```bash
-node 5-engine/site-wizard.js
+# From athena/ root
+./athena.sh
 ```
 
-### 2. Creating a New Site-Type
-
-To define a completely **new type of website** (including its data structure and component templates), use the **Site-Type Wizard**. This is a developer tool that generates all the necessary boilerplate files.
-
-**Start the Site-Type Wizard:**
-(Run from the root of the `athena/factory` directory)
+### 2. Quick-Creating a Site (CLI)
+You can quickly scaffold a site using the V10 CLI:
 ```bash
-node 5-engine/sitetype-wizard.js
+node factory/cli/quick-create.js [site-name] [site-type]
+```
+
+### 3. Site-Wide Alignment
+To synchronize all generated sites with the latest V10 documentation standards:
+```bash
+node factory/6-utilities/regenerate-site-passports.js
 ```
 
 ---
-
-For complete technical details, architecture diagrams, and advanced usage, please refer to the main [**Developer Manual**](docs/DEVELOPER_MANUAL.md).
+*For a global architectural overview, see [athena/docs/V10_STRUCTURE.md](../docs/V10_STRUCTURE.md).*

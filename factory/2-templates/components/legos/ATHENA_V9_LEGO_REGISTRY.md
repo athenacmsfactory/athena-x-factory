@@ -54,10 +54,32 @@ Dit document registreert de eerste officiële set van herbruikbare UI-secties ("
 
 ---
 
+## 🛒 Webshop Batch (Nieuw: 7 April 2026)
+
+De webshop componenten zijn ontworpen voor high-end e-commerce met directe Firebase en Stripe integratie.
+
+### 6. `ProductCardV9`
+- **Doel**: Weergave van een enkel product met "Add to Cart" actie.
+- **Visuals**: Glassmorphism card, hover-zoom op productafbeelding, blauwe accenten.
+- **Props**: `product_name`, `product_price`, `product_image`, `product_category`.
+
+### 7. `CartOverlayV9`
+- **Doel**: Slide-out winkelmandje met live Firestore synchronisatie.
+- **Visuals**: Donkere transparante overlay, geanimeerde itemlijst, checkout-knop.
+- **Props**: Geen (gebruikt `CartContext`).
+
+### 8. `CheckoutHeaderV9`
+- **Doel**: Navigatiebalk voor webshops met live cart-teller en auth status.
+- **Visuals**: Glassmorphism nav met logo en cart icon.
+- **Props**: `logo_text`.
+
+---
+
 ## 🚀 Implementatie Details
 - **Framework**: React 19
 - **Styling**: Tailwind CSS v4.2+
-- **Iconen**: Lucide React
-- **Playground**: `client/src/App.jsx`
+- **Database**: Firebase Firestore (Carts/Orders)
+- **Betalingssysteem**: Stripe Checkout
+- **Playground**: `skeletons/webshop/App.jsx`
 
-*Vastgelegd op 2 april 2026 voor Athena V9.2 Core.*
+*Vastgelegd op 7 april 2026 voor Athena V9.2 Core.*

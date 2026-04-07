@@ -20,7 +20,7 @@ async function generateMPA() {
     const root = path.resolve(__dirname, '..');
     const inputDir = path.join(root, '../input', projectName);
     const siteDir = path.join(root, '../sites', `${projectName}-site`);
-    const mpaTemplatesDir = path.join(root, '2-templates/mpa');
+    const mpaTemplatesDir = path.join(root, '2-templates/skeletons/MPA-Hydra');
 
     // Formatteer de projectnaam voor weergave (fpc-gent -> FPC Gent)
     const formattedName = projectName.split('-').map(word => {
@@ -31,7 +31,7 @@ async function generateMPA() {
     console.log(`🚀 Start MPA Generatie: ${projectName}-site (${formattedName})`);
 
     // 1. Basis boilerplate (De static-wrapper is een compleet Vite project)
-    const boilerplateDir = path.join(root, '2-templates/boilerplate/static-wrapper');
+    const boilerplateDir = path.join(root, '2-templates/skeletons/static-wrapper');
     await fs.cp(boilerplateDir, siteDir, { recursive: true });
 
     // 2. Update package.json
@@ -105,7 +105,7 @@ export default defineConfig(async ({ command }) => {
     }
 
     // Universele Athena componenten (uit docked boilerplate)
-    const sharedSrc = path.join(root, '2-templates/boilerplate/docked/shared/components');
+    const sharedSrc = path.join(root, '2-templates/components/legos/Layout');
     const essentialShared = ['EditableText.jsx', 'EditableMedia.jsx'];
     for (const comp of essentialShared) {
         await fs.copyFile(

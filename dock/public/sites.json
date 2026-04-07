@@ -1,19 +1,5 @@
 [
   {
-    "id": "athena-hub",
-    "name": "athena-hub",
-    "siteType": "professional-service-provider",
-    "isAthena": true,
-    "isNative": true,
-    "status": "live",
-    "governance_mode": "dev-mode",
-    "repoUrl": "https://github.com/athena-cms-factory/athena-hub",
-    "liveUrl": "https://athena-cms-factory.github.io/athena-hub",
-    "localUrl": "http://localhost:5000/athena-hub/",
-    "port": 5000,
-    "generatedAt": "2026-02-04T15:55:23.382Z"
-  },
-  {
     "id": "auto-bakery-final",
     "name": "auto-bakery-final",
     "siteType": "urban-brew-bite-ath",
@@ -28,10 +14,24 @@
     "generatedAt": "2026-03-28T19:05:44.449Z"
   },
   {
+    "id": "gentse-dakwerken-v9.2",
+    "name": "gentse-dakwerken-v9.2",
+    "siteType": "docked",
+    "isAthena": true,
+    "isNative": true,
+    "status": "local",
+    "governance_mode": "dev-mode",
+    "repoUrl": null,
+    "liveUrl": null,
+    "localUrl": "http://localhost:5000/gentse-dakwerken-v9.2/",
+    "port": 5000,
+    "generatedAt": "2026-04-02T17:12:03Z"
+  },
+  {
     "id": "karel-it-service",
     "name": "karel-it-service",
     "siteType": "unknown",
-    "isAthena": false,
+    "isAthena": true,
     "isNative": true,
     "status": "live",
     "governance_mode": "dev-mode",
@@ -42,10 +42,38 @@
     "generatedAt": null
   },
   {
+    "id": "karel-portfolio-v9",
+    "name": "karel-portfolio-ai",
+    "siteType": "portfolio",
+    "isAthena": true,
+    "isNative": true,
+    "status": "local",
+    "governance_mode": "dev-mode",
+    "repoUrl": null,
+    "liveUrl": null,
+    "localUrl": "http://localhost:5000/karel-portfolio-v9/",
+    "port": 5000,
+    "generatedAt": "2026-04-03T15:45:00.000Z"
+  },
+  {
+    "id": "kdclaw-premium-v9",
+    "name": "kdclaw-premium-v9",
+    "siteType": "unknown",
+    "isAthena": false,
+    "isNative": true,
+    "status": "local",
+    "governance_mode": "dev-mode",
+    "repoUrl": null,
+    "liveUrl": null,
+    "localUrl": "http://localhost:5000/kdclaw-premium-v9/",
+    "port": 5000,
+    "generatedAt": null
+  },
+  {
     "id": "test-v9-portfolio",
     "name": "test-v9-portfolio",
     "siteType": "unknown",
-    "isAthena": false,
+    "isAthena": true,
     "isNative": true,
     "status": "live",
     "governance_mode": "dev-mode",
@@ -87,7 +115,7 @@
     "id": "karel-it-service",
     "name": "karel-it-service",
     "siteType": "unknown",
-    "isAthena": false,
+    "isAthena": true,
     "isNative": false,
     "status": "parked",
     "governance_mode": "dev-mode",
@@ -95,6 +123,20 @@
     "liveUrl": "https://athenasitesx.github.io/karel-webdesign",
     "localUrl": "http://localhost:5101/karel-it-service/",
     "port": 5101,
+    "generatedAt": null
+  },
+  {
+    "id": "kdclaw-premium-v9",
+    "name": "kdclaw-premium-v9",
+    "siteType": "unknown",
+    "isAthena": false,
+    "isNative": false,
+    "status": "parked",
+    "governance_mode": "dev-mode",
+    "repoUrl": null,
+    "liveUrl": null,
+    "localUrl": "http://localhost:5000/kdclaw-premium-v9/",
+    "port": 5000,
     "generatedAt": null
   },
   {

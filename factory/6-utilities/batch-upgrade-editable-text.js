@@ -5,15 +5,15 @@ import path from 'path';
  * Batch Upgrade Utility: EditableText (v8.4)
  * 
  * This script propagates the 'Golden Standard' logic for EditableText.jsx 
- * from the boilerplate to all existing sites in the monorepo.
+ * from the skeletons to all existing sites in the monorepo.
  * 
  * Usage: node factory/6-utilities/batch-upgrade-editable-text.js
  */
 
-const BOILERPLATE_PATH = 'factory/2-templates/boilerplate/docked/shared/components/EditableText.jsx';
+const BOILERPLATE_PATH = 'factory/2-templates/skeletons/docked/shared/components/EditableText.jsx';
 
 if (!fs.existsSync(BOILERPLATE_PATH)) {
-    console.error('❌ Source boilerplate not found at:', BOILERPLATE_PATH);
+    console.error('❌ Source skeletons not found at:', BOILERPLATE_PATH);
     process.exit(1);
 }
 
@@ -35,7 +35,7 @@ function getAllEditableTextFiles(dir, fileList = []) {
 }
 
 const sitesDir = path.join(process.cwd(), 'sites');
-const sitetypesDir = path.join(process.cwd(), 'factory/3-sitetypes/docked');
+const sitetypesDir = path.join(process.cwd(), 'factory/3-sitetypes');
 
 console.log('🔍 Scanning for EditableText.jsx components...');
 

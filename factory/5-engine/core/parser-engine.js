@@ -52,7 +52,7 @@ export async function runParser(blueprintFile, customPrompt) {
     }
 
     if (!(await checkPath(blueprintPath))) {
-      const dockedPath = path.join(root, '3-sitetypes', 'docked', siteTypeName, 'blueprint', blueprintFile);
+      const dockedPath = path.join(root, '3-sitetypes', 'unified', siteTypeName, 'blueprint', blueprintFile);
       const autoPath = path.join(root, '3-sitetypes', 'autonomous', siteTypeName, 'blueprint', blueprintFile);
 
       if (await checkPath(dockedPath)) {

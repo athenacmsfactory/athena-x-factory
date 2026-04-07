@@ -45,7 +45,10 @@ import { generateWithAI } from '../5-engine/core/ai-engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const root = path.resolve(__dirname, '../..'); // Points to x-v9/athena
+const monorepoRoot = path.resolve(__dirname, '../..'); // Points to x-v9/athena
+const factoryRoot = path.resolve(__dirname, '..');    // Points to x-v9/athena/factory
+const root = factoryRoot; // Alias for backward compatibility
+
 
 // --- INITIALIZATION ---
 const configManager = new AthenaConfigManager(root);
@@ -110,7 +113,7 @@ const siteProxy = createProxyMiddleware({
         
         // Check of de site een geregistreerde poort heeft
         // We gebruiken fs.readFileSync direct om race conditions met site-ports.json te vermijden
-        const registryPath = path.join(root, 'factory/config/site-ports.json');
+        const registryPath = path.join(factoryRoot, 'config/site-ports.json');
         if (fs.existsSync(registryPath)) {
             try {
                 const ports = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
@@ -129,7 +132,7 @@ const siteProxy = createProxyMiddleware({
 
 // Proxy voor /previews en voor alle bekende site prefixes
 // We laden de lijst dynamisch uit de config om de API niet te blokkeren
-const knownSitesPath = path.join(root, 'factory/config/site-ports.json');
+const knownSitesPath = path.join(factoryRoot, 'config/site-ports.json');
 const knownSites = fs.existsSync(knownSitesPath) ? JSON.parse(fs.readFileSync(knownSitesPath, 'utf8')) : {};
 
 const sitePrefixes = Object.keys(knownSites).map(id => `/${id}`);
@@ -251,7 +254,7 @@ app.post('/api/sites/:id/pull-from-sheet', async (req, res) => res.json(await si
 app.post('/api/sites/:id/sync-to-sheet', async (req, res) => res.json(await siteCtrl.syncToSheet(req.params.id)));
 app.get('/api/sites/all-deployments', (req, res) => res.json(siteCtrl.getAllDeployments()));
 app.get('/api/styles', (req, res) => res.json(siteCtrl.getStyles()));
-app.get('/api/layouts/:track/:type', (req, res) => res.json(siteCtrl.getLayouts(`${req.params.track}/${req.params.type}`)));
+// NOTE: getLayouts was removed in V10.1 - layouts are now derived from sitetype blueprints directly.
 app.post('/api/create', async (req, res) => res.json(await siteCtrl.create(req.body)));
 app.post('/api/deploy', async (req, res) => res.json(await siteCtrl.deploy(req.body.projectName, req.body.commitMsg)));
 app.post('/api/sites/:id/theme-info', (req, res) => res.json(siteCtrl.getThemeInfo(req.params.id)));
@@ -355,7 +358,7 @@ app.post('/api/sitetype/create-from-site', async (req, res) => res.json(await to
 app.post('/api/sitetype/generate-structure', async (req, res) => res.json({ success: true, structure: await generateDataStructureAPI(req.body.businessDescription) }));
 app.post('/api/sitetype/generate-parser', async (req, res) => res.json({ success: true, instructions: await generateParserInstructionsAPI(req.body.table) }));
 app.post('/api/sitetype/generate-design', async (req, res) => res.json({ success: true, design: await generateDesignSuggestionAPI(req.body.businessDescription) }));
-app.post('/api/sitetype/create', async (req, res) => res.json(await generateCompleteSiteType(req.body.name, req.body.description, req.body.dataStructure, req.body.designSystem, req.body.track || 'docked')));
+app.post('/api/sitetype/create', async (req, res) => res.json(await generateCompleteSiteType(req.body.name, req.body.description, req.body.dataStructure, req.body.designSystem)));
 
 // --- STORAGE API ---
 app.get('/api/storage/status', (req, res) => res.json(doctorCtrl.audit(req.query.siteName)));
@@ -384,7 +387,7 @@ app.post('/api/payments/create-session', async (req, res) => res.json(await paym
 
 // --- ROADMAP & TODO API ---
 app.get('/api/roadmaps', (req, res) => {
-    const roadmapPath = path.join(root, 'factory/config/roadmaps.json');
+    const roadmapPath = path.join(factoryRoot, 'config/roadmaps.json');
     if (fs.existsSync(roadmapPath)) {
         try {
             const data = JSON.parse(fs.readFileSync(roadmapPath, 'utf8'));
@@ -405,9 +408,9 @@ app.get('/api/roadmaps', (req, res) => {
 });
 
 // --- BLUEPRINT API ---
-app.get('/api/blueprints/:track/:name', (req, res) => {
-    const { track, name } = req.params;
-    const blueprintPath = path.join(root, 'factory/3-sitetypes', track, name, 'blueprint', `${name}.json`);
+app.get('/api/blueprints/:name', (req, res) => {
+    const { name } = req.params;
+    const blueprintPath = path.join(factoryRoot, '3-sitetypes', name, 'blueprint', `${name}.json`);
     if (fs.existsSync(blueprintPath)) {
         res.json(JSON.parse(fs.readFileSync(blueprintPath, 'utf8')));
     } else {
@@ -415,9 +418,9 @@ app.get('/api/blueprints/:track/:name', (req, res) => {
     }
 });
 
-app.post('/api/blueprints/:track/:name', (req, res) => {
-    const { track, name } = req.params;
-    const blueprintPath = path.join(root, 'factory/3-sitetypes', track, name, 'blueprint', `${name}.json`);
+app.post('/api/blueprints/:name', (req, res) => {
+    const { name } = req.params;
+    const blueprintPath = path.join(factoryRoot, '3-sitetypes', name, 'blueprint', `${name}.json`);
     try {
         fs.writeFileSync(blueprintPath, JSON.stringify(req.body, null, 2));
         res.json({ success: true, message: "Blueprint succesvol opgeslagen." });
@@ -428,7 +431,7 @@ app.post('/api/blueprints/:track/:name', (req, res) => {
 
 // --- ROADMAP & TODO API ---
 app.get('/api/todo', (req, res) => {
-    const todoPath = path.join(root, 'factory/TASKS/_TODO.md');
+    const todoPath = path.join(factoryRoot, 'TASKS/_TODO.md');
     if (fs.existsSync(todoPath)) {
         res.json({ content: fs.readFileSync(todoPath, 'utf8') });
     } else {
@@ -437,7 +440,7 @@ app.get('/api/todo', (req, res) => {
 });
 
 app.get('/api/system/todo', (req, res) => {
-    const todoPath = path.join(root, 'factory/TASKS/_TODO.md');
+    const todoPath = path.join(factoryRoot, 'TASKS/_TODO.md');
     if (fs.existsSync(todoPath)) {
         res.json({ content: fs.readFileSync(todoPath, 'utf8') });
     } else {
@@ -446,21 +449,21 @@ app.get('/api/system/todo', (req, res) => {
 });
 
 app.get('/api/system/section-library', (req, res) => {
-    const p = path.join(root, 'factory/output/SECTION_LIBRARY.json');
+    const p = path.join(factoryRoot, 'output/SECTION_LIBRARY.json');
     res.json(fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : { sections: [] });
 });
 
 app.get('/api/system/style-presets', (req, res) => {
-    const p = path.join(root, 'factory/config/style-presets.json');
+    const p = path.join(factoryRoot, 'config/style-presets.json');
     res.json(fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : { presets: [] });
 });
 
 app.get('/api/system/layout-presets', (req, res) => {
-    const p = path.join(root, 'factory/config/layout-presets.json');
+    const p = path.join(factoryRoot, 'config/layout-presets.json');
     res.json(fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : { presets: [] });
 });
 
-app.post('/api/sites/:id/apply-layout-preset', async (req, res) => res.json(await siteCtrl.applyLayoutPreset(req.params.id, req.body)));
+
 
 app.listen(port, () => {
     console.log(`🔱 Athena Dashboard running at http://localhost:${port}`);

@@ -25,7 +25,7 @@ async function generateSitetypeFromSite(sourceSiteName, targetSitetypeName) {
     }
 
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-    const track = config.siteModel === 'SPA' ? 'docked' : 'autonomous'; // Simplified track detection
+    const track = config.siteModel === 'SPA' ? 'unified' : 'autonomous'; // Simplified track detection
     
     const targetSitetypeDir = path.join(root, '3-sitetypes', track, targetSitetypeName);
     if (fs.existsSync(targetSitetypeDir)) {

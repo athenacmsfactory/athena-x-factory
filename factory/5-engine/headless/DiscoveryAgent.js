@@ -18,7 +18,7 @@ export class DiscoveryAgent {
             projectName: clientData.projectName,
             clientEmail: clientData.clientEmail,
             siteType: clientData.siteType || 'basic-dock-type',
-            track: clientData.track || 'docked',
+            track: clientData.track || 'unified',
             siteModel: clientData.siteModel || 'SPA',
             layoutName: clientData.layoutName || 'standard',
             styleName: clientData.styleName || 'modern',

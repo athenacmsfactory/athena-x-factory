@@ -10,15 +10,10 @@ const __dirname = path.dirname(__filename);
 // --- HELPER: Vind Blueprint ---
 function findBlueprint(siteType) {
     const root = path.resolve(__dirname, '..');
-    let blueprintDir = path.join(__dirname, '../3-sitetypes', siteType, 'blueprint');
+    const blueprintDir = path.join(__dirname, '../3-sitetypes', siteType, 'blueprint');
     
-    // Check nested directories if not found in root
     if (!fs.existsSync(blueprintDir)) {
-        const dockedPath = path.join(__dirname, '../3-sitetypes/docked', siteType, 'blueprint');
-        const autonomousPath = path.join(__dirname, '../3-sitetypes/autonomous', siteType, 'blueprint');
-        
-        if (fs.existsSync(dockedPath)) blueprintDir = dockedPath;
-        else if (fs.existsSync(autonomousPath)) blueprintDir = autonomousPath;
+        throw new Error(`Sitetype '${siteType}' bestaat niet (geen map: ${blueprintDir})`);
     }
 
     if (!fs.existsSync(blueprintDir)) {

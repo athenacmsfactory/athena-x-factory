@@ -39,8 +39,8 @@ export class TransformationEngine {
             // 1. Fix Imports
             visitImportDeclaration(path) {
                 const source = path.node.source.value;
-                if (source.includes('shared/components/')) {
-                    const comp = source.split('shared/components/').pop();
+                if (source.includes('components/legos/Common/')) {
+                    const comp = source.split('components/legos/Common/').pop();
                     path.node.source.value = `./components/${comp}`;
                 }
                 if (source.includes('2-templates/components/')) {
@@ -159,13 +159,13 @@ export class TransformationEngine {
 
     transformConditionalBlocks(content) {
         let result = content;
-        const blocks = ['SHOP', 'NON_SHOP', 'DOCK', 'AUTONOMOUS', 'SHOP_IMPORT', 'SHOP_WRAPPER', 'NON_SHOP_WRAPPER'];
+        const blocks = ['SHOP', 'NON_SHOP', 'VISUAL_DOCK', 'STANDALONE', 'SHOP_IMPORT', 'SHOP_WRAPPER', 'NON_SHOP_WRAPPER'];
         blocks.forEach(block => {
             let isMatch = false;
             if (block.includes('SHOP')) isMatch = this.flags.isWebshop;
             if (block.includes('NON_SHOP')) isMatch = !this.flags.isWebshop;
-            if (block === 'DOCK') isMatch = this.flags.isDocked;
-            if (block === 'AUTONOMOUS') isMatch = !this.flags.isDocked;
+            if (block === 'VISUAL_DOCK') isMatch = this.flags.isDocked;
+            if (block === 'STANDALONE') isMatch = !this.flags.isDocked;
 
             const startMarker = new RegExp(`\\/\\* {{${block}.*?_START}} \\*\\/`, 'g');
             const endMarker = new RegExp(`\\/\\* {{${block}.*?_END}} \\*\\/`, 'g');

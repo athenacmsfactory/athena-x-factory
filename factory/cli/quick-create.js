@@ -84,17 +84,9 @@ Usage: node quick-create.js --name <name> --type <sitetype> --input <file> [opti
     }
 
     // 2. Validate Type & Input
-    // 2. Validate Type & Input
-    const dockedPath = path.join(root, '3-sitetypes/docked', config.siteType);
-    const autonomousPath = path.join(root, '3-sitetypes/autonomous', config.siteType);
-    let siteTypeDir = '';
-
-    if (fs.existsSync(dockedPath)) {
-        siteTypeDir = dockedPath;
-    } else if (fs.existsSync(autonomousPath)) {
-        siteTypeDir = autonomousPath;
-    } else {
-        console.error(`❌ Error: Site type "${config.siteType}" not found in 3-sitetypes (docked or autonomous).`);
+    const siteTypeDir = path.join(root, '3-sitetypes', config.siteType);
+    if (!fs.existsSync(siteTypeDir)) {
+        console.error(`❌ Site type NOT FOUND: ${config.siteType}`);
         process.exit(1);
     }
 

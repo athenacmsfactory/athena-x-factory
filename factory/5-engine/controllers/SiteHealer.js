@@ -30,7 +30,7 @@ export class SiteHealer {
             const siteType = config.siteType;
             
             // Resolve blueprint
-            const [track, typeName] = siteType.includes('/') ? siteType.split('/') : ['docked', siteType];
+            const [track, typeName] = siteType.includes('/') ? siteType.split('/') : ['unified', siteType];
             const blueprintPath = path.join(this.sitetypesDir, track, typeName, 'blueprint', `${typeName}.json`);
 
             if (!fs.existsSync(blueprintPath)) {

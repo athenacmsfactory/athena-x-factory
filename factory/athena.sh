@@ -26,10 +26,10 @@ pm2 start server.js --name athena-api --watch --ignore-watch "node_modules logs"
 cd "$PROJECT_ROOT"
 
 echo "🌐 Starting Athena Dashboard UI (Frontend) via PM2..."
-cd "$FACTORY_ROOT/athena-dashboard-ui"
+cd "$PROJECT_ROOT/control/dashboard"
 # Start UI (Vite dev) met pm2
 # We moeten de pnpm dev opdracht via sh uitvoeren om de juiste environment te hebben
-pm2 start "pnpm dev --port $UI_PORT" --name athena-ui
+pm2 start "pnpm dev --port $UI_PORT --host" --name athena-ui
 cd "$PROJECT_ROOT"
 
 echo "⏳ Wachten op initialisatie door PM2..."

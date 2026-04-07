@@ -34,7 +34,7 @@ echo "=================================================="
 if [ -f "$PROJECT_ROOT/factory/.env" ]; then
     ENV_DASHBOARD_PORT=$(grep DASHBOARD_PORT "$PROJECT_ROOT/factory/.env" | head -n 1 | cut -d '=' -f2 | tr -d '\r')
 fi
-FINAL_DASHBOARD_PORT=${ENV_DASHBOARD_PORT:-4001}
+FINAL_DASHBOARD_PORT=${ENV_DASHBOARD_PORT:-5001}
 
 # 2. Selecteer Site
 SELECTED_SITE=$1

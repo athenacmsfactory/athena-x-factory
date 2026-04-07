@@ -432,7 +432,7 @@ export class SiteController {
      * Bepaalt poort voor een site (of haalt op uit register)
      */
     getSitePort(id, siteDir) {
-        const portsPath = path.join(this.root, 'factory/config/site-ports.json');
+        const portsPath = path.join(this.root, 'config/site-ports.json');
         let ports = {};
         if (fs.existsSync(portsPath)) {
             ports = JSON.parse(fs.readFileSync(portsPath, 'utf8'));
@@ -442,8 +442,11 @@ export class SiteController {
 
         // Nieuwe poort toewijzen (vanaf 5100)
         const usedPorts = Object.values(ports);
+        const blacklist = [5060, 5061]; // SIP/VOIP Reserved ports
         let nextPort = 5100;
-        while (usedPorts.includes(nextPort)) nextPort++;
+        while (usedPorts.includes(nextPort) || blacklist.includes(nextPort)) {
+            nextPort++;
+        }
 
         ports[id] = nextPort;
         fs.writeFileSync(portsPath, JSON.stringify(ports, null, 2));
@@ -510,7 +513,7 @@ export class SiteController {
      * Get all site templates
      */
     getTemplates() {
-        const templatesDir = path.join(this.root, 'factory/2-templates');
+        const templatesDir = path.join(this.root, '2-templates');
         if (!fs.existsSync(templatesDir)) return [];
         return fs.readdirSync(templatesDir).filter(f => 
             fs.statSync(path.join(templatesDir, f)).isDirectory() && !f.startsWith('.')
@@ -681,5 +684,140 @@ export class SiteController {
         // Update registry
         await this.execService.runEngineScript('sync-sites-registry.js', []);
         return { success: true, message: `Site '${id}' is weer actief in de Werkplaats.` };
+    }
+
+    // ============================================================
+    // V10.1 STUB METHODS — called from server.js, implementation pending
+    // These prevent "is not a function" crashes on the dashboard.
+    // ============================================================
+
+    getAllDeployments() {
+        const sites = this.list();
+        return sites.map(s => ({ id: s.id, status: s.status, liveUrl: s.liveUrl, repoUrl: s.repoUrl }));
+    }
+
+    getStyles() {
+        const stylesPath = path.join(this.root, 'config/style-presets.json');
+        return fs.existsSync(stylesPath) ? JSON.parse(fs.readFileSync(stylesPath, 'utf8')) : { presets: [] };
+    }
+
+    getThemeInfo(id) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const configPath = path.join(siteDir, 'athena-config.json');
+        const config = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+        return { success: true, theme: config.theme || null, styleName: config.styleName || null };
+    }
+
+    updateData(id, data) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const dataDir = path.join(siteDir, 'src', 'data');
+        if (!fs.existsSync(dataDir)) return { success: false, error: 'Data directory not found.' };
+        const { file, content } = data;
+        if (!file) return { success: false, error: 'No file specified.' };
+        fs.writeFileSync(path.join(dataDir, file), JSON.stringify(content, null, 2));
+        return { success: true, message: `${file} bijgewerkt.` };
+    }
+
+    updateSectionSettings(id, data) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const settingsPath = path.join(siteDir, 'src', 'data', 'section_settings.json');
+        let settings = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(settingsPath, 'utf8')) : {};
+        settings = { ...settings, ...data };
+        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+        return { success: true };
+    }
+
+    updateDisplayConfig(id, data) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const configPath = path.join(siteDir, 'athena-config.json');
+        const config = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+        config.display = { ...(config.display || {}), ...data };
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        return { success: true };
+    }
+
+    updateConfig(id, data) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const configPath = path.join(siteDir, 'athena-config.json');
+        const config = fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+        const updated = { ...config, ...data };
+        fs.writeFileSync(configPath, JSON.stringify(updated, null, 2));
+        return { success: true, config: updated };
+    }
+
+    addSection(id, { sectionName }) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const orderPath = path.join(siteDir, 'src', 'data', 'section_order.json');
+        const order = fs.existsSync(orderPath) ? JSON.parse(fs.readFileSync(orderPath, 'utf8')) : [];
+        if (!order.includes(sectionName)) order.push(sectionName);
+        fs.writeFileSync(orderPath, JSON.stringify(order, null, 2));
+        return { success: true, order };
+    }
+
+    renameSection(id, { oldName, newName }) {
+        let siteDir = path.join(this.sitesDir, id);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, id);
+        const dataDir = path.join(siteDir, 'src', 'data');
+        const orderPath = path.join(dataDir, 'section_order.json');
+        const oldFile = path.join(dataDir, `${oldName}.json`);
+        const newFile = path.join(dataDir, `${newName}.json`);
+        if (!fs.existsSync(oldFile)) return { success: false, error: `Sectie '${oldName}' niet gevonden.` };
+        fs.renameSync(oldFile, newFile);
+        if (fs.existsSync(orderPath)) {
+            const order = JSON.parse(fs.readFileSync(orderPath, 'utf8'));
+            const idx = order.indexOf(oldName);
+            if (idx !== -1) { order[idx] = newName; fs.writeFileSync(orderPath, JSON.stringify(order, null, 2)); }
+        }
+        return { success: true };
+    }
+
+    deleteSection(id, { sectionName }) {
+        return this.removeSection(id, { sectionName });
+    }
+
+    saveStylePreset(id, data) {
+        const presetsPath = path.join(this.root, 'config/style-presets.json');
+        let presetsData = { presets: [] };
+        if (fs.existsSync(presetsPath)) presetsData = JSON.parse(fs.readFileSync(presetsPath, 'utf8'));
+        const newPreset = { id: (data.name || 'preset').toLowerCase().replace(/[^a-z0-9]/g, '_'), ...data };
+        presetsData.presets = presetsData.presets.filter(p => p.id !== newPreset.id);
+        presetsData.presets.push(newPreset);
+        fs.writeFileSync(presetsPath, JSON.stringify(presetsData, null, 2));
+        return { success: true, preset: newPreset };
+    }
+
+    saveLayoutPreset(id, data) {
+        return this.saveAsPreset(id, data);
+    }
+
+    async safePullFromGitHub(id) {
+        return this.execService.runEngineScript('safe-pull.js', [id]);
+    }
+
+    async compareSiteSources(id) {
+        return { success: true, message: 'Vergelijking niet beschikbaar in V10.1.', id };
+    }
+
+    async pullToTemp(id) {
+        return this.dataManager.pullToTemp(id);
+    }
+
+    updateDeployment(data) {
+        const { projectName, ...deployData } = data;
+        if (!projectName) return { success: false, error: 'projectName vereist.' };
+        let siteDir = path.join(this.sitesDir, projectName);
+        if (!fs.existsSync(siteDir)) siteDir = path.join(this.sitesExternalDir, projectName);
+        const deployPath = path.join(siteDir, 'project-settings', 'deployment.json');
+        const existing = fs.existsSync(deployPath) ? JSON.parse(fs.readFileSync(deployPath, 'utf8')) : {};
+        const updated = { ...existing, ...deployData, updatedAt: new Date().toISOString() };
+        fs.mkdirSync(path.dirname(deployPath), { recursive: true });
+        fs.writeFileSync(deployPath, JSON.stringify(updated, null, 2));
+        return { success: true };
     }
 }

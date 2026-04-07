@@ -1,0 +1,38 @@
+[
+  {
+    "id": "p1",
+    "name": "Athena Quantum Watch",
+    "description": "De ultieme smartwatch met AI-geïntegreerde gezondheidsmonitoring.",
+    "price": 299.00,
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
+    "category": "Wearables",
+    "status": "In Stock"
+  },
+  {
+    "id": "p2",
+    "name": "Neural-Link Headphones",
+    "description": "Ervaar geluid zoals nooit tevoren met directe haptische feedback.",
+    "price": 450.00,
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=800&auto=format&fit=crop",
+    "category": "Audio",
+    "status": "Limited"
+  },
+  {
+    "id": "p3",
+    "name": "Aurora Desktop",
+    "description": "Krachtige workstation voor AI-ontwikkelaars en creatieve professionals.",
+    "price": 2750.00,
+    "image": "https://images.unsplash.com/photo-1587831990711-23ca6441447b?q=80&w=800&auto=format&fit=crop",
+    "category": "Workstations",
+    "status": "In Stock"
+  },
+  {
+    "id": "p4",
+    "name": "Vortex Mouse",
+    "description": "Ergonomische precisie met 32000 DPI en zero-latency draadloze verbinding.",
+    "price": 129.00,
+    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=800&auto=format&fit=crop",
+    "category": "Peripherals",
+    "status": "In Stock"
+  }
+]

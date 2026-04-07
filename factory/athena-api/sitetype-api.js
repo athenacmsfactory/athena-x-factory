@@ -158,18 +158,17 @@ export async function generateDesignSuggestionAPI(businessDescription) {
 }
 
 // Genereer complete sitetype
-export async function generateCompleteSiteType(name, description, dataStructure, designSystem, track = 'autonomous') {
+export async function generateCompleteSiteType(name, description, dataStructure, designSystem) {
     try {
         const config = {
             name: name.toLowerCase().replace(/\s+/g, '-'),
             description: description,
             data_structure: dataStructure,
-            design_system: designSystem,
-            track: track
+            design_system: designSystem
         };
 
         await generateFiles(config, root);
-        return { success: true, message: `Sitetype ${name} succesvol aangemaakt in track ${track}` };
+        return { success: true, message: `Sitetype ${name} succesvol aangemaakt in de V10 Unified Architecture.` };
     } catch (error) {
         throw new Error(`Fout bij aanmaken sitetype: ${error.message}`);
     }
@@ -197,10 +196,10 @@ async function generateFiles(config, root) {
     }
     console.log("   🧩 Alle parser-instructies zijn klaar.");
 
-    // Pad naar de nieuwe sitetype map (gerespecteerde Two-Track mappenstructuur)
-    const sitetypePath = path.join(root, 'factory', '3-sitetypes', config.track, config.name);
+    // Pad naar de nieuwe sitetype map (V10 Flattened)
+    const sitetypePath = path.join(root, 'factory', '3-sitetypes', config.name);
     if (fs.existsSync(sitetypePath)) {
-        throw new Error(`Map "${config.name}" bestaat al in factory/3-sitetypes/${config.track}.`);
+        throw new Error(`Map "${config.name}" bestaat al in factory/3-sitetypes/.`);
     }
 
     // Stap 3: Genereer blueprint
@@ -233,8 +232,8 @@ async function generateFiles(config, root) {
     fs.writeFileSync(path.join(blueprintDir, `${config.name}.json`), JSON.stringify(blueprint, null, 2));
     console.log("   ✅ Blueprint opgeslagen.");
 
-    // Stap 4: Kopieer basis bestanden van agency-luxury template (bevindt zich in autonomous track)
-    const templatePath = path.join(root, 'factory', '3-sitetypes', 'autonomous', 'agency-luxury');
+    // Stap 4: Kopieer basis bestanden van agency-luxury template (bevindt zich nu in sitetypes root)
+    const templatePath = path.join(root, 'factory', '3-sitetypes', 'agency-luxury');
     if (fs.existsSync(templatePath)) {
         console.log(`📁 Basisbestanden kopiëren van agency-luxury template...`);
         copyRecursiveSync(templatePath, sitetypePath, [
@@ -304,50 +303,49 @@ function toPascalCase(str) {
         .replace(/[^a-zA-Z0-9]/g, '');
 }
 
-// Bestaande sitetypes ophalen
+// Bestaande sitetypes ophalen (V10 Flattened)
 export function getExistingSiteTypes() {
-    const tracks = ['docked', 'autonomous'];
     const results = [];
+    const dir = path.join(root, 'factory', '3-sitetypes');
 
-    tracks.forEach(track => {
-        const dir = path.join(root, 'factory', '3-sitetypes', track);
-        if (fs.existsSync(dir)) {
-            const types = fs.readdirSync(dir).filter(f => fs.statSync(path.join(dir, f)).isDirectory() && !f.startsWith('.'));
-            
-            types.forEach(type => {
-                let description = "Geen beschrijving beschikbaar.";
-                let tableCount = 0;
-                const blueprintPath = path.join(dir, type, 'blueprint', `${type}.json`);
+    if (fs.existsSync(dir)) {
+        const types = fs.readdirSync(dir).filter(f => {
+            const fullPath = path.join(dir, f);
+            return fs.statSync(fullPath).isDirectory() && !f.startsWith('.') && f !== 'deprecated';
+        });
+        
+        types.forEach(type => {
+            let description = "Geen beschrijving beschikbaar.";
+            let tableCount = 0;
+            const blueprintPath = path.join(dir, type, 'blueprint', `${type}.json`);
 
-                if (fs.existsSync(blueprintPath)) {
-                    try {
-                        const blueprint = JSON.parse(fs.readFileSync(blueprintPath, 'utf8'));
-                        description = blueprint.description || description;
-                        if (Array.isArray(blueprint.data_structure)) {
-                            tableCount = blueprint.data_structure.length;
-                        }
-                    } catch (e) {
-                        console.error(`Fout bij lezen blueprint voor ${type}:`, e.message);
+            if (fs.existsSync(blueprintPath)) {
+                try {
+                    const blueprint = JSON.parse(fs.readFileSync(blueprintPath, 'utf8'));
+                    description = blueprint.description || description;
+                    if (Array.isArray(blueprint.data_structure)) {
+                        tableCount = blueprint.data_structure.length;
                     }
+                } catch (e) {
+                    console.error(`Fout bij lezen blueprint voor ${type}:`, e.message);
                 }
+            }
 
-                // Count layouts
-                let layoutCount = 0;
-                const webDir = path.join(dir, type, 'web');
-                if (fs.existsSync(webDir)) {
-                    layoutCount = fs.readdirSync(webDir).filter(f => fs.statSync(path.join(webDir, f)).isDirectory()).length;
-                }
+            // Count layouts
+            let layoutCount = 0;
+            const webDir = path.join(dir, type, 'web');
+            if (fs.existsSync(webDir)) {
+                layoutCount = fs.readdirSync(webDir).filter(f => fs.statSync(path.join(webDir, f)).isDirectory()).length;
+            }
 
-                results.push({
-                    name: type,
-                    track: track,
-                    description: description,
-                    tableCount,
-                    layoutCount
-                });
+            results.push({
+                name: type,
+                description: description,
+                tableCount,
+                layoutCount
             });
-        }
-    });
+        });
+    }
 
     return results;
 }

@@ -56,7 +56,7 @@ export class JulesController {
             const settings = JSON.parse(fs.readFileSync(path.join(sitePath, 'src/data/site_settings.json'), 'utf8'));
             
             // Resolve blueprint
-            const [track, typeName] = config.siteType.includes('/') ? config.siteType.split('/') : ['docked', config.siteType];
+            const [track, typeName] = config.siteType.includes('/') ? config.siteType.split('/') : ['unified', config.siteType];
             const blueprintPath = path.join(this.sitetypesDir, track, typeName, 'blueprint', `${typeName}.json`);
             let blueprint = {};
             if (fs.existsSync(blueprintPath)) {

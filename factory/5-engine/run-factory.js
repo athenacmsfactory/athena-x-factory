@@ -9,7 +9,7 @@ if (!projectName) {
 
 const config = {
     projectName: projectName,
-    track: 'docked',
+    track: 'unified',
     siteType: 'webshop-pay',
     siteModel: 'SPA',
     layoutName: 'modern',
