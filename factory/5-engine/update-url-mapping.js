@@ -1,6 +1,10 @@
 import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const spreadsheetId = '16ygVILHgFYZz2ORBshaXKbAWpvD2S-_n3n2R_4aHx3Y';
 const serviceAccountPath = '2-Fabriek/athena/athena-y/factory/service-account.json';
@@ -29,8 +33,8 @@ async function run() {
         };
     });
 
-    const outputPath = `2-Fabriek/athena/athena-y/input/${projectName}/project-settings/url-sheet.json`;
-    const siteOutputPath = `2-Fabriek/athena/y/werkplaats/${projectName}/project-settings/url-sheet.json`;
+    const outputPath = path.resolve(__dirname, '../../input', projectName, 'project-settings/url-sheet.json');
+    const siteOutputPath = path.resolve(__dirname, '../../sites', projectName, 'project-settings/url-sheet.json');
     
     fs.writeFileSync(outputPath, JSON.stringify(mapping, null, 2));
     console.log(`✅ Updated input url-sheet.json with ${Object.keys(mapping).length} tabs.`);

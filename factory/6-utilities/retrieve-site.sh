@@ -36,6 +36,6 @@ fi
 # Move the directory
 mv "$VAULT_DIR/$SITE" "$DEST_DIR/"
 
-echo "✅ Success! '$SITE' staat weer in de werkplaats ($DEST_DIR/$SITE)."
+echo "✅ Success! '$SITE' staat weer in de factory ($DEST_DIR/$SITE)."
 echo "Je kan deze nu veilig bewerken. Zodra de wijzigingen gepusht en gepubliceerd zijn,"
 echo "vergeet de site dan niet terug te parkeren met 'pnpm run park $SITE'."

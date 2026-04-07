@@ -22,10 +22,8 @@ export class AthenaDataManager {
         const safeName = projectName.toLowerCase().replace(/\s+/g, '-');
         
         const possibleSiteDirs = [
-            path.resolve(this.root, '../../werkplaats', safeName),
             path.resolve(this.root, '../sites', safeName),
             path.resolve(this.root, '../sites-external', safeName),
-            path.resolve(this.root, '../../werkplaats', `${safeName}-site`),
             path.resolve(this.root, '../sites', `${safeName}-site`)
         ];
 

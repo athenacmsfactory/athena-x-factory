@@ -46,9 +46,9 @@ To ensure maximum clarity and safety, every site follows a strict mapping:
 The Vault (`../athena-vault-v8-1/`) is a **Cold Storage** environment. To ensure 100% safety and data integrity, the following rules are non-negotiable:
 1.  **Frozen State**: Sites in the Vault must be "frozen". This means **NO `node_modules`**, no `dist` folders, and no `.git` metadata within the site folders.
 2.  **No Active Processes**: It is strictly forbidden to start preview servers, build processes, or any other active runtime directly from the Vault.
-3.  **One-Way Workflow**: To preview or modify a site, it **MUST** be "Unparked" (Retrieved) to the Factory (`y/werkplaats/`) first.
+3.  **One-Way Workflow**: To preview or modify a site, it **MUST** be "Unparked" (Retrieved) to the Factory (`sites/`) first.
 4.  **Dehydration on Park**: When moving a site to the Vault (Parking), it must be automatically "dehydrated" (removal of all generated/dependency files).
-5.  **Factory as Workbench**: The Factory (`y/werkplaats/`) is the only place where hydration (`pnpm install`), previews, and edits occur.
+5.  **Factory as Workbench**: The Factory (`sites/`) is the only place where hydration (`pnpm install`), previews, and edits occur.
 
 ## 🔄 Data Flow, Split-Save & Governance Modes
 - **Governance**: Sites operate in `dev-mode` (full bidirectional sync) or `client-mode` (developer creates style, client pushes texts).
