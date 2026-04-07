@@ -194,7 +194,7 @@ async function generateFiles(config, root) {
     console.log(`   🧠 Analyse compleet: Primaire tabel is "${primaryTableName}", primair veld is "${primaryFieldName}".`);
 
     // Paden definiëren op basis van track
-    const track = config.track || 'docked';
+    const track = config.track || 'unified';
     const siteTypeDir = path.join(root, '3-sitetypes', track, config.siteTypeName);
     const blueprintDir = path.join(siteTypeDir, 'blueprint');
     const toolsDir = path.join(siteTypeDir, 'parser');
@@ -202,7 +202,7 @@ async function generateFiles(config, root) {
     const componentsDir = path.join(webDir, 'components');
     
     // Boilerplate bron bepalen (nu gebaseerd op de track!)
-    const boilerplateDir = path.join(root, '2-templates', 'boilerplate', track === 'autonomous' ? 'autonomous' : 'docked');
+    const boilerplateDir = path.join(root, '2-templates', 'boilerplate', track === 'autonomous' ? 'autonomous' : 'unified');
     const boilerplateComponentsDir = path.join(boilerplateDir, 'components');
 
     // Mappen aanmaken
@@ -310,7 +310,7 @@ async function createSiteTypeWizard() {
     console.log("[1] Docked (Minimale code, beheer via Athena Dock)");
     console.log("[2] Autonomous (Zelfstandige editor-suite)");
     const trackChoice = await ask("Keuze (1/2): ");
-    config.track = trackChoice === '2' ? 'autonomous' : 'docked';
+    config.track = trackChoice === '2' ? 'autonomous' : 'unified';
     console.log(`✅ Track ingesteld op: ${config.track}\n`);
 
     // --- STAP 0.5: TOON BESTAANDE SITE TYPES ---

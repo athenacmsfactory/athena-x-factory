@@ -80,8 +80,8 @@ async function run() {
     const componentsDir = path.join(webDir, 'components');
     
     // Boilerplate bron (Docked Track heeft SPA submap)
-    const trackBoilerplateDir = path.join(root, '2-templates/boilerplate', track, 'SPA');
-    const genericSpaDir = path.join(root, '2-templates/boilerplate/SPA');
+    const trackBoilerplateDir = path.join(root, '2-templates/skeletons', track, 'SPA');
+    const genericSpaDir = path.join(root, '2-templates/skeletons/SPA');
 
     await fs.mkdir(componentsDir, { recursive: true });
     await fs.mkdir(blueprintDir, { recursive: true });

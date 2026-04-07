@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.join(__dirname, '../..');
 
-dotenv.config({ path: path.join(root, 'factory/.env') });
+dotenv.config({ path: path.join(factoryRoot, '.env') });
 
 async function testConnection() {
     console.log("🔍 Testing IMAP connection for Athena Gateway...");

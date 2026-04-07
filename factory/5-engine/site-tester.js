@@ -9,7 +9,7 @@
  *
  * Options:
  *   --mode <mock|scrape>     Data source (required)
- *   --type <sitetype>        Site type from 3-sitetypes/docked/ (required)
+ *   --type <sitetype>        Site type from 3-sitetypes/ (required)
  *   --url <url>              URL to scrape (required when --mode scrape)
  *   --themes <list>          CSS themes, comma-separated (default: all available)
  *   --name <name>            Base name for test sites (default: "test-{type}-{timestamp}")
@@ -68,10 +68,10 @@ function parseArgs() {
     }
 
     // Check sitetype exists
-    const siteTypePath = path.join(FACTORY_ROOT, '3-sitetypes/docked', opts.type);
+    const siteTypePath = path.join(FACTORY_ROOT, '3-sitetypes', opts.type);
     if (!fs.existsSync(siteTypePath)) {
-        console.error(`❌ Sitetype "${opts.type}" niet gevonden in 3-sitetypes/docked/`);
-        console.error(`   Beschikbaar: ${fs.readdirSync(path.join(FACTORY_ROOT, '3-sitetypes/docked')).join(', ')}`);
+        console.error(`❌ Sitetype "${opts.type}" niet gevonden in 3-sitetypes/`);
+        console.error(`   Beschikbaar: ${fs.readdirSync(path.join(FACTORY_ROOT, '3-sitetypes')).join(', ')}`);
         process.exit(1);
     }
 
@@ -133,7 +133,7 @@ async function scrapeData(testName, url) {
 
 async function parseData(testName, type, inputFile) {
     console.log('\n🔄 Stap 2: Data parsen...');
-    const parserPath = path.join(FACTORY_ROOT, '3-sitetypes/docked', type, 'parser', `parser-${type}.js`);
+    const parserPath = path.join(FACTORY_ROOT, '3-sitetypes', type, 'parser', `parser-${type}.js`);
 
     if (!fs.existsSync(parserPath)) {
         console.warn(`   ⚠️  Geen parser gevonden voor ${type}, parsing overgeslagen.`);
@@ -312,12 +312,12 @@ async function main() {
     const baseName = opts.name || `test-${opts.type.slice(0, 15)}-${timestamp}`;
     const testName = baseName;
 
-    const blueprintPath = path.join(FACTORY_ROOT, '3-sitetypes/docked', opts.type, 'blueprint', `${opts.type}.json`);
+    const blueprintPath = path.join(FACTORY_ROOT, '3-sitetypes', opts.type, 'blueprint', `${opts.type}.json`);
     const blueprint = JSON.parse(fs.readFileSync(blueprintPath, 'utf8'));
 
     // Resolve themes
     const availableThemes = ALL_THEMES.filter(t =>
-        fs.existsSync(path.join(FACTORY_ROOT, '2-templates/boilerplate/docked/css', t))
+        fs.existsSync(path.join(FACTORY_ROOT, '2-templates/skeletons/css', t))
     );
     let themes;
     if (opts.themes) {

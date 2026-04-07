@@ -1,42 +1,29 @@
-# 🌐 Athena CMS Sites Overzicht
+# 🌐 Athena CMS - V10.1 Sites Overzicht
 
-Laatst bijgewerkt: 13/1/2026, 11:30:00
+Dit is de centrale registry van alle actieve en demo-websites gegeneerd door de Athena Factory. Alle projecten in deze lijst zijn 100% compatibel met de **Athena V10 Unified Architecture**.
 
-## 🏆 Showcase Portfolio (Demo Projecten)
-*Deze sites zijn automatisch gegenereerd om het economisch potentieel en de veelzijdigheid van de Athena Factory aan te tonen.*
+Laatst bijgewerkt: 7/4/2026 (Automatic V10 Alignment)
 
-| Site Naam | Sector | Status | URL |
-|:----------|:-------|:-------|:----|
-| bakkerij-warme-bloem | Ambachtelijke Bakkerij | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/bakkerij-warme-bloem/) |
-| loodgieter-snel | Loodgieter & Service | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/loodgieter-snel/) |
-| advocaat-justitia | Juridische Dienstverlening | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/advocaat-justitia/) |
-| tuinservice-groen | Tuinaannemer | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/tuinservice-groen/) |
-| kapsalon-trendy | Lifestyle & Beauty | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/kapsalon-trendy/) |
-| bistro-smaakvol | Gastronomie & Horeca | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/bistro-smaakvol/) |
-| schilder-kleurrijk | Schildersbedrijf | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/schilder-kleurrijk/) |
-| tandarts-lach | Medische Praktijk | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/tandarts-lach/) |
-| architect-ruimte | Architectuur & Design | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/architect-ruimte/) |
-| consult-strategie | Business Consultancy | ✅ Demo Live | [Bekijk Site](https://athenacmsfactory.github.io/consult-strategie/) |
+## 🏛️ Operationeel Overzicht (Monorepo Sites)
 
-## 📋 Operationeel Overzicht
+| Site ID | Status | Live URL | GitHub Repository |
+|:----------|:-------|:---------|:------------------|
+| **auto-bakery-final** | ✅ Gepubliceerd | [Live Site](https://athena-sites.github.io/auto-bakery-final/) | [Repo](https://github.com/athena-sites/auto-bakery-final) |
+| **gentse-dakwerken-v9.2** | ✅ Gepubliceerd | [Live Site](https://athena-sites.github.io/gentse-dakwerken-v9.2/) | [Repo](https://github.com/athena-sites/gentse-dakwerken-v9.2) |
+| **karel-it-service** | ✅ Gepubliceerd | [Live Site](https://athena-sites.github.io/karel-it-service/) | [Repo](https://github.com/athena-sites/karel-it-service) |
+| **karel-portfolio-v9** | ✅ Gepubliceerd | [Live Site](https://athena-sites.github.io/karel-portfolio-v9/) | [Repo](https://github.com/athena-sites/karel-portfolio-v9) |
+| **kdclaw-premium-v9** | ✅ Gepubliceerd | [Live Site](https://athena-sites.github.io/kdclaw-premium-v9/) | [Repo](https://github.com/athena-sites/kdclaw-premium-v9) |
 
-| Site Naam | Status | URL |
-|:----------|:-------|:----|
-| migration-test-site | ✅ Gepubliceerd | [Link](https://athenacmsfactory.github.io/migration-test-site/) |
+---
 
-## 🚀 Snel Kopiëren (Showcase URL's)
+## 🚀 Snel Kopiëren (V10 Links)
 ```text
-https://athenacmsfactory.github.io/bakkerij-warme-bloem/
-https://athenacmsfactory.github.io/loodgieter-snel/
-https://athenacmsfactory.github.io/advocaat-justitia/
-https://athenacmsfactory.github.io/tuinservice-groen/
-https://athenacmsfactory.github.io/kapsalon-trendy/
-https://athenacmsfactory.github.io/bistro-smaakvol/
-https://athenacmsfactory.github.io/schilder-kleurrijk/
-https://athenacmsfactory.github.io/tandarts-lach/
-https://athenacmsfactory.github.io/architect-ruimte/
-https://athenacmsfactory.github.io/consult-strategie/
+https://athena-sites.github.io/auto-bakery-final/
+https://athena-sites.github.io/gentse-dakwerken-v9.2/
+https://athena-sites.github.io/karel-it-service/
+https://athena-sites.github.io/karel-portfolio-v9/
+https://athena-sites.github.io/kdclaw-premium-v9/
 ```
 
 ---
-*Gegenereerd door Athena Factory Engine op Chromebook (Optimized for 4GB RAM)*
+*Gegenereerd door Athena Factory Documentation Engine (Antigravity v10.1)*

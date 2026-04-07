@@ -49,7 +49,7 @@ function extractContent(filePath) {
 
         // We pakken de kortste lijst om mismatches te voorkomen
         const count = Math.min(names.length, descriptions.length, urls.length);
-        if (count > 0 && names.length > 2) { // Meer dan 2 om boilerplate te negeren
+        if (count > 0 && names.length > 2) { // Meer dan 2 om skeletons te negeren
              for (let i = 0; i < count; i++) {
                  // Filter uiteraard de 'portfolio-kbm' meta info als die te algemeen is
                  extractedData.projects.push({

@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '../../');
 const INPUT_SITES_DIR = path.resolve(ROOT_DIR, 'inputsites');
-const SITETYPES_DIR = path.resolve(ROOT_DIR, 'factory/3-sitetypes/docked');
+const SITETYPES_DIR = path.resolve(ROOT_DIR, 'factory/3-sitetypes');
 const INPUT_DATA_DIR = path.resolve(ROOT_DIR, 'input');
 const SITES_DIR = path.resolve(ROOT_DIR, 'sites');
 
@@ -202,7 +202,7 @@ function createSitetype(name, blueprint) {
     if (!fs.existsSync(blueprintDir)) fs.mkdirSync(blueprintDir, { recursive: true });
     fs.writeFileSync(path.join(blueprintDir, `${name}.json`), JSON.stringify({
         blueprint_name: name,
-        track: "docked",
+        track: "unified",
         data_structure: Object.entries(blueprint).map(([table, fields]) => ({
             table_name: table,
             columns: fields.map(f => ({ name: f, description: `Auto-generated field: ${f}` }))
@@ -226,7 +226,7 @@ function createSitetype(name, blueprint) {
         fs.mkdirSync(path.join(webStandardDir, 'components'), { recursive: true });
     }
 
-    console.log(`📁 Sitetype created: factory/3-sitetypes/docked/${name} (blueprint/, parser/, web/standard/)`);
+    console.log(`📁 Sitetype created: factory/3-sitetypes/${name} (blueprint/, parser/, web/standard/)`);
 }
 
 async function createInputData(name, sections, html) {

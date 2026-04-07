@@ -26,7 +26,7 @@ export class ComponentPhase extends BasePhase {
         essential.forEach(comp => {
             let src = [
                 path.join(ctx.paths.modelBoilerplate, 'components', comp),
-                path.join(ctx.paths.trackBoilerplate, 'shared/components', comp),
+                path.join(ctx.paths.trackBoilerplate, 'components/legos/Common', comp),
                 path.join(ctx.paths.globalShared, 'components', comp),
                 path.join(ctx.tplRoot, 'components', comp)
             ].find(fs.existsSync);
@@ -53,12 +53,12 @@ export class ComponentPhase extends BasePhase {
         }
 
         // Shared UI components (flat copy)
-        [path.join(ctx.paths.globalShared, 'components/ui'), path.join(ctx.paths.trackBoilerplate, 'shared/components/ui')].forEach(src => {
+        [path.join(ctx.paths.globalShared, 'components/ui'), path.join(ctx.paths.trackBoilerplate, 'components/legos/Common/ui')].forEach(src => {
             if (fs.existsSync(src)) fs.cpSync(src, path.join(ctx.projectDir, 'src/components/ui'), { recursive: true });
         });
 
         // Special: dock-connector.js (only for docked track)
-        if (ctx.editorStrategy === 'docked') {
+        if (ctx.editorStrategy === 'unified') {
             const connSrc = path.join(ctx.paths.trackBoilerplate, 'shared/public/dock-connector.js');
             if (fs.existsSync(connSrc)) {
                 fs.copyFileSync(connSrc, path.join(ctx.projectDir, 'src/dock-connector.js'));
@@ -87,7 +87,7 @@ export class ComponentPhase extends BasePhase {
 
         // Local CSS File
         const styleFileName = ctx.config.styleName.endsWith('.css') ? ctx.config.styleName : `${ctx.config.styleName}.css`;
-        const styleSrc = path.join(ctx.tplRoot, 'boilerplate/docked/css', styleFileName);
+        const styleSrc = path.join(ctx.tplRoot, 'skeletons/css', styleFileName);
         if (fs.existsSync(styleSrc)) fs.copyFileSync(styleSrc, path.join(ctx.projectDir, 'src', styleFileName));
     }
 }

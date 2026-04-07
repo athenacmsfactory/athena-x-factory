@@ -27,7 +27,7 @@ async function syncJsonToTsv() {
     } else {
         projectName = args[0];
         const siteType = args[1];
-        const track = args[2] || 'docked';
+        const track = args[2] || 'unified';
 
         if (!projectName || !siteType) {
             console.error("❌ Gebruik: node sync-json-to-tsv.js [projectName] [siteType] [track]");

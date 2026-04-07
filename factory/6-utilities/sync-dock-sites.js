@@ -10,7 +10,7 @@ async function generate() {
     console.log("🔍 Scannen van sites directory...");
     const sitesDir = path.join(root, 'sites');
     const dockPublicDir = path.join(root, 'dock/public');
-    const registryPath = path.join(root, 'factory/config/site-ports.json');
+    const registryPath = path.join(root, 'config/site-ports.json');
     
     let portMap = {};
     if (fs.existsSync(registryPath)) {

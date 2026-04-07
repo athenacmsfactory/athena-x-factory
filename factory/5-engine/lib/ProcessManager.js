@@ -10,13 +10,13 @@ import path from 'path';
 
 export class AthenaProcessManager {
     constructor(root) {
-        // Zorg dat we altijd naar de juiste factory/config map wijzen, 
-        // ook als root de factory map zelf is.
-        this.root = root.endsWith('factory') ? path.dirname(root) : root;
-        this.registryPath = path.join(this.root, 'factory/config/active-processes.json');
-        this.logDir = path.join(this.root, 'factory/output/logs');
+        // Standardized: root is now the "athena/factory" directory
+        this.root = root;
+        this.registryPath = path.join(this.root, 'config/active-processes.json');
+        this.logDir = path.join(this.root, 'output/logs');
         this._ensureDirs();
     }
+
 
     _ensureDirs() {
         if (!fs.existsSync(path.dirname(this.registryPath))) {

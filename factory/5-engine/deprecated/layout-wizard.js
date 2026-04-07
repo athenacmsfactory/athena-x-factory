@@ -248,7 +248,7 @@ async function runLayoutWizard() {
         // Zorg dat we ook main.jsx hebben als het een nieuwe layout is
         const mainPath = path.join(targetDir, 'main.jsx');
         if (!existsSync(mainPath)) {
-            const boilerplateMain = await fs.readFile(path.join(root, '2-templates/boilerplate/SPA/main.jsx'), 'utf8');
+            const boilerplateMain = await fs.readFile(path.join(root, '2-templates/skeletons/SPA/main.jsx'), 'utf8');
             await fs.writeFile(mainPath, boilerplateMain);
         }
 

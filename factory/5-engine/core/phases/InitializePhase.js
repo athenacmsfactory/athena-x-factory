@@ -19,8 +19,7 @@ export class InitializePhase extends BasePhase {
 
         // 2. Resolve Paths & Blueprint
         const { siteType, layoutName, siteModel } = ctx.config;
-        ctx.editorStrategy = fs.existsSync(path.join(ctx.configManager.get('paths.sitetypes'), 'docked', siteType)) ? 'docked' : 'autonomous';
-        ctx.siteTypePath = path.join(ctx.configManager.get('paths.sitetypes'), ctx.editorStrategy, siteType);
+        ctx.siteTypePath = path.join(ctx.configManager.get('paths.sitetypes'), siteType);
         
         const blueprintPath = path.join(ctx.siteTypePath, 'blueprint', path.basename(ctx.config.blueprintFile));
         ctx.blueprint = JSON.parse(fs.readFileSync(blueprintPath, 'utf8'));
@@ -72,8 +71,8 @@ export class InitializePhase extends BasePhase {
         ctx.paths = {
             sourceLayout: path.join(ctx.siteTypePath, 'web', layoutName),
             fallbackLayout: path.join(ctx.siteTypePath, 'web', 'standard'),
-            trackBoilerplate: path.join(ctx.tplRoot, 'boilerplate', ctx.editorStrategy),
-            modelBoilerplate: path.join(ctx.tplRoot, 'boilerplate', ctx.editorStrategy, siteModel),
+            trackBoilerplate: path.join(ctx.tplRoot, 'skeletons'),
+            modelBoilerplate: path.join(ctx.tplRoot, 'skeletons', siteModel),
             globalShared: path.join(ctx.tplRoot, 'shared')
         };
 
@@ -87,7 +86,7 @@ export class InitializePhase extends BasePhase {
             },
             flags: {
                 isWebshop: !!(ctx.blueprint.features || {}).ecommerce,
-                isDocked: ctx.editorStrategy === 'docked'
+                isDocked: ctx.editorStrategy === 'unified'
             }
         });
     }

@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '../../');
 const SITES_DIR = path.resolve(ROOT_DIR, 'sites');
-const BOILERPLATE_DIR = path.resolve(ROOT_DIR, 'factory/2-templates/boilerplate/static-wrapper');
+const BOILERPLATE_DIR = path.resolve(ROOT_DIR, 'factory/2-templates/skeletons/static-wrapper');
 const INPUT_DATA_DIR = path.resolve(ROOT_DIR, 'input');
 const INPUT_SITES_DIR = path.resolve(ROOT_DIR, 'inputsites');
 

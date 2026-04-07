@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 // FORCEER UITVOERING OP SPECIFIEK PAD
-const TEST_FILE = path.resolve(process.cwd(), 'factory/3-sitetypes/autonomous/agency-luxury/web/standard/components/Header.jsx');
+const TEST_FILE = path.resolve(process.cwd(), 'factory/3-sitetypes/agency-luxury/web/standard/components/Header.jsx');
 
 if (!fs.existsSync(TEST_FILE)) {
     console.error("Test file niet gevonden:", TEST_FILE);

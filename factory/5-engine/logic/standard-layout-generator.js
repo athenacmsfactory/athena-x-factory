@@ -10,10 +10,10 @@ const __dirname = path.dirname(__filename);
 /**
  * Genereert de inhoud voor Section.jsx op basis van de blueprint.
  * @param {Object} blueprint - Het schema.json object van het sitetype.
- * @param {string} editorStrategy - 'docked' of 'autonomous'.
+ * @param {string} editorStrategy - 'unified' of 'autonomous'.
  * @returns {string} - De gegenereerde code voor Section.jsx.
  */
-export function generateSectionComponent(blueprint, editorStrategy = 'docked') {
+export function generateSectionComponent(blueprint, editorStrategy = 'unified') {
   const sections = blueprint.data_structure.map(t => t.table_name);
   const usedComponents = new Set();
 
