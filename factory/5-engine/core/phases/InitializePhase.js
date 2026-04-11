@@ -86,7 +86,7 @@ export class InitializePhase extends BasePhase {
             },
             flags: {
                 isWebshop: !!(ctx.blueprint.features || {}).ecommerce,
-                isDocked: ctx.editorStrategy === 'unified'
+                isDocked: ctx.config.editorStrategy === 'unified'
             }
         });
     }

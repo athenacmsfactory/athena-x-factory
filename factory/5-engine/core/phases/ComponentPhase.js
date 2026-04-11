@@ -16,19 +16,43 @@ export class ComponentPhase extends BasePhase {
 
     assembleComponents(ctx) {
         const essential = [
-            'EditableImage.jsx', 'EditableMedia.jsx', 'EditableText.jsx', 'EditableLink.jsx',
-            'CartContext.jsx', 'CartOverlay.jsx', 'Checkout.jsx', 'RepeaterControls.jsx',
-            'Header.jsx', 'Footer.jsx', 'SectionToolbar.jsx', 'MetadataConfigModal.jsx', 'AboutSection.jsx',
-            'StyleContext.jsx', 'DisplayConfigContext.jsx',
-            'Hero.jsx', 'Testimonials.jsx', 'Team.jsx', 'FAQ.jsx', 'CTA.jsx', 'ProductGrid.jsx', 'GenericSection.jsx', 'StyleInjector.jsx'
+            { name: 'CartContext.jsx', srcName: 'CartContext.jsx' },
+            { name: 'CartOverlay.jsx', srcName: 'CartOverlayV9.jsx' },
+            { name: 'Checkout.jsx', srcName: 'CheckoutHeaderV9.jsx' },
+            { name: 'RepeaterControls.jsx', srcName: 'RepeaterControls.jsx' },
+            { name: 'Header.jsx', srcName: 'HeaderV9.jsx' },
+            { name: 'Footer.jsx', srcName: 'FooterV9.jsx' },
+            { name: 'SectionToolbar.jsx', srcName: 'SectionToolbar.jsx' },
+            { name: 'MetadataConfigModal.jsx', srcName: 'MetadataConfigModal.jsx' },
+            { name: 'AboutSection.jsx', srcName: 'TextLegoV9.jsx' },
+            { name: 'StyleContext.jsx', srcName: 'StyleContext.jsx' },
+            { name: 'DisplayConfigContext.jsx', srcName: 'DisplayConfigContext.jsx' },
+            { name: 'Hero.jsx', srcName: 'HeroLegoV9.jsx' },
+            { name: 'Testimonials.jsx', srcName: 'TestimonialsLegoV9.jsx' },
+            { name: 'Team.jsx', srcName: 'TeamLegoV9.jsx' },
+            { name: 'FAQ.jsx', srcName: 'FAQLegoV9.jsx' },
+            { name: 'CTA.jsx', srcName: 'CTALegoV9.jsx' },
+            { name: 'ProductGrid.jsx', srcName: 'ProductGridV9.jsx' },
+            { name: 'Benefits.jsx', srcName: 'BenefitsLegoV9.jsx' },
+            { name: 'GenericSection.jsx', srcName: 'GenericSectionV9.jsx' },
+            { name: 'StyleInjector.jsx', srcName: 'StyleInjector.jsx' }
         ];
         
-        essential.forEach(comp => {
+        essential.forEach(item => {
+            const comp = item.name;
+            const srcFile = item.srcName;
+            
             let src = [
-                path.join(ctx.paths.modelBoilerplate, 'components', comp),
-                path.join(ctx.paths.trackBoilerplate, 'components/legos/Common', comp),
-                path.join(ctx.paths.globalShared, 'components', comp),
-                path.join(ctx.tplRoot, 'components', comp)
+                path.join(ctx.paths.modelBoilerplate, 'components', srcFile),
+                path.join(ctx.tplRoot, 'components/legos/Common', srcFile),
+                path.join(ctx.tplRoot, 'components/legos/Layout', srcFile),
+                path.join(ctx.tplRoot, 'components/legos/Shop', srcFile),
+                path.join(ctx.paths.globalShared, 'components', srcFile),
+                path.join(ctx.tplRoot, 'components', srcFile),
+                path.join(ctx.configManager.get('paths.root'), 'factory/deprecated/templates/components', srcFile),
+                // Fallback to non-V9 names
+                path.join(ctx.tplRoot, 'components/legos/Common', comp),
+                path.join(ctx.tplRoot, 'components/legos/Layout', comp)
             ].find(fs.existsSync);
             
             if (src) {
@@ -58,7 +82,7 @@ export class ComponentPhase extends BasePhase {
         });
 
         // Special: dock-connector.js (only for docked track)
-        if (ctx.editorStrategy === 'unified') {
+        if (ctx.config.editorStrategy === 'unified') {
             const connSrc = path.join(ctx.paths.trackBoilerplate, 'shared/public/dock-connector.js');
             if (fs.existsSync(connSrc)) {
                 fs.copyFileSync(connSrc, path.join(ctx.projectDir, 'src/dock-connector.js'));

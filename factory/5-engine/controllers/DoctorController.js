@@ -12,6 +12,7 @@ export class DoctorController {
     constructor(configManager) {
         this.configManager = configManager;
         this.sitesDir = configManager.get('paths.sites');
+        this.vaultDir = configManager.get('paths.vault') || configManager.get('paths.sitesExternal');
         this.policiesPath = path.join(configManager.get('paths.config'), 'hydration-policies.json');
     }
 
@@ -20,25 +21,37 @@ export class DoctorController {
      * @param {string} siteName (Optional)
      */
     audit(siteName = null) {
-        if (siteName) return this._auditSite(siteName);
+        if (siteName) {
+            if (fs.existsSync(path.join(this.sitesDir, siteName))) return this._auditSite(siteName, true);
+            if (fs.existsSync(path.join(this.vaultDir, siteName))) return this._auditSite(siteName, false);
+            return null;
+        }
 
-        const sites = fs.readdirSync(this.sitesDir).filter(f => 
-            fs.statSync(path.join(this.sitesDir, f)).isDirectory() && !f.startsWith('.') && f !== 'athena-cms'
-        );
+        const nativeSites = this._scanDir(this.sitesDir, true);
+        const vaultSites = this._scanDir(this.vaultDir, false);
 
-        const results = sites.map(s => this._auditSite(s));
-        return results;
+        return [...nativeSites, ...vaultSites];
     }
 
-    _auditSite(siteName) {
-        const siteDir = path.join(this.sitesDir, siteName);
+    _scanDir(dir, isNative) {
+        if (!fs.existsSync(dir)) return [];
+        const sites = fs.readdirSync(dir).filter(f => 
+            fs.statSync(path.join(dir, f)).isDirectory() && !f.startsWith('.') && f !== 'athena-cms'
+        );
+        return sites.map(s => this._auditSite(s, isNative));
+    }
+
+    _auditSite(siteName, isNative = true) {
+        const baseDir = isNative ? this.sitesDir : this.vaultDir;
+        const siteDir = path.join(baseDir, siteName);
         const report = { 
             site: siteName, 
+            isNative,
             status: 'healthy', 
             issues: [], 
             fixes: [],
             hydration: fs.existsSync(path.join(siteDir, 'node_modules')) ? 'hydrated' : 'dormant',
-            storage: this._calculateStorageUsage(siteName),
+            storage: this._calculateStorageUsage(siteName, isNative),
             hasTempData: fs.existsSync(path.join(siteDir, 'src/data-temp'))
         };
 
@@ -167,21 +180,23 @@ export class DoctorController {
     /**
      * Calculate storage usage in MB (with 60s cache per site)
      */
-    _calculateStorageUsage(siteName) {
+    _calculateStorageUsage(siteName, isNative = true) {
+        const cacheKey = `${isNative ? 'N' : 'V'}:${siteName}`;
         if (!this._storageCache) this._storageCache = new Map();
         const now = Date.now();
-        const cached = this._storageCache.get(siteName);
+        const cached = this._storageCache.get(cacheKey);
 
         if (cached && (now - cached.timestamp < 60000)) {
             return cached.value;
         }
 
-        const siteDir = path.join(this.sitesDir, siteName);
+        const baseDir = isNative ? this.sitesDir : this.vaultDir;
+        const siteDir = path.join(baseDir, siteName);
         try {
             // Fast way to get directory size on Linux
             const output = execSync(`du -sm "${siteDir}"`).toString();
             const value = parseInt(output.split('\t')[0]);
-            this._storageCache.set(siteName, { value, timestamp: now });
+            this._storageCache.set(cacheKey, { value, timestamp: now });
             return value;
         } catch (e) {
             return 0;

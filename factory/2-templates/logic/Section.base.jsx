@@ -44,19 +44,29 @@ const Section = ({ data }) => {
           className="relative w-full h-auto min-h-[80vh] flex items-center justify-center overflow-hidden bg-slate-900 pt-24"
         >
           <div className="absolute inset-0 z-0">
-             <img src={getImageUrl(heroData.hero_image)} className="w-full h-full object-cover" data-dock-type="media" data-dock-bind="hero.hero_image" />
+             <img 
+                src={getImageUrl(heroData.afbeelding_bg || heroData.hero_image)} 
+                className="w-full h-full object-cover" 
+                data-dock-type="media" 
+                data-dock-bind={JSON.stringify({ file: 'hero', index: 0, key: heroData.afbeelding_bg ? 'afbeelding_bg' : 'hero_image' })} 
+             />
              <div className="absolute inset-0 bg-black/50 z-10"></div>
           </div>
           <div className="relative z-20 text-center px-6 max-w-5xl text-white">
             <h1 className="text-4xl md:text-7xl font-bold mb-6">
-              <span data-dock-type="text" data-dock-bind="hero.hero_header">{heroData.hero_header}</span>
+              <span data-dock-type="text" data-dock-bind={JSON.stringify({ file: 'hero', index: 0, key: heroData.tekst_titel ? 'tekst_titel' : 'hero_header' })}>{heroData.tekst_titel || heroData.hero_header}</span>
             </h1>
             <p className="text-xl md:text-2xl mb-10 opacity-90">
-              <span data-dock-type="text" data-dock-bind="hero.hero_tagline">{heroData.hero_tagline}</span>
+              <span data-dock-type="text" data-dock-bind={JSON.stringify({ file: 'hero', index: 0, key: heroData.tekst_subtitel ? 'tekst_subtitel' : 'hero_tagline' })}>{heroData.tekst_subtitel || heroData.hero_tagline}</span>
             </p>
-            {heroData.cta_text && (
-              <a href={heroData.cta_url || "#"} className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-slate-200 transition-all" data-dock-type="link" data-dock-bind="hero.cta_text">
-                {heroData.cta_text}
+            {(heroData.tekst_knop || heroData.cta_text) && (
+              <a 
+                href={heroData.link_knop || heroData.cta_url || "#"} 
+                className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-slate-200 transition-all" 
+                data-dock-type="link" 
+                data-dock-bind={JSON.stringify({ file: 'hero', index: 0, key: heroData.tekst_knop ? 'tekst_knop' : 'cta_text' })}
+              >
+                {heroData.tekst_knop || heroData.cta_text}
               </a>
             )}
           </div>

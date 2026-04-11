@@ -1,4 +1,4 @@
-import { runParser } from '../../../../5-engine/parser-engine.js';
+import { runParser } from '../../../../5-engine/core/parser-engine.js';
 
 const customPrompt = `Extract data for a professional service provider. 
 Focus on Hero, Intro, Benefits (Voordelen), Showcase, Process (Proces), and Contact information.

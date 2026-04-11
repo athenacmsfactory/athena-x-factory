@@ -30,27 +30,29 @@
     {
       "table_name": "hero",
       "columns": [
-        "title",
-        "subtitle",
-        "cta_text",
-        "image"
+        "tekst_titel",
+        "tekst_subtitel",
+        "tekst_knop",
+        "link_knop",
+        "afbeelding_bg"
       ]
     },
     {
       "table_name": "intro",
       "columns": [
-        "title",
-        "content",
-        "subcontent",
-        "image"
+        "tekst_titel",
+        "tekst_inhoud",
+        "tekst_subinhoud",
+        "afbeelding"
       ]
     },
     {
       "table_name": "voordelen",
       "columns": [
-        "title",
-        "description",
-        "icon"
+        "tekst_titel",
+        "tekst_beschrijving",
+        "icoon_type",
+        "afbeelding_thumbnail"
       ]
     },
     {
@@ -85,20 +87,21 @@
       "id": "hero",
       "title": "Hoofdpagina",
       "fields": {
-        "title": "string",
-        "subtitle": "text",
-        "cta_text": "string",
-        "image": "image"
+        "tekst_titel": "string",
+        "tekst_subtitel": "text",
+        "tekst_knop": "string",
+        "link_knop": "string",
+        "afbeelding_bg": "image"
       }
     },
     {
       "id": "intro",
       "title": "De Revolutie in Webdesign",
       "fields": {
-        "title": "string",
-        "content": "text",
-        "subcontent": "text",
-        "image": "image"
+        "tekst_titel": "string",
+        "tekst_inhoud": "text",
+        "tekst_subinhoud": "text",
+        "afbeelding": "image"
       }
     },
     {
@@ -107,9 +110,10 @@
       "fields": {
         "items": [
           {
-            "title": "string",
-            "description": "text",
-            "icon": "string"
+            "tekst_titel": "string",
+            "tekst_beschrijving": "text",
+            "icoon_type": "string",
+            "afbeelding_thumbnail": "image"
           }
         ]
       }
@@ -159,10 +163,10 @@
       "id": "contact",
       "title": "Start Uw Project",
       "fields": {
-        "title": "string",
+        "tekst_titel": "string",
         "email": "string",
         "linkedin": "string",
-        "location": "string"
+        "locatie": "string"
       }
     }
   ]

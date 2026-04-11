@@ -11,6 +11,7 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
 import { createProject, validateProjectName } from '../5-engine/core/factory.js';
+import { AthenaConfigManager } from '../5-engine/lib/ConfigManager.js';
 import { loadEnv } from '../5-engine/env-loader.js';
 import { generateVariants, getAvailableThemes } from '../5-engine/core/variant-generator.js';
 
@@ -52,7 +53,7 @@ Usage: node quick-create.js --name <name> --type <sitetype> --input <file> [opti
 
     // 1. Validator Check
     const nameVal = Validator.validateProjectName(values.name, path.join(root, '../sites'));
-    if (!nameVal.valid) {
+    if (!nameVal.valid && nameVal.error !== 'Project directory already exists') {
         console.error(`❌ Invalid Project Name: ${nameVal.error}`);
         process.exit(1);
     }
@@ -69,7 +70,8 @@ Usage: node quick-create.js --name <name> --type <sitetype> --input <file> [opti
         siteType: values.type,
         siteModel: values.model,
         inputFile: 'quick-input.txt',
-        autoSheet: true // Default to true for CLI
+        autoSheet: true, // Default to true for CLI
+        editorStrategy: 'unified'
     };
 
     console.log(`   Project: ${config.projectName}`);
@@ -79,12 +81,15 @@ Usage: node quick-create.js --name <name> --type <sitetype> --input <file> [opti
 
     const targetSiteDir = path.join(root, '../sites', safeName);
     if (fs.existsSync(targetSiteDir)) {
-        console.error(`❌ Error: Directory sites/${safeName} already exists.`);
-        process.exit(1);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const backupPath = `${targetSiteDir}-old-${timestamp}`;
+        console.warn(`⚠️  Target directory exists. Moving existing site to ${path.basename(backupPath)}`);
+        fs.renameSync(targetSiteDir, backupPath);
     }
 
     // 2. Validate Type & Input
-    const siteTypeDir = path.join(root, '3-sitetypes', config.siteType);
+    const configManager = new AthenaConfigManager(path.resolve(root, '..'));
+    const siteTypeDir = path.join(configManager.get('paths.sitetypes'), config.siteType);
     if (!fs.existsSync(siteTypeDir)) {
         console.error(`❌ Site type NOT FOUND: ${config.siteType}`);
         process.exit(1);
@@ -96,7 +101,14 @@ Usage: node quick-create.js --name <name> --type <sitetype> --input <file> [opti
     }
 
     // 3. Setup Input Directory
-    const inputDir = path.join(root, '../input', safeName, 'input');
+    const projectInputRoot = path.join(root, '../input', safeName);
+    if (fs.existsSync(projectInputRoot)) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const backupInputPath = `${projectInputRoot}-old-${timestamp}`;
+        console.warn(`⚠️  Input directory exists. Moving existing input to ${path.basename(backupInputPath)}`);
+        fs.renameSync(projectInputRoot, backupInputPath);
+    }
+    const inputDir = path.join(projectInputRoot, 'input');
     fs.mkdirSync(inputDir, { recursive: true });
 
     const content = fs.readFileSync(values.input, 'utf8');

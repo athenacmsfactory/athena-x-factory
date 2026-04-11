@@ -13,10 +13,10 @@ import { generateWithAI } from './ai-engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const factoryRoot = path.resolve(__dirname, '../..');
+const factoryRoot = path.resolve(__dirname, '../../..');
 
 const { AthenaConfigManager } = await import('../lib/ConfigManager.js');
-const config = new AthenaConfigManager(factoryRoot);
+const config = new AthenaConfigManager();
 const sitetypesDir = config.get('paths.sitetypes');
 
 // Ensure .env is loaded (if needed, ai-engine also does this)

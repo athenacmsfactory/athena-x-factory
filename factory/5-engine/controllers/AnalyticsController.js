@@ -10,17 +10,17 @@ export class AnalyticsController {
     constructor(configManager) {
         this.configManager = configManager;
         this.sitesDir = configManager.get('paths.sites');
+        this.vaultDir = configManager.get('paths.vault') || configManager.get('paths.sitesExternal');
     }
 
     /**
      * Get analytics for a site (mock data for now, scalable to real events)
      */
-    async getSiteMetrics(siteId) {
+    async getSiteMetrics(siteId, isNative = true) {
         console.log(`📊 Analytics: Fetching metrics for ${siteId}...`);
         
-        // In a real scenario, we would query a DB or log aggregator.
-        // For the prototype, we generate consistent metrics based on site age.
-        const sitePath = path.join(this.sitesDir, siteId);
+        const baseDir = isNative ? this.sitesDir : this.vaultDir;
+        const sitePath = path.join(baseDir, siteId);
         if (!fs.existsSync(sitePath)) throw new Error("Site niet gevonden.");
 
         const stats = fs.statSync(sitePath);
@@ -34,6 +34,7 @@ export class AnalyticsController {
 
         return {
             siteId,
+            isNative,
             period: "Last 30 Days",
             metrics: {
                 visitors,
@@ -50,28 +51,35 @@ export class AnalyticsController {
      * Get aggregate metrics for the entire factory
      */
     async getPortfolioMetrics() {
-        const sites = fs.readdirSync(this.sitesDir).filter(f => 
-            fs.statSync(path.join(this.sitesDir, f)).isDirectory() && !f.startsWith('.')
-        );
+        const nativeSites = this._scanForSites(this.sitesDir);
+        const vaultSites = this._scanForSites(this.vaultDir);
 
         const results = [];
-        for (const site of sites) {
-            try {
-                results.push(await this.getSiteMetrics(site));
-            } catch (e) {}
+        for (const site of nativeSites) {
+            try { results.push(await this.getSiteMetrics(site, true)); } catch (e) {}
+        }
+        for (const site of vaultSites) {
+            try { results.push(await this.getSiteMetrics(site, false)); } catch (e) {}
         }
 
         const totalVisitors = results.reduce((acc, r) => acc + r.metrics.visitors, 0);
         const totalLeads = results.reduce((acc, r) => acc + r.metrics.leads, 0);
 
         return {
-            totalSites: sites.length,
+            totalSites: results.length,
             aggregated: {
                 totalVisitors,
                 totalLeads,
-                avgConversionRate: (totalLeads / totalVisitors * 100).toFixed(2) + "%"
+                avgConversionRate: totalVisitors > 0 ? (totalLeads / totalVisitors * 100).toFixed(2) + "%" : "0%"
             },
             details: results
         };
+    }
+
+    _scanForSites(dir) {
+        if (!fs.existsSync(dir)) return [];
+        return fs.readdirSync(dir).filter(f => 
+            fs.statSync(path.join(dir, f)).isDirectory() && !f.startsWith('.') && f !== 'athena-cms'
+        );
     }
 }
