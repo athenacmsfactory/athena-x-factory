@@ -380,6 +380,12 @@ export class SiteController {
 
         const previewPort = this.getSitePort(id, siteDir);
 
+        // 🔱 v8.8 Auto-Stop logic
+        if (options.stopOthers) {
+            console.log(`🧹 Auto-Stop active: Stopping other preview servers...`);
+            await this.pm.stopAllProcesses('preview');
+        }
+
         // Check of proces al draait
         const active = this.pm.listActive();
         if (active[previewPort]) {

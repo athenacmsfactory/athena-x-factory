@@ -92,6 +92,7 @@ export class TransformationEngine {
         result = this.transformConditionalBlocks(result);
 
         // Final Pass: Clean up unused imports if it's a JS/JSX file
+        /*
         if (fileName.endsWith('.jsx') || fileName.endsWith('.js')) {
             try {
                 result = this.pruneUnusedImports(result);
@@ -99,6 +100,7 @@ export class TransformationEngine {
                 console.warn(`⚠️ Import pruning failed for ${fileName}:`, e.message);
             }
         }
+        */
 
         return result;
     }

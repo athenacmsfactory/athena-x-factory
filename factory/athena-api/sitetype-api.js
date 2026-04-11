@@ -6,10 +6,8 @@ import { generateWithAI } from '../5-engine/core/ai-engine.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const factoryRoot = path.resolve(__dirname, '..');
-
-// Initialize ConfigManager
-const config = new AthenaConfigManager(factoryRoot);
+const monorepoRoot = path.resolve(__dirname, '../..');
+const config = new AthenaConfigManager(monorepoRoot);
 const sitetypesDir = config.get('paths.sitetypes');
 
 // --- AI FUNCTIE VOOR DATASTRUCTUUR GENERATIE ---
@@ -345,6 +343,7 @@ export function getExistingSiteTypes() {
 
             results.push({
                 name: type,
+                track: type.includes('dock') ? 'docked' : 'autonomous',
                 description: description,
                 tableCount,
                 layoutCount

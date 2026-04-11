@@ -10,6 +10,7 @@ export const ComponentRegistry = {
     'faq': { name: 'FAQ', path: './components/FAQ' },
     'cta': { name: 'CTA', path: './components/CTA' },
     'product': { name: 'ProductGrid', path: './components/ProductGrid' },
+    'benefits': { name: 'Benefits', path: './components/Benefits' },
     'about': { name: 'AboutSection', path: './components/AboutSection' },
     'gallery': { name: 'GenericSection', path: './components/GenericSection' },
     'grid': { name: 'GenericSection', path: './components/GenericSection' },
@@ -20,12 +21,13 @@ export function getComponentForSection(sectionName) {
     const lower = sectionName.toLowerCase();
 
     if (lower === 'basis' || lower === 'basisgegevens' || lower === 'hero') return ComponentRegistry['hero'];
-    if (lower.includes('about') || lower.includes('info')) return ComponentRegistry['about'];
+    if (lower.includes('about') || lower.includes('info') || lower.includes('intro')) return ComponentRegistry['about'];
     if (lower.includes('testimonial') || lower.includes('review') || lower.includes('ervaring')) return ComponentRegistry['testimonials'];
     if (lower.includes('team') || lower.includes('medewerker') || lower.includes('wie_zijn_wij')) return ComponentRegistry['team'];
     if (lower.includes('faq') || lower.includes('vragen')) return ComponentRegistry['faq'];
     if (lower.includes('cta') || lower.includes('banner') || lower.includes('actie')) return ComponentRegistry['cta'];
     if (lower.includes('product') || lower.includes('shop') || lower.includes('dienst') || lower.includes('feature') || lower.includes('services')) return ComponentRegistry['product'];
+    if (lower.includes('voordeel') || lower.includes('benefits')) return ComponentRegistry['benefits'];
     if (lower.includes('gallery') || lower.includes('foto') || lower.includes('portfolio')) return ComponentRegistry['gallery'];
 
     return ComponentRegistry['list']; // Default
