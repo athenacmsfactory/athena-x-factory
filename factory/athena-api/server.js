@@ -320,6 +320,131 @@ app.post('/api/tools/clone', async (req, res) => res.json(await toolCtrl.clonePr
 app.post('/api/projects/:id/scrape', async (req, res) => res.json(toolCtrl.scrape(req.params.id, req.body.inputFile)));
 app.post('/api/sites/:id/generate-variants', async (req, res) => res.json(toolCtrl.generateVariants(req.params.id, req.body.styles)));
 app.post('/api/run-script', async (req, res) => res.json(await toolCtrl.runScript(req.body.script, req.body.args)));
+app.get('/api/tools/preview-lego', (req, res) => {
+    try {
+        const filePath = req.query.file;
+        let content = fs.readFileSync(filePath, 'utf8');
+        
+        // Extract lucide imports to mock them
+        let lucideImports = [];
+        content = content.replace(/import\s+\{([^}]+)\}\s+from\s+['"](?:lucide-react|@lucide\/react)['"];?/g, (match, p1) => {
+             p1.split(',').forEach(i => lucideImports.push(i.trim()));
+             return '';
+        });
+
+        // Strip out other imports and exports so Babel can run it as a script
+        content = content.replace(/import\s+.*?['"].*?['"];?/g, '');
+        
+        let funcName = 'PreviewComponent';
+        
+        // Catch: export default function Name(...)
+        content = content.replace(/export\s+default\s+function\s+(\w+)/g, (match, name) => {
+            funcName = name;
+            return `function ${name}`;
+        });
+        
+        // Catch: export default Name;
+        content = content.replace(/export\s+default\s+(\w+);?/g, (match, name) => {
+            funcName = name;
+            return ''; // Strip the export
+        });
+        
+        // Fallback for getting the name if it still couldn't find one
+        if (funcName === 'PreviewComponent') {
+            const funcMatch = content.match(/(?:const|let|var|function)\s+(\w+)\s*=/);
+            if (funcMatch) funcName = funcMatch[1];
+            else {
+                const funcMatch2 = content.match(/function\s+(\w+)/);
+                if (funcMatch2) funcName = funcMatch2[1];
+            }
+        }
+
+        const lucideMocks = lucideImports.map(i => `const ${i} = () => <span className="inline-block w-6 h-6 bg-slate-500/50 rounded-full" title="Icon: ${i}"></span>;`).join('\n');
+
+        const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <script>
+                tailwind.config = { theme: { extend: { colors: { midnight: '#020024', primary: '#0f172a', accent: '#3b82f6' } } } }
+            </script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+            <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+            <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+            <script src="https://unpkg.com/lucide@latest"></script>
+            <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+            <style>body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-y: auto; }</style>
+        </head>
+        <body>
+            <div id="root" class="w-full"></div>
+            <script type="text/babel">
+                const { useState, useEffect, useRef, useMemo, useCallback } = React;
+                
+                // Mocker for icon components that might have been stripped
+                window.IconMock = () => <span style={{display:'inline-block', width:24, height:24, background:'currentColor', borderRadius:'50%', opacity:0.5}}></span>;
+
+                // Lucide Mocks
+                ${lucideMocks}
+
+                //////////////// COMPONENT CODE ////////////////
+                ${content.replace(/<([A-Z]\w+)\s/g, (match, p1) => {
+                    // Try to catch missing lucide icons heuristically by catching capitals not defined in content
+                    return match;
+                })}
+                ///////////////////////////////////////////////
+
+                // Generate smart mock data that works as both Array and Object
+                const mockData = [
+                    { naam: 'Mock Item 1', titel: 'Preview Item 1', title: 'Preview Item 1', beschrijving: 'Dit is een fantastische placeholder tekst voor de live previewer.', tekst: 'Lorum ipsum test.', foto: 'https://picsum.photos/id/10/800/600', image: 'https://picsum.photos/id/10/800/600', url: 'https://picsum.photos/id/10/800/600', vraag: 'Wat is dit?', antwoord: 'Dit is een live preview in de Athena Dashboard Sandbox.', icon: 'globe' },
+                    { naam: 'Mock Item 2', titel: 'Preview Item 2', title: 'Preview Item 2', beschrijving: 'Meer tekst om de layout te renderen.', tekst: 'Lorum ipsum test.', foto: 'https://picsum.photos/id/11/800/600', image: 'https://picsum.photos/id/11/800/600', url: 'https://picsum.photos/id/11/800/600', vraag: 'Werkt het?', antwoord: 'Ja, de mock data laadt perfect in, zelfs als het een array moet zijn!', icon: 'star' },
+                    { naam: 'Mock Item 3', titel: 'Preview Item 3', title: 'Preview Item 3', beschrijving: 'Nog een extra item zodat grid layouts met 3 kolommen mooi tonen.', tekst: 'Lorum ipsum test.', foto: 'https://picsum.photos/id/12/800/600', image: 'https://picsum.photos/id/12/800/600', url: 'https://picsum.photos/id/12/800/600', vraag: 'En iconen?', antwoord: 'Ook FontAwesome en Icon classes worden weerspiegeld.', icon: 'rocket' }
+                ];
+                // Bind properties to the array so it also functions as an object for legos that destructure 'data'
+                Object.assign(mockData, {
+                    tekst_titel: 'Athena Lego Preview',
+                    tekst_subtitel: 'Deze mock tekst zorgt dat Single Object legos ook netjes renderen in de Sandbox.',
+                    tekst_knop: 'Bekijk Actie',
+                    link_knop: '#',
+                    link: '#',
+                    afbeelding_bg: 'https://picsum.photos/id/13/1920/1080',
+                    image: 'https://picsum.photos/id/14/800/600',
+                    titel: 'Preview Sectie'
+                });
+
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(<${funcName} data={mockData} sectionName="Preview_Lego" />);
+                
+                // Render Lucide icons after mount if any
+                setTimeout(() => typeof lucide !== 'undefined' && window.lucide?.createIcons && window.lucide.createIcons(), 500);
+            </script>
+        </body>
+        </html>
+        `;
+        res.send(html);
+    } catch (e) { res.status(500).send('Error rendering preview: ' + e.message); }
+});
+
+app.post('/api/tools/read-file', (req, res) => {
+    try {
+        const content = fs.readFileSync(req.body.file, 'utf8');
+        res.json({ success: true, content });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/tools/write-file', (req, res) => {
+    try {
+        fs.writeFileSync(req.body.file, req.body.content, 'utf8');
+        res.json({ success: true });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/tools/open-ide', (req, res) => {
+    import('child_process').then(({ spawn }) => { 
+        spawn('code', [req.body.file], { detached: true }); 
+        res.json({ success: true }); 
+    }).catch(e => res.status(500).json({ error: e.message }));
+});
 
 app.post('/api/set-site', async (req, res) => {
     // Forward to Media Visualizer if it's running
@@ -347,17 +472,46 @@ app.post('/api/servers/stop/:type', async (req, res) => res.json(await serverCtr
 app.post('/api/servers/stop-all', async (req, res) => res.json(await serverCtrl.stopAllSiteServers()));
 app.get('/api/servers/active', (req, res) => res.json({ servers: serverCtrl.getActive(req.hostname) }));
 app.post('/api/servers/kill/:port', async (req, res) => res.json(await serverCtrl.kill(req.params.port)));
-app.post('/api/start-layout-server', async (req, res) => res.json(await serverCtrl.startLayoutEditor()));
-app.post('/api/start-media-server', async (req, res) => res.json(await serverCtrl.startMediaVisualizer(req.body.siteName)));
-app.post('/api/start-dock', async (req, res) => res.json(await serverCtrl.startDock()));
-
 // --- SITETYPE API ---
+app.get('/api/sitetype/previews', (req, res) => res.json(siteCtrl.listPreviews()));
+app.post('/api/sitetype/:name/preview', async (req, res) => {
+    try {
+        const result = await siteCtrl.previewSitetypePreview(req.params.name);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+app.post('/api/sitetype/:name/provision', async (req, res) => {
+    try {
+        const result = await siteCtrl.provisionSitetypePreview(req.params.name);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
 app.get('/api/sitetypes', (req, res) => res.json(getExistingSiteTypes()));
 app.get('/api/sitetype/existing', (req, res) => res.json({ success: true, sitetypes: getExistingSiteTypes() }));
-app.post('/api/sitetype/create-from-site', async (req, res) => res.json(await toolCtrl.createSitetypeFromSite(req.body.sourceSiteName, req.body.targetSitetypeName)));
-app.post('/api/sitetype/generate-structure', async (req, res) => res.json({ success: true, structure: await generateDataStructureAPI(req.body.businessDescription) }));
-app.post('/api/sitetype/generate-parser', async (req, res) => res.json({ success: true, instructions: await generateParserInstructionsAPI(req.body.table) }));
-app.post('/api/sitetype/generate-design', async (req, res) => res.json({ success: true, design: await generateDesignSuggestionAPI(req.body.businessDescription) }));
+app.get('/api/legos', (req, res) => res.json({ success: true, legos: siteCtrl.getLegos() }));
+
+app.post('/api/start-layout-server', async (req, res) => res.json(await serverCtrl.startLayoutEditor()));
+
+app.get('/api/blueprints/:name', async (req, res) => {
+    try {
+        const sitetypesDir = configManager.get('paths.sitetypes');
+        const filePath = path.join(sitetypesDir, req.params.name, 'blueprint', `${req.params.name}.json`);
+        if (fs.existsSync(filePath)) {
+            res.json(JSON.parse(fs.readFileSync(filePath, 'utf8')));
+        } else {
+            res.status(404).json({ error: 'Blueprint not found' });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 app.post('/api/sitetype/create', async (req, res) => res.json(await generateCompleteSiteType(req.body.name, req.body.description, req.body.dataStructure, req.body.designSystem)));
 
 // --- STORAGE API ---
@@ -378,9 +532,6 @@ app.post('/api/storage/:siteName/dehydrate', (req, res) => res.json(doctorCtrl.d
 app.post('/api/storage/cleanup-temp', async (req, res) => res.json(await doctorCtrl.cleanupTempData()));
 app.post('/api/storage/prune-pnpm', (req, res) => res.json(doctorCtrl.prunePnpmStore()));
 
-// --- MARKETING API ---
-app.post('/api/marketing/generate-seo', async (req, res) => res.json(await marketingCtrl.generateSEO(req.body.projectName)));
-app.post('/api/marketing/generate-blog', async (req, res) => res.json(await marketingCtrl.generateBlog(req.body.projectName, req.body.topic)));
 
 // --- PAYMENT API ---
 app.post('/api/payments/create-session', async (req, res) => res.json(await paymentCtrl.createStripeSession(req.body.projectName, req.body.cart, req.body.successUrl, req.body.cancelUrl)));
@@ -404,18 +555,6 @@ app.get('/api/roadmaps', (req, res) => {
             time: "N/A",
             steps: []
         });
-    }
-});
-
-// --- BLUEPRINT API ---
-app.get('/api/blueprints/:name', (req, res) => {
-    const { name } = req.params;
-    const sitetypesDir = configManager.get('paths.sitetypes');
-    const blueprintPath = path.join(sitetypesDir, name, 'blueprint', `${name}.json`);
-    if (fs.existsSync(blueprintPath)) {
-        res.json(JSON.parse(fs.readFileSync(blueprintPath, 'utf8')));
-    } else {
-        res.status(404).json({ error: "Blueprint niet gevonden" });
     }
 });
 

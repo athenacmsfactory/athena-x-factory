@@ -23,6 +23,7 @@ export class SiteController {
         this.dataManager = new AthenaDataManager(configManager.get('paths.factory'));
         this.interpreter = new AthenaInterpreter(configManager);
         this.installManager = new InstallManager(this.root);
+        this.sitetypesPreviewDir = path.join(this.root, 'sitetypes-preview');
     }
 
     /**
@@ -71,6 +72,14 @@ export class SiteController {
         const externalSites = this._scanDir(this.sitesExternalDir, false);
         return [...nativeSites, ...externalSites];
     }
+
+    /**
+     * List all sitetype previews (from sitetypes-preview folder)
+     */
+    listPreviews() {
+        return this._scanDir(this.sitetypesPreviewDir, true);
+    }
+
 
     _scanDir(dir, isNative) {
         console.log(`🔍 Scanning ${isNative ? 'NATIVE' : 'EXTERNAL'} directory: ${dir}`);
@@ -435,28 +444,213 @@ export class SiteController {
     }
 
     /**
-     * Bepaalt poort voor een site (of haalt op uit register)
+     * Start een preview voor een sitetype/blueprint blueprint met mockup data
+     */
+    async previewSitetypePreview(name) {
+        const showcasePath = path.join(this.sitetypesPreviewDir, name);
+        console.log(`🔍 Checking preview at: ${showcasePath}`);
+        
+        // Als de showcase nog niet bestaat, geven we een specifieke status terug
+        if (!fs.existsSync(showcasePath)) {
+            return { 
+                success: true, 
+                status: 'not_provisioned', 
+                message: `Preview site voor '${name}' moet nog gegenereerd worden.`,
+                canProvision: true
+            };
+        }
+
+        const previewPort = this.getSitePort(`showcase-${name}`, showcasePath);
+        
+        // Stop andere processes op deze poort
+        await this.pm.stopProcessByPort(previewPort);
+
+        console.log(`🚀 Starting Sitetype Preview for ${name} on port ${previewPort}...`);
+        
+        // Start de site vanuit de showcase map
+        await this.pm.startProcess(`showcase-${name}`, 'showcase-preview', previewPort, 'pnpm', ['dev', '--port', previewPort.toString(), '--host'], { cwd: showcasePath });
+
+        return { success: true, status: 'starting', url: `http://localhost:${previewPort}/` };
+    }
+
+    /**
+     * Genereert een full working site in de showcase map voor een specifiek sitetype
+     */
+    async provisionSitetypePreview(name) {
+        const showcasePath = path.join(this.sitetypesPreviewDir, name);
+        if (fs.existsSync(showcasePath)) {
+            return { success: true, message: "Preview bestaat al." };
+        }
+
+        console.log(`✨ Provisioning preview site for '${name}'...`);
+        
+        try {
+            // Gebruik de bestaande createProject logica maar forceer de output naar showcaseDir
+            // We simuleren een creatie-optie die de map overschrijft
+            const sitetypesDir = this.configManager.get('paths.sitetypes');
+            const blueprintFile = path.join(sitetypesDir, name, 'blueprint', `${name}.json`);
+            
+            if (!fs.existsSync(blueprintFile)) throw new Error(`Blueprint voor ${name} niet gevonden.`);
+            
+            const bp = JSON.parse(fs.readFileSync(blueprintFile, 'utf8'));
+            
+            // We kopiëren de sitetype/web/standard naar showcasePath
+            const sourceWeb = path.join(sitetypesDir, name, 'web/standard');
+            const fallbackWeb = path.join(sitetypesDir, name, 'web');
+            const webPath = fs.existsSync(sourceWeb) ? sourceWeb : fallbackWeb;
+            
+            if (!fs.existsSync(webPath)) throw new Error(`Geen web bron gevonden voor ${name}`);
+
+            execSync(`mkdir -p "${showcasePath}"`);
+            execSync(`rsync -av --exclude 'node_modules' "${webPath}/" "${showcasePath}/"`);
+
+            // 1. Ensure package.json exists
+            const pkgPath = path.join(showcasePath, 'package.json');
+            if (!fs.existsSync(pkgPath)) {
+                console.log(`📝 Injecting default package.json for preview '${name}'...`);
+                const pkg = {
+                    name: `showcase-${name}`,
+                    type: "module",
+                    scripts: { "dev": "vite", "build": "vite build" },
+                    dependencies: {
+                        "react": "^19.0.0",
+                        "react-dom": "^19.0.0",
+                        "react-router-dom": "^6.20.0",
+                        "lucide-react": "^0.300.0"
+                    },
+                    devDependencies: {
+                        "vite": "^6.0.0",
+                        "@vitejs/plugin-react": "^4.0.0"
+                    }
+                };
+                fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
+            }
+
+            // 2. Ensure vite.config.js exists
+            const viteConfigPath = path.join(showcasePath, 'vite.config.js');
+            if (!fs.existsSync(viteConfigPath)) {
+                console.log(`📝 Injecting default vite.config.js for preview '${name}'...`);
+                const config = `
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: true,
+    strictPort: true
+  }
+})
+                `.trim();
+                fs.writeFileSync(viteConfigPath, config);
+            }
+
+            // 3. Ensure index.html exists
+            const htmlPath = path.join(showcasePath, 'index.html');
+            if (!fs.existsSync(htmlPath)) {
+                console.log(`📝 Injecting default index.html for preview '${name}'...`);
+                const html = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase: ${name}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/App.jsx"></script>
+  </body>
+</html>
+                `.trim();
+                fs.writeFileSync(htmlPath, html);
+            }
+
+            // Hydrateer met mock data
+            const targetDataDir = path.join(showcasePath, 'src/data');
+            if (!fs.existsSync(targetDataDir)) fs.mkdirSync(targetDataDir, { recursive: true });
+            
+            const mockData = this.generateMockData(bp.data_structure);
+            for (const [table, rows] of Object.entries(mockData)) {
+                fs.writeFileSync(path.join(targetDataDir, `${table}.json`), JSON.stringify(rows, null, 2));
+            }
+
+            // Voer npm install uit
+            console.log(`📦 Installing dependencies for preview '${name}'...`);
+            // Gebruik --prefer-offline om sneller te installeren op Chromebook
+            execSync(`cd "${showcasePath}" && pnpm install --prefer-offline`, { stdio: 'inherit' });
+
+            return { success: true, message: `Showcase voor '${name}' succesvol aangemaakt.` };
+        } catch (e) {
+            console.error("❌ Provisioning failed:", e.message);
+            return { success: false, error: e.message };
+        }
+    }
+
+    /**
+     * Genereert mockup data op basis van een data_structure
+     */
+    generateMockData(structure) {
+        const mock = {};
+        if (!structure) return mock;
+
+        structure.forEach(table => {
+            const rows = [];
+            // Genereer 3 mockup rijen per tabel
+            for (let i = 1; i <= 3; i++) {
+                const row = {};
+                table.columns.forEach(col => {
+                    const colName = typeof col === 'string' ? col : (col.name || 'field');
+                    const colDesc = typeof col === 'string' ? '' : (col.description || '');
+                    row[colName] = this.getRandomMockValue(colName, colDesc, i);
+                });
+                rows.push(row);
+            }
+            mock[table.table_name] = rows;
+        });
+        return mock;
+    }
+
+    getRandomMockValue(name, description, index) {
+        const n = name.toLowerCase();
+        if (n.includes('id')) return index;
+        if (n.includes('prijs') || n.includes('price')) return (Math.random() * 100 + 10).toFixed(2);
+        if (n.includes('naam') || n.includes('title') || n.includes('header')) return `Mock ${name} ${index}`;
+        if (n.includes('image') || n.includes('foto') || n.includes('url')) return `https://picsum.photos/seed/ath${index}/800/600`;
+        if (n.includes('email')) return `contact${index}@example.com`;
+        if (n.includes('locatie') || n.includes('adres')) return `Mock Straat ${index}, Gent`;
+        if (n.includes('datum')) return new Date().toISOString().split('T')[0];
+        if (n.includes('score') || n.includes('rating')) return 5;
+        
+        return `${description || name} placeholder text #${index}`;
+    }
+
+    /**
+     * Bepaalt poort voor een site via de centrale port-manager skill
      */
     getSitePort(id, siteDir) {
-        const portsPath = path.join(this.root, 'config/site-ports.json');
-        let ports = {};
-        if (fs.existsSync(portsPath)) {
-            ports = JSON.parse(fs.readFileSync(portsPath, 'utf8'));
+        const scriptPath = path.join(this.root, 'port-manager/scripts/manage_ports.py');
+        const project = 'athena';
+        const description = `Athena Site: ${id}`;
+        
+        try {
+            // Roep de python script aan: python3 manage_ports.py get <service> <project> [desc]
+            const cmd = `python3 "${scriptPath}" get "${id}" "${project}" "${description}"`;
+            const output = execSync(cmd).toString();
+            
+            // Extract PORT=xxxx uit de output
+            const match = output.match(/PORT=(\d+)/);
+            if (match) {
+                return parseInt(match[1]);
+            }
+            
+            // Fallback als de script faalt maar output geeft
+            throw new Error("Geen poort gevonden in script output.");
+        } catch (e) {
+            console.error("❌ Port Manager Skill failed:", e.message);
+            // Hele veilige fallback naar oude methode/range als de skill echt niet werkt
+            return 5100 + (Math.abs(id.split('').reduce((a, b) => (a << 5) - a + b.charCodeAt(0), 0)) % 1000);
         }
-
-        if (ports[id]) return ports[id];
-
-        // Nieuwe poort toewijzen (vanaf 5100)
-        const usedPorts = Object.values(ports);
-        const blacklist = [5060, 5061]; // SIP/VOIP Reserved ports
-        let nextPort = 5100;
-        while (usedPorts.includes(nextPort) || blacklist.includes(nextPort)) {
-            nextPort++;
-        }
-
-        ports[id] = nextPort;
-        fs.writeFileSync(portsPath, JSON.stringify(ports, null, 2));
-        return nextPort;
     }
 
     /**
@@ -524,6 +718,39 @@ export class SiteController {
         return fs.readdirSync(templatesDir).filter(f => 
             fs.statSync(path.join(templatesDir, f)).isDirectory() && !f.startsWith('.')
         );
+    }
+
+    /**
+     * Haalt alle beschikbare 'Legoblokken' (componenten) op uit de templates
+     */
+    getLegos() {
+        const legosRoot = path.join(this.root, 'factory/2-templates/components/legos');
+        if (!fs.existsSync(legosRoot)) return [];
+
+        const categories = ['Common', 'Layout', 'Shop'];
+        const results = [];
+
+        categories.forEach(cat => {
+            const catPath = path.join(legosRoot, cat);
+            if (fs.existsSync(catPath)) {
+                const files = fs.readdirSync(catPath).filter(f => 
+                    fs.statSync(path.join(catPath, f)).isFile() && !f.startsWith('.') && (f.endsWith('.jsx') || f.endsWith('.js'))
+                );
+                files.forEach(file => {
+                    const name = file.replace(/\.(jsx|js)$/, '');
+                    results.push({
+                        id: `${cat}-${name}`,
+                        name: name,
+                        category: cat,
+                        fileName: file,
+                        path: path.join(cat, file),
+                        absolutePath: path.join(catPath, file)
+                    });
+                });
+            }
+        });
+
+        return results;
     }
 
     /**
