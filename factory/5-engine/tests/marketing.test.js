@@ -61,6 +61,7 @@ describe('MarketingController', () => {
             const mockPaths = { dataDir: '/mock/sites/test-site/src/data' };
             const mockBlog = {
                 title: "AI Blog",
+                excerpt: "Korte samenvatting",
                 content: "Content here"
             };
 
@@ -81,7 +82,8 @@ describe('MarketingController', () => {
                 expect.stringContaining('blog.json'),
                 expect.any(String)
             );
-            expect(result.blog.title).toBe("AI Blog");
+            expect(result.articles[0].title).toBe("AI Blog");
+            expect(result.articles[0].summary).toBe("Korte samenvatting");
         });
     });
 });
