@@ -10,9 +10,12 @@ Deze structuur is geoptimaliseerd voor snelheid, maximale herbuikbaarheid (Lego-
 ```text
 athena/factory/
 ├── 2-templates/
-│   ├── skeletons/         <-- Unified base projects (MPA, SPA, Webshop)
-│   └── components/
-│       └── legos/         <-- Centralized "Zero-UI" Brick Library (V10 Standard)
+│   └── skeletons/         <-- Unified base projects (MPA, SPA, Webshop)
+│
+├── packages/
+│   └── runtime/           <-- @athena/runtime (Fase 1b): gedeelde Lego-bibliotheek,
+│                             contexts + fetch-data CLI als pnpm-workspace-package.
+│                             Sites consumeren deze via dunne shims + vendored tarball.
 │
 ├── 3-sitetypes/           <-- Pure Registry: Blueprints & Configs
 │   └── unified/           <-- Centralized Track (Standard for all 28+ types)
@@ -47,9 +50,10 @@ athena/factory/
     *   Skeletons are **Pure Viewers**—they contain zero editing UI.
 
 2.  **Bricks (The Content)**:
-    *   Located in `2-templates/components/legos/`.
+    *   Located in `packages/runtime/src/legos/` (package `@athena/runtime`).
     *   Atomic UI elements (Headers, Heros, Shop-Cards).
     *   Must use **data-dock-bind** for all dynamic content.
+    *   Gedeeld over alle sites: sites bevatten dunne re-export shims; site-specifieke componenten overschrijven die lokaal.
 
 3.  **Site-Types (The Blueprint)**:
     *   Located in `3-sitetypes/`.
@@ -70,7 +74,11 @@ athena/factory/
 
 ### 3. "Zero-Root" Lego Library
 *   Geen losse JSX-bestanden meer in de `components/` root. 
-*   Alles is strikt gecategoriseerd in de `legos/` submap (`Layout`, `Shop`, `Common`).
+*   Alles is strikt gecategoriseerd in de `legos/` submap (`Layout`, `Shop`, `Common`) —
+    sinds Fase 1b als onderdeel van de `@athena/runtime` workspace-package
+    (`packages/runtime/`), met de fetch-data CLI als bin (`athena-fetch-data`).
+*   Engine-updates doorvoeren op alle sites: `node factory/6-utilities/sync-runtime.js`
+    (pack + vendored tarball verversen; `--build` herbouwt elke site).
 
 *   De `5-engine` (Generator) werkt met directe paden naar `skeletons/` en `3-sitetypes/`. 
 *   Geen complexe pad-resolutie meer op basis van "strategies".

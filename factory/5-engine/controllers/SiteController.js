@@ -953,7 +953,7 @@ export default defineConfig({
      * Haalt alle beschikbare 'Legoblokken' (componenten) op uit de templates
      */
     getLegos() {
-        const legosRoot = path.join(this.root, 'factory/2-templates/components/legos');
+        const legosRoot = path.join(this.root, 'factory/packages/runtime/src/legos');
         if (!fs.existsSync(legosRoot)) return [];
 
         const categories = ['Common', 'Layout', 'Shop'];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCart } from '../../../skeletons/webshop/store/CartContext';
+import { useCart } from '../../contexts/CartContext';
 
 /**
  * ProductCardV9

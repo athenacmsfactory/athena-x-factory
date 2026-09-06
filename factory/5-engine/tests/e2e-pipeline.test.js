@@ -51,8 +51,7 @@ describe('E2E: factory pipeline (blueprint -> site -> vite build)', () => {
             'pnpm-workspace.yaml',
             'vite.config.js',
             'index.html',
-            'fetch-data.js',
-            'mapper.js',
+            'vendor/athena-runtime-0.1.0.tgz',
             'src/App.jsx',
             'src/main.jsx',
             'src/index.css',
@@ -72,6 +71,18 @@ describe('E2E: factory pipeline (blueprint -> site -> vite build)', () => {
             expect(fs.existsSync(path.join(siteDir, f)), `missing: ${f}`).toBe(true);
         });
 
+        // Fase 1b — gedeelde runtime: geen component-kopieën meer, maar dunne shims
+        expect(fs.existsSync(path.join(siteDir, 'fetch-data.js'))).toBe(false);
+        expect(fs.existsSync(path.join(siteDir, 'mapper.js'))).toBe(false);
+
+        const sitePkg = JSON.parse(fs.readFileSync(path.join(siteDir, 'package.json'), 'utf8'));
+        expect(sitePkg.dependencies['@athena/runtime']).toMatch(/^file:vendor\/athena-runtime-\d+\.\d+\.\d+\.tgz$/);
+        expect(sitePkg.scripts['fetch-data']).toBe('athena-fetch-data');
+
+        const heroShim = fs.readFileSync(path.join(siteDir, 'src/components/Hero.jsx'), 'utf8');
+        expect(heroShim).toContain("@athena/runtime/legos/Common/HeroLegoV9.js");
+        const styleShim = fs.readFileSync(path.join(siteDir, 'src/components/StyleContext.jsx'), 'utf8');
+        expect(styleShim).toContain("export *");
         expect(fs.readFileSync(path.join(siteDir, 'pnpm-workspace.yaml'), 'utf8')).toContain('esbuild: true');
 
         const mainJsx = fs.readFileSync(path.join(siteDir, 'src/main.jsx'), 'utf8');

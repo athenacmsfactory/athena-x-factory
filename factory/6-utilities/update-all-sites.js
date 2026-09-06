@@ -77,13 +77,9 @@ async function updateAllSites() {
                 }
             }
 
-            // 3. Update fetch-data.js (Unified logic)
-            const fetchPath = path.join(projectDir, 'fetch-data.js');
-            const fetchTpl = path.join(TPL, 'logic/fetch-data.js'); 
-            if (fs.existsSync(fetchPath) && fs.existsSync(fetchTpl)) {
-                fs.copyFileSync(fetchTpl, fetchPath);
-                console.log(`   ✅ fetch-data.js updated.`);
-            }
+            // 3. fetch-data.js is sinds Fase 1b onderdeel van @athena/runtime (bin:
+            //    athena-fetch-data). Updates verlopen via sync-runtime.js, niet meer
+            //    via bestandskopie. Zie packages/runtime/README.md.
 
             console.log(`   ✨ ${siteName} update complete.\n`);
         } catch (err) {

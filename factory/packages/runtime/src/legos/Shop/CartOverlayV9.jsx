@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCart } from './CartContext';
+import { useCart } from '../../contexts/CartContext';
 
 const CartOverlay = () => {
   const { cart, isCartOpen, setIsCartOpen, updateQuantity, cartTotal, cartCount } = useCart();

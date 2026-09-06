@@ -21,7 +21,7 @@ Open je browser op: `http://localhost:5000`
 Het systeem is nu volledig geflatteerd voor maximale snelheid en AI-vriendelijkheid:
 
 1.  **Docs**: De [V10_STRUCTURE.md](docs/V10_STRUCTURE.md) is de enige bron van waarheid voor de projectstructuur.
-2.  **Factory**: De engine die sites bouwt op basis van Blauwdrukken (`3-sitetypes/`) en een centrale Lego-bibliotheek (`2-templates/components/legos/`).
+2.  **Factory**: De engine die sites bouwt op basis van Blauwdrukken (`3-sitetypes/`) en een centrale Lego-bibliotheek als gedeelde runtime-package (`factory/packages/runtime/` → `@athena/runtime`).
 3.  **Dock (v10.1)**: De externe visual editor (poort 5002) die real-time communiceert met sites via de `data-dock-bind` protocol.
 4.  **Sites**: 100% data-driven React applicaties in de `/sites/` map.
 

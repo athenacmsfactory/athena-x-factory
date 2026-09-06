@@ -117,8 +117,9 @@ async function sync() {
     }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    sync();
-}
+// @athena/runtime CLI: altijd uitvoeren wanneer dit bestand als bin
+// (athena-fetch-data) wordt gestart. De klassieke argv[1]-check breekt onder
+// pnpm-bins (symlink vs realpath), dus hier unconditional aanroepen.
+sync();
 
 export { sync };

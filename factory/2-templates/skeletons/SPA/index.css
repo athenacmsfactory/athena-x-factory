@@ -1,6 +1,10 @@
 /* Main CSS Entry - Athena */
 @import "tailwindcss";
 
+/* Fase 1b — @athena/runtime bevat de gedeelde componenten (via node_modules);
+   Tailwind v4 scant node_modules standaard niet, dus expliciet registreren. */
+@source "../node_modules/@athena/runtime/dist";
+
 /* 
    Athena Modern Theme Integration
    Hier importeren we de design tokens en basisstijlen van Tailwind v4
