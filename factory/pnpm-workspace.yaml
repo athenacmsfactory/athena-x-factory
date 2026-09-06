@@ -6,5 +6,5 @@ packages:
   - 'sites/*'
   - '../../control/sitetypes-preview/*'
 
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true

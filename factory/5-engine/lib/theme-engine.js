@@ -122,6 +122,9 @@ export class ThemeEngine {
         if (ds.font_sans) config['--font-sans'] = ds.font_sans;
         if (ds.font_serif) config['--font-serif'] = ds.font_serif;
         if (ds.radius) config['--radius-custom'] = ds.radius;
+        if (ds.typography_scale && typeof ds.typography_scale === 'object') {
+            config['_typography_scale'] = { ...ds.typography_scale };
+        }
 
         return config;
     }

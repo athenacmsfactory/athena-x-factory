@@ -62,7 +62,7 @@ export class MarketingController {
 
         // 3. SYNC NAAR GOOGLE SHEETS
         console.log(`📡 Blog synchroniseren naar Google Sheet van ${projectName}...`);
-        await this.dataManager.pushToSheet(projectName);
+        await this.dataManager.syncToSheet(projectName);
 
         // Map excerpt to summary for UI consistency
         const article = { ...blogJson, summary: blogJson.excerpt };
@@ -127,7 +127,7 @@ export class MarketingController {
 
         // SYNC NAAR GOOGLE SHEETS
         console.log(`📡 SEO synchroniseren naar Google Sheet van ${projectName}...`);
-        await this.dataManager.pushToSheet(projectName);
+        await this.dataManager.syncToSheet(projectName);
 
         return {
             success: true,

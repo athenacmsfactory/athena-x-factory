@@ -64,6 +64,7 @@ describe('DoctorController - Hydration Management', () => {
             const sitePath = '/mock/sites/dormant-site';
 
             vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true; // Site exists
                 if (p === path.join(sitePath, 'node_modules')) return true; // Hydrated
                 return false;
             });

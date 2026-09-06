@@ -2,26 +2,29 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// This import will fail because generateClientInstructions is not exported yet
-import { generateClientInstructions } from '../core/factory.js';
+import { FinalizePhase } from '../core/phases/FinalizePhase.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-describe('Dutch Logic - factory.js', () => {
+describe('Dutch Logic - FinalizePhase', () => {
     const testDir = path.join(__dirname, 'test-project');
+    const tplDir = path.join(__dirname, 'test-templates');
 
     beforeEach(() => {
-        if (fs.existsSync(testDir)) {
-            fs.rmSync(testDir, { recursive: true });
-        }
+        fs.rmSync(testDir, { recursive: true, force: true });
+        fs.rmSync(tplDir, { recursive: true, force: true });
         fs.mkdirSync(testDir);
+        fs.mkdirSync(path.join(tplDir, 'docs'), { recursive: true });
+        fs.writeFileSync(
+            path.join(tplDir, 'docs', 'client-manual.md'),
+            '# Handleiding {{PROJECT_NAME}}\n\nBlueprint: {{BLUEPRINT_NAME}}\n\n{{DYNAMIC_CONTENT}}'
+        );
     });
 
     afterEach(() => {
-        if (fs.existsSync(testDir)) {
-            fs.rmSync(testDir, { recursive: true });
-        }
+        fs.rmSync(testDir, { recursive: true, force: true });
+        fs.rmSync(tplDir, { recursive: true, force: true });
     });
 
     it('should generate HANDLEIDING_BEHEER.md with correct placeholders', () => {
@@ -39,17 +42,28 @@ describe('Dutch Logic - factory.js', () => {
                 }
             ]
         };
-        
-        // Call the function with the correct object structure
-        generateClientInstructions(testDir, projectName, blueprint);
-        
+
+        // Call the phase with the correct context structure
+        const ctx = {
+            projectDir: testDir,
+            config: { projectName },
+            blueprint,
+            configManager: {
+                get: (key) => (key === 'paths.templates' ? tplDir : '/mock')
+            }
+        };
+        new FinalizePhase().generateInstructions(ctx);
+
         const manualPath = path.join(testDir, 'HANDLEIDING_BEHEER.md');
         expect(fs.existsSync(manualPath)).toBe(true);
-        
+
         const content = fs.readFileSync(manualPath, 'utf8');
         // Check for the replaced values
         expect(content).toContain(projectName); // {{PROJECT_NAME}}
         expect(content).toContain(blueprint.blueprint_name); // {{BLUEPRINT_NAME}}
         expect(content).toContain('De productnaam.'); // Dynamic content from data_structure
+        expect(content).toContain('### Tabblad: `products`');
+        expect(content).not.toContain('{{PROJECT_NAME}}');
+        expect(content).not.toContain('{{DYNAMIC_CONTENT}}');
     });
 });

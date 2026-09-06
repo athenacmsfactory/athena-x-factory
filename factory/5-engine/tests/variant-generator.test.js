@@ -14,7 +14,7 @@ import {
     parseThemeColors,
     createVariant,
     generateVariants
-} from '../variant-generator.js';
+} from '../core/variant-generator.js';
 
 describe('variant-generator.js', () => {
 

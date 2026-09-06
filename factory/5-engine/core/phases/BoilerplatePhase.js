@@ -96,6 +96,7 @@ export class BoilerplatePhase extends BasePhase {
     if (window.athenaScan) window.athenaScan(data);`;
 
         const styleFile = ctx.config.styleName.toLowerCase().endsWith('.css') ? ctx.config.styleName : `${ctx.config.styleName}.css`;
+        if (!ctx.engine.flags.isDocked) content = content.replace(/import '\.\/dock-connector\.js';\s*\n?/, '');
         return content.replace('{{DATA_LOADING_LOGIC}}', logic).replace('./style-import.css', `./${styleFile}`);
     }
 

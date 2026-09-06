@@ -15,6 +15,9 @@ vi.mock('child_process', () => {
     };
 });
 
+const POLICY_HYDRATED = JSON.stringify({ globalDefault: 'hydrated' });
+const POLICIES_PATH = '/mock/sites/hydration-policies.json';
+
 describe('DoctorController', () => {
     let doctor;
     let mockConfigManager;
@@ -31,12 +34,13 @@ describe('DoctorController', () => {
     });
 
     describe('audit', () => {
-        it('should return healthy for a valid site', () => {
+        it('should return healthy for a valid hydrated site', () => {
             const siteName = 'healthy-site';
             const sitePath = '/mock/sites/healthy-site';
             const dataPath = path.join(sitePath, 'src/data');
 
             vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true;
                 if (p === path.join(sitePath, 'node_modules')) return true;
                 if (p === dataPath) return true;
                 return false;
@@ -47,30 +51,38 @@ describe('DoctorController', () => {
                 return [];
             });
 
-            vi.spyOn(fs, 'readFileSync').mockReturnValue('{"key": "value"}');
+            vi.spyOn(fs, 'readFileSync').mockImplementation((p) => {
+                if (p === POLICIES_PATH) return POLICY_HYDRATED;
+                return '{"key": "value"}';
+            });
 
             const report = doctor.audit(siteName);
 
             expect(report.status).toBe('healthy');
+            expect(report.hydration).toBe('hydrated');
+            expect(report.policy).toBe('hydrated');
             expect(report.issues).toHaveLength(0);
         });
 
-        it('should report broken if node_modules is missing', () => {
+        it('should report warning if node_modules is missing while policy requires hydration', () => {
             const siteName = 'broken-site';
             const sitePath = '/mock/sites/broken-site';
 
             vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true;
                 if (p === path.join(sitePath, 'node_modules')) return false;
                 if (p === path.join(sitePath, 'src/data')) return true;
                 return false;
             });
 
             vi.spyOn(fs, 'readdirSync').mockReturnValue([]);
+            vi.spyOn(fs, 'readFileSync').mockReturnValue(POLICY_HYDRATED);
 
             const report = doctor.audit(siteName);
 
-            expect(report.status).toBe('broken');
-            expect(report.issues).toContain('Missing node_modules');
+            expect(report.hydration).toBe('dormant');
+            expect(report.status).toBe('warning');
+            expect(report.issues).toContain('Policy requires hydration, but node_modules is missing');
         });
 
         it('should report broken for corrupt JSON files', () => {
@@ -88,10 +100,21 @@ describe('DoctorController', () => {
 
         it('should report warning for empty JSON files', () => {
             const siteName = 'empty-site';
+            const sitePath = '/mock/sites/empty-site';
+            const dataPath = path.join(sitePath, 'src/data');
 
-            vi.spyOn(fs, 'existsSync').mockReturnValue(true);
+            vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true;
+                if (p === path.join(sitePath, 'node_modules')) return true;
+                if (p === dataPath) return true;
+                return false;
+            });
+
             vi.spyOn(fs, 'readdirSync').mockReturnValue(['empty.json']);
-            vi.spyOn(fs, 'readFileSync').mockReturnValue('{}');
+            vi.spyOn(fs, 'readFileSync').mockImplementation((p) => {
+                if (p === POLICIES_PATH) return POLICY_HYDRATED;
+                return 'null';
+            });
 
             const report = doctor.audit(siteName);
 
@@ -101,16 +124,18 @@ describe('DoctorController', () => {
     });
 
     describe('heal', () => {
-        it('should reinstall dependencies if node_modules is missing', async () => {
+        it('should hydrate if node_modules is missing but policy requires it', async () => {
             const siteName = 'fixable-site';
             const sitePath = '/mock/sites/fixable-site';
 
             vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true;
                 if (p === path.join(sitePath, 'node_modules')) return false;
                 if (p === path.join(sitePath, 'src/data')) return true;
                 return false;
             });
             vi.spyOn(fs, 'readdirSync').mockReturnValue([]);
+            vi.spyOn(fs, 'readFileSync').mockReturnValue(POLICY_HYDRATED);
 
             const result = await doctor.heal(siteName);
 
@@ -119,19 +144,26 @@ describe('DoctorController', () => {
                 'pnpm install --no-frozen-lockfile',
                 expect.objectContaining({ cwd: sitePath, stdio: 'ignore' })
             );
-            expect(result.fixes).toContain('Reinstalled dependencies');
+            expect(result.fixes).toContain('Hydration complete (node_modules installed).');
         });
 
-        it('should not attempt to heal if site is healthy', async () => {
+        it('should not attempt to heal if policy is already met', async () => {
             const siteName = 'perfect-site';
+            const sitePath = '/mock/sites/perfect-site';
             
-            vi.spyOn(fs, 'existsSync').mockReturnValue(true);
-            vi.spyOn(fs, 'readdirSync').mockReturnValue([]);
+            vi.spyOn(fs, 'existsSync').mockImplementation((p) => {
+                if (p === sitePath) return true;
+                if (p === path.join(sitePath, 'node_modules')) return true;
+                return false;
+            });
+            vi.spyOn(fs, 'readFileSync').mockReturnValue(POLICY_HYDRATED);
+            vi.spyOn(doctor, '_calculateStorageUsage').mockReturnValue(0);
 
             const result = await doctor.heal(siteName);
 
             expect(child_process.execSync).not.toHaveBeenCalled();
-            expect(result.message).toBe("Site is already healthy.");
+            expect(result.fixes).toHaveLength(0);
+            expect(result.message).toBe('Healed 0 issues.');
         });
     });
 });
