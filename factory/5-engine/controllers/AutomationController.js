@@ -6,6 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { QualityGate } from '../lib/QualityGate.js';
 
 export class AutomationController {
     constructor(configManager, dataManager, siteCtrl, buildCtrl, healerCtrl) {
@@ -14,9 +15,10 @@ export class AutomationController {
         this.siteCtrl = siteCtrl;
         this.buildCtrl = buildCtrl;
         this.healerCtrl = healerCtrl;
+        this.gate = new QualityGate(configManager);
         this.isRunning = false;
         this.interval = null;
-        this.stats = { lastRun: null, updatesTriggered: 0, healingsTriggered: 0, errors: 0 };
+        this.stats = { lastRun: null, updatesTriggered: 0, healingsTriggered: 0, gateFailures: 0, errors: 0 };
     }
 
     /**
@@ -69,9 +71,23 @@ export class AutomationController {
                     this.stats.healingsTriggered++;
                     
                     // 3. Rebuild the site
-                    await this.buildCtrl.build(site);
-                    
-                    console.log(`✅ [Automation] ${site} successfully updated, healed and rebuilt.`);
+                    const buildResult = await this.buildCtrl.build(site);
+                    if (!buildResult.success) {
+                        this.stats.errors++;
+                        console.error(`❌ [Automation] Build mislukt voor ${site}: ${buildResult.error}`);
+                        continue;
+                    }
+
+                    // 4. Kwaliteitspoort (Fase 1c) — de autopilot mag geen fouten versterken.
+                    //    Lint op de verse dist; build is al gedraaid, Lighthouse is te zwaar voor de 15-min-loop.
+                    const gateResult = await this.gate.runGate(site, { skipBuild: true, skipInstall: true, skipLighthouse: true });
+                    if (!gateResult.passed) {
+                        this.stats.gateFailures++;
+                        console.error(`🛑 [Automation] Kwaliteitspoort geblokkeerd voor ${site}: ${QualityGate.summarize(gateResult)}`);
+                        continue;
+                    }
+
+                    console.log(`✅ [Automation] ${site} successfully updated, healed, rebuilt and gate-passed.`);
                 }
             } catch (e) {
                 this.stats.errors++;

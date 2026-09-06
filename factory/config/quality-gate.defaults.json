@@ -1,0 +1,8 @@
+{
+  "lighthouse": {
+    "performance": 50,
+    "accessibility": 80,
+    "best-practices": 75,
+    "seo": 80
+  }
+}
