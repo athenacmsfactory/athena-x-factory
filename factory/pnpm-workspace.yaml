@@ -4,7 +4,6 @@ packages:
   - '../athena-api'
   - 'athena-dashboard-ui'
   - 'sites/*'
-  - '../../control/sitetypes-preview/*'
 
 allowBuilds:
   esbuild: true
