@@ -94,6 +94,11 @@ describe('E2E: factory pipeline (blueprint -> site -> vite build)', () => {
 
         const schema = JSON.parse(fs.readFileSync(path.join(siteDir, 'src/data/schema.json'), 'utf8'));
         expect(schema.data_structure.length).toBeGreaterThan(0);
+
+        // Fase 1c — geen onopgeloste template-placeholders in de gegenereerde site
+        const generatedIndex = fs.readFileSync(path.join(siteDir, 'index.html'), 'utf8');
+        expect(generatedIndex).not.toMatch(/\{\{META_(DESCRIPTION|KEYWORDS)\}\}/);
+        expect(generatedIndex).toContain('<meta name="description"');
     }, 120000);
 
     it.skipIf(process.env.ATHENA_E2E_FAST === '1')('installeert en buildt de gegenereerde site (deploy dry-run)', () => {

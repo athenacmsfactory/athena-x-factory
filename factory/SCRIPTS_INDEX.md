@@ -10,6 +10,11 @@ De kern van de fabriek, verantwoordelijk voor data-verwerking, generatie en proc
 - **SystemController.js**: Systeem-brede operaties (logging, secrets, OCI hunt).
 - **ProjectController.js**: Beheer van projectdata en configuratie.
 - **GithubController.js**: Integreert met GitHub voor safe-pull en repository beheer.
+- **AutomationController.js**: De autopilot (drift-detectie → heal → rebuild) — draait sinds Fase 1c ná elke rebuild door de **kwaliteitspoort**.
+
+### Kwaliteitspoort (Fase 1c)
+- **quality-gate.js** (CLI in `5-engine/`): lint + build-check + Lighthouse-drempels vóór elke (auto)deploy. `node factory/5-engine/quality-gate.js <site> [--skip-lighthouse] [--skip-build] [--skip-install] [--json]`.
+- **QualityGate.js** (lib): de poort zelf — HTML-tag-balans + placeholder-lint (les: `html_lint_voorkomt_stille_layout_bugs`), `pnpm build`-verificatie en Lighthouse-drempels tegen een lokaal geserveerde dist. Drempels configureerbaar via `factory/config/quality-gate.defaults.json` + per site `quality-gate.json`. De deploy-wizard en de autopilot passeren de poort automatisch; noodrem: `ATHENA_SKIP_QUALITY_GATE=1`.
 
 ### Data & Sync (`/lib` & `/core`)
 - **DataManager.js**: Dé centrale hub voor alle data-operaties (JSON, TSV, Google Sheets).

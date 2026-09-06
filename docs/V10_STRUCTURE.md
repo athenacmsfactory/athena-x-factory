@@ -94,7 +94,7 @@ De functionele motor. Importeert bricks uit de centrale bibliotheek. Gebruikt `/
 De blueprint-definities. Bevat per branche specifieke data-structuren, parsers en demo-content. 
 
 ### `5-engine/`
-De magie. Verantwoordelijk voor het hydrateren van een skeleton met data van een sitetype en het toevoegen van de juiste Lego-bricks.
+De magie. Verantwoordelijk voor het hydrateren van een skeleton met data van een sitetype en het toevoegen van de juiste Lego-bricks. Bevat sinds Fase 1c ook de **kwaliteitspoort** (`5-engine/quality-gate.js` + `lib/QualityGate.js`): lint + build-check + Lighthouse-drempels die vóór elke (auto)deploy gepasseerd moeten worden.
 
 ### 4. 1-1-1 Hybrid Data Standard
 De Athena Factory hanteert een strikte scheiding van data voor maximale bewerkbaarheid door eindgebruikers (via Google Sheets):

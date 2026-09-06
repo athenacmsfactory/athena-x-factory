@@ -9,6 +9,8 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { loadEnv } from '../env-loader.js';
 import { rl, ask } from '../cli-interface.js';
+import { AthenaConfigManager } from '../lib/ConfigManager.js';
+import { QualityGate } from '../lib/QualityGate.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +30,32 @@ export async function deployProject(selectedProject, commitMsg = "Deploy update"
     // --- DETECT MONOREPO (v9 Vault-First) ---
     const vaultRoot = path.resolve(root, '../../vault');
     const isVaultMonorepo = fs.existsSync(path.join(vaultRoot, '.git'));
+
+    // --- 🛡️ KWALITEITSPOORT (Fase 1c) — vóór elke deploy, ook de autopilot-deploy ---
+    if (process.env.ATHENA_SKIP_QUALITY_GATE !== '1') {
+        const gateSiteDir = isVaultMonorepo
+            ? path.join(vaultRoot, selectedProject)
+            : projectDir;
+        if (fs.existsSync(gateSiteDir)) {
+            const cm = new AthenaConfigManager(path.resolve(root, '../..'));
+            const gate = new QualityGate(cm);
+            console.log(`   🛡️  Kwaliteitspoort (lint + build + Lighthouse) voor "${selectedProject}"...`);
+            const result = await gate.runGate(gateSiteDir, {});
+            console.log(`   ${QualityGate.summarize(result)}`);
+            if (!result.passed) {
+                for (const c of result.checks) {
+                    for (const err of c.errors || []) {
+                        console.error(`   ❌ [${c.id}] ${err.message}${err.file ? ` (${err.file}${err.line ? ':' + err.line : ''})` : ''}`);
+                    }
+                }
+                throw new Error(`Quality gate geblokkeerd voor '${selectedProject}' — deploy afgebroken. (Noodrem: ATHENA_SKIP_QUALITY_GATE=1)`);
+            }
+        } else {
+            console.log(`   ⚠️  Kwaliteitspoort overgeslagen: ${gateSiteDir} niet gevonden.`);
+        }
+    } else {
+        console.log(`   ⚠️  Kwaliteitspoort expliciet overgeslagen (ATHENA_SKIP_QUALITY_GATE=1).`);
+    }
 
     if (isVaultMonorepo) {
         console.log(`   🏗️  v9 Vault-Monorepo gedetecteerd (Root: ${vaultRoot})`);

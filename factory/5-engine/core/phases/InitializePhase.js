@@ -76,13 +76,25 @@ export class InitializePhase extends BasePhase {
             globalShared: path.join(ctx.tplRoot, 'shared')
         };
 
+        // META-description/keywords: blueprint-veld > discovery-dossier > neutrale fallback.
+        // (Fase 1c: zonder deze variabelen bleven {{META_*}}-placeholders in dist/index.html staan.)
+        const humanize = (s) => String(s).replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        const metaDescription = ctx.blueprint.meta_description
+            || ctx.discovery?.meta_description
+            || `${ctx.config.projectName} — ${humanize(siteType)}.`;
+        const metaKeywords = ctx.blueprint.meta_keywords
+            || ctx.discovery?.meta_keywords
+            || [ctx.config.projectName, humanize(siteType), humanize(layoutName)].join(', ');
+
         ctx.engine = new TransformationEngine({
-            variables: { 
-                PROJECT_NAME: ctx.config.projectName, 
-                SITE_TYPE_NAME: siteType, 
-                LAYOUT_NAME: layoutName, 
-                STYLE_NAME: ctx.config.styleName, 
-                PRIMARY_TABLE_NAME: ctx.blueprint.data_structure?.[0]?.table_name || 'basis' 
+            variables: {
+                PROJECT_NAME: ctx.config.projectName,
+                SITE_TYPE_NAME: siteType,
+                LAYOUT_NAME: layoutName,
+                STYLE_NAME: ctx.config.styleName,
+                PRIMARY_TABLE_NAME: ctx.blueprint.data_structure?.[0]?.table_name || 'basis',
+                META_DESCRIPTION: metaDescription,
+                META_KEYWORDS: metaKeywords
             },
             flags: {
                 isWebshop: !!(ctx.blueprint.features || {}).ecommerce,
