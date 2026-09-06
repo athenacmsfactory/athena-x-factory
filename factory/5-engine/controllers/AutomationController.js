@@ -81,6 +81,7 @@ export class AutomationController {
                     // 4. Kwaliteitspoort (Fase 1c) — de autopilot mag geen fouten versterken.
                     //    Lint op de verse dist; build is al gedraaid, Lighthouse is te zwaar voor de 15-min-loop.
                     const gateResult = await this.gate.runGate(site, { skipBuild: true, skipInstall: true, skipLighthouse: true });
+                    this._logGateResult(site, gateResult);
                     if (!gateResult.passed) {
                         this.stats.gateFailures++;
                         console.error(`🛑 [Automation] Kwaliteitspoort geblokkeerd voor ${site}: ${QualityGate.summarize(gateResult)}`);
@@ -101,5 +102,22 @@ export class AutomationController {
             isRunning: this.isRunning,
             stats: this.stats
         };
+    }
+
+    /**
+     * Persisteer gate-uitslagen volgens het doc-schema voor background tools:
+     * output/logs/[datum]_[tool-naam].log (zie docs/core/DEVELOPER_MANUAL.md).
+     * Loggen mag de automation-loop nooit breken.
+     */
+    _logGateResult(site, result) {
+        try {
+            const logsDir = this.configManager.get('paths.logs');
+            fs.mkdirSync(logsDir, { recursive: true });
+            const date = new Date().toISOString().slice(0, 10);
+            const line = `${new Date().toISOString()} [quality-gate] ${site} ${result.passed ? 'PASS' : 'FAIL'} — ${QualityGate.summarize(result)}\n`;
+            fs.appendFileSync(path.join(logsDir, `${date}_quality-gate.log`), line);
+        } catch (e) {
+            console.warn(`⚠️ [Automation] Kon gate-log niet schrijven: ${e.message}`);
+        }
     }
 }
