@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCart } from './CartContext';
+import { useCart } from '../../contexts/CartContext';
 
 const ProductGrid = ({ data, sectionName, features = {} }) => {
     if (!data || data.length === 0) return null;

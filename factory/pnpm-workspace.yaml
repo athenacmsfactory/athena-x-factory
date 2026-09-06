@@ -3,6 +3,7 @@ packages:
   - '2-templates'
   - '../athena-api'
   - 'athena-dashboard-ui'
+  - 'packages/*'
   - 'sites/*'
 
 allowBuilds:

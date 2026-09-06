@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCart } from './CartContext';
+import { useCart } from '../../contexts/CartContext';
 import { Link } from 'react-router-dom';
 
 const Checkout = () => {
@@ -26,7 +26,7 @@ const Checkout = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          projectName: '{{PROJECT_NAME}}',
+          projectName: import.meta.env.VITE_PROJECT_NAME || 'athena-site',
           cart: cart,
           successUrl: window.location.origin + '/checkout?status=success',
           cancelUrl: window.location.origin + '/checkout?status=cancel'

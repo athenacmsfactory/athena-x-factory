@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CartProvider } from './store/CartContext';
-import CheckoutHeaderV9 from '../../components/legos/Shop/CheckoutHeaderV9';
-import CartOverlayV9 from '../../components/legos/Shop/CartOverlayV9';
-import ProductCardV9 from '../../components/legos/Shop/ProductCardV9';
+import CheckoutHeaderV9 from '@athena/runtime/legos/Shop/CheckoutHeaderV9.js';
+import CartOverlayV9 from '@athena/runtime/legos/Shop/CartOverlayV9.js';
+import ProductCardV9 from '@athena/runtime/legos/Shop/ProductCardV9.js';
 
 /**
  * Webshop Boilerplate (V9.2)

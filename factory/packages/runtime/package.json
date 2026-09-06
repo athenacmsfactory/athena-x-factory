@@ -1,0 +1,33 @@
+{
+  "name": "@athena/runtime",
+  "version": "0.1.0",
+  "description": "Gedeelde Athena-engine runtime: Lego-componenten, contexts en de fetch-data CLI. Eén bron van waarheid voor alle gegenereerde sites (Fase 1b).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "private": true,
+  "exports": {
+    "./*": "./dist/*"
+  },
+  "bin": {
+    "athena-fetch-data": "dist/cli/fetch-data.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "node build.mjs"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.20.0"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.3"
+  }
+}

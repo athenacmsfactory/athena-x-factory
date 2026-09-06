@@ -5,7 +5,7 @@ export default function Footer({ data }) {
   const settings = Array.isArray(settingsSource) ? (settingsSource[0] || {}) : settingsSource;
   const contactInfo = data?.contact?.[0] || {};
 
-  const naam = settings.site_name || '{{PROJECT_NAME}}';
+  const naam = settings.site_name || 'Athena Site';
   const email = contactInfo.email || settings.email || '';
   const locatie = contactInfo.location || '';
   const btw = contactInfo.btw_nummer || contactInfo.btw || '';

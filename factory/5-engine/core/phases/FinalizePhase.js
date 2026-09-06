@@ -16,16 +16,20 @@ export class FinalizePhase extends BasePhase {
         // 1. Data Aggregation (NEW)
         DataAggregator.aggregate(ctx.projectDir);
 
+        // 1b. Vendor @athena/runtime tarball (Fase 1b — gedeelde packages)
+        const runtimeDep = this.vendorRuntime(ctx);
+
         // 2. package.json
         const pkg = {
             name: ctx.safeName,
             type: "module",
             scripts: {
-                "fetch-data": "node fetch-data.js",
+                "fetch-data": "athena-fetch-data",
                 "dev": "vite",
                 "build": "vite build"
             },
             dependencies: {
+                "@athena/runtime": runtimeDep,
                 "react": "^19.0.0",
                 "react-dom": "^19.0.0",
                 "react-router-dom": "^6.20.0",
@@ -64,20 +68,38 @@ export class FinalizePhase extends BasePhase {
         QualityChecker.check(ctx.projectDir);
     }
 
+    /**
+     * Fase 1b — Vendor @athena/runtime als tarball in de site.
+     * Sites moeten 100% standalone bouwbaar blijven (GitHub Actions deploy.yml),
+     * dus geen workspace-/link-dependency: de package wordt gepackt en als
+     * file:-dependency in vendor/ gelegd. Preflight: pack doet prepack (build).
+     */
+    vendorRuntime(ctx) {
+        const runtimeDir = path.resolve(__dirname, '../../../packages/runtime');
+        const pkgJson = JSON.parse(fs.readFileSync(path.join(runtimeDir, 'package.json'), 'utf8'));
+        const tarName = `athena-runtime-${pkgJson.version}.tgz`;
+        const vendorDir = path.join(ctx.projectDir, 'vendor');
+        const tarPath = path.join(vendorDir, tarName);
+
+        if (!fs.existsSync(tarPath)) {
+            fs.mkdirSync(vendorDir, { recursive: true });
+            execSync(`pnpm pack --pack-destination "${vendorDir}"`, { cwd: runtimeDir, stdio: 'pipe' });
+        }
+        return `file:vendor/${tarName}`;
+    }
+
     setupEnvFile(ctx) {
-        const envLines = [];
-        
+        const envLines = [`VITE_PROJECT_NAME=${ctx.config.projectName || ctx.safeName}`];
+
         // Collect all VITE_ prefixed variables from current process env
         Object.keys(process.env).forEach(key => {
-            if (key.startsWith('VITE_')) {
+            if (key.startsWith('VITE_') && key !== 'VITE_PROJECT_NAME') {
                 envLines.push(`${key}=${process.env[key]}`);
             }
         });
 
-        if (envLines.length > 0) {
-            fs.writeFileSync(path.join(ctx.projectDir, '.env'), envLines.join('\n'));
-            this.log(`Generated .env for ${ctx.safeName} with ${envLines.length} variables.`);
-        }
+        fs.writeFileSync(path.join(ctx.projectDir, '.env'), envLines.join('\n'));
+        this.log(`Generated .env for ${ctx.safeName} with ${envLines.length} variables.`);
     }
 
     setupViteConfig(ctx) {

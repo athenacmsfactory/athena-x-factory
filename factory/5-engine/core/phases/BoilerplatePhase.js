@@ -26,8 +26,9 @@ export class BoilerplatePhase extends BasePhase {
             }
         });
 
-        // 2. Base Logic
-        ['logic/fetch-data.js', 'logic/mapper.js', 'config/index.html', 'config/project.gitignore', 'config/deploy.yml'].forEach(src => {
+        // 2. Base Logic (fetch-data + mapper zijn verplaatst naar @athena/runtime — Fase 1b;
+        //    sites gebruiken de bin `athena-fetch-data`, zie FinalizePhase)
+        ['config/index.html', 'config/project.gitignore', 'config/deploy.yml'].forEach(src => {
             const srcPath = path.join(ctx.tplRoot, src);
             if (fs.existsSync(srcPath)) {
                 const dest = src.includes('/') ? src.split('/').pop() : src;

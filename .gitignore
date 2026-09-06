@@ -24,6 +24,7 @@ dock/dock.log
 .env.local
 
 # Project Specific
+factory/packages/runtime/*.tgz
 athena/sites/**/node_modules/
 athena/sites/**/dist/
 athena/input/**/json-data/

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createMapper } from '../mapper.js';
+import { createMapper } from '../../packages/runtime/src/cli/mapper.js';
 
 describe('mapper.js', () => {
     it('Mapper translates headers correctly', () => {

@@ -3,6 +3,33 @@ import path from 'path';
 import { BasePhase } from './BasePhase.js';
 import { generateSectionComponent } from '../../logic/standard-layout-generator.js';
 
+// Fase 1b — Gedeelde packages: de engine-generieke componenten leven in
+// @athena/runtime (factory/packages/runtime). Gegenereerde sites krijgen dunne
+// re-export shims i.p.v. volledige kopieën; site-specifieke componenten
+// (sitetype-layout, gegenereerde Section.jsx) overschrijven de shims daarna.
+const RUNTIME = '@athena/runtime';
+
+const RUNTIME_SHIMS = [
+    { name: 'Hero.jsx', spec: `${RUNTIME}/legos/Common/HeroLegoV9.js` },
+    { name: 'Testimonials.jsx', spec: `${RUNTIME}/legos/Common/TestimonialsLegoV9.js` },
+    { name: 'Team.jsx', spec: `${RUNTIME}/legos/Common/TeamLegoV9.js` },
+    { name: 'FAQ.jsx', spec: `${RUNTIME}/legos/Common/FAQLegoV9.js` },
+    { name: 'CTA.jsx', spec: `${RUNTIME}/legos/Common/CTALegoV9.js` },
+    { name: 'Benefits.jsx', spec: `${RUNTIME}/legos/Common/BenefitsLegoV9.js` },
+    { name: 'AboutSection.jsx', spec: `${RUNTIME}/legos/Common/TextLegoV9.js` },
+    { name: 'GenericSection.jsx', spec: `${RUNTIME}/legos/Common/GenericSectionV9.js` },
+    { name: 'Header.jsx', spec: `${RUNTIME}/legos/Layout/HeaderV9.js` },
+    { name: 'Footer.jsx', spec: `${RUNTIME}/legos/Layout/FooterV9.js` },
+    { name: 'ProductGrid.jsx', spec: `${RUNTIME}/legos/Shop/ProductGridV9.js` },
+    { name: 'CartOverlay.jsx', spec: `${RUNTIME}/legos/Shop/CartOverlayV9.js` },
+    { name: 'Checkout.jsx', spec: `${RUNTIME}/legos/Shop/CheckoutHeaderV9.js` },
+    { name: 'StyleInjector.jsx', spec: `${RUNTIME}/components/StyleInjector.js` },
+    // Contexts: named exports (eventueel + default)
+    { name: 'CartContext.jsx', spec: `${RUNTIME}/contexts/CartContext.js`, named: true },
+    { name: 'DisplayConfigContext.jsx', spec: `${RUNTIME}/contexts/DisplayConfigContext.js`, named: true },
+    { name: 'StyleContext.jsx', spec: `${RUNTIME}/contexts/StyleContext.js`, named: true, default: true }
+];
+
 export class ComponentPhase extends BasePhase {
     constructor() {
         super('Component');
@@ -15,73 +42,36 @@ export class ComponentPhase extends BasePhase {
     }
 
     assembleComponents(ctx) {
-        const essential = [
-            { name: 'CartContext.jsx', srcName: 'CartContext.jsx' },
-            { name: 'CartOverlay.jsx', srcName: 'CartOverlayV9.jsx' },
-            { name: 'Checkout.jsx', srcName: 'CheckoutHeaderV9.jsx' },
-            { name: 'RepeaterControls.jsx', srcName: 'RepeaterControls.jsx' },
-            { name: 'Header.jsx', srcName: 'HeaderV9.jsx' },
-            { name: 'Footer.jsx', srcName: 'FooterV9.jsx' },
-            { name: 'SectionToolbar.jsx', srcName: 'SectionToolbar.jsx' },
-            { name: 'MetadataConfigModal.jsx', srcName: 'MetadataConfigModal.jsx' },
-            { name: 'AboutSection.jsx', srcName: 'TextLegoV9.jsx' },
-            { name: 'StyleContext.jsx', srcName: 'StyleContext.jsx' },
-            { name: 'DisplayConfigContext.jsx', srcName: 'DisplayConfigContext.jsx' },
-            { name: 'Hero.jsx', srcName: 'HeroLegoV9.jsx' },
-            { name: 'Testimonials.jsx', srcName: 'TestimonialsLegoV9.jsx' },
-            { name: 'Team.jsx', srcName: 'TeamLegoV9.jsx' },
-            { name: 'FAQ.jsx', srcName: 'FAQLegoV9.jsx' },
-            { name: 'CTA.jsx', srcName: 'CTALegoV9.jsx' },
-            { name: 'ProductGrid.jsx', srcName: 'ProductGridV9.jsx' },
-            { name: 'Benefits.jsx', srcName: 'BenefitsLegoV9.jsx' },
-            { name: 'GenericSection.jsx', srcName: 'GenericSectionV9.jsx' },
-            { name: 'StyleInjector.jsx', srcName: 'StyleInjector.jsx' }
-        ];
-        
-        essential.forEach(item => {
-            const comp = item.name;
-            const srcFile = item.srcName;
-            
-            let src = [
-                path.join(ctx.paths.modelBoilerplate, 'components', srcFile),
-                path.join(ctx.tplRoot, 'components/legos/Common', srcFile),
-                path.join(ctx.tplRoot, 'components/legos/Layout', srcFile),
-                path.join(ctx.tplRoot, 'components/legos/Shop', srcFile),
-                path.join(ctx.paths.globalShared, 'components', srcFile),
-                path.join(ctx.tplRoot, 'components', srcFile),
-                path.join(ctx.configManager.get('paths.root'), 'factory/deprecated/templates/components', srcFile),
-                // Fallback to non-V9 names
-                path.join(ctx.tplRoot, 'components/legos/Common', comp),
-                path.join(ctx.tplRoot, 'components/legos/Layout', comp)
-            ].find(fs.existsSync);
-            
-            if (src) {
-                fs.writeFileSync(
-                    path.join(ctx.projectDir, 'src/components', comp), 
-                    ctx.engine.transform(fs.readFileSync(src, 'utf8'), comp)
-                );
+        // 1. Runtime shims (defaults; overschrijfbaar door sitetype-layout hieronder)
+        RUNTIME_SHIMS.forEach(shim => {
+            const lines = [];
+            if (!shim.named) lines.push(`export { default } from '${shim.spec}';`);
+            else {
+                lines.push(`export * from '${shim.spec}';`);
+                if (shim.default) lines.push(`export { default } from '${shim.spec}';`);
             }
+            fs.writeFileSync(path.join(ctx.projectDir, 'src/components', shim.name), lines.join('\n') + '\n');
         });
 
-        // Copy custom components from sitetype
+        // 2. Copy custom components from sitetype (overschrijven shims indien aanwezig)
         const customCompDir = path.join(ctx.paths.sourceLayout, 'components');
         if (fs.existsSync(customCompDir)) {
             const customFiles = fs.readdirSync(customCompDir).filter(f => f.endsWith('.jsx'));
             customFiles.forEach(comp => {
                 const src = path.join(customCompDir, comp);
                 fs.writeFileSync(
-                    path.join(ctx.projectDir, 'src/components', comp), 
+                    path.join(ctx.projectDir, 'src/components', comp),
                     ctx.engine.transform(fs.readFileSync(src, 'utf8'), comp)
                 );
             });
         }
 
-        // Shared UI components (flat copy)
+        // 3. Shared UI components (flat copy)
         [path.join(ctx.paths.globalShared, 'components/ui'), path.join(ctx.paths.trackBoilerplate, 'components/legos/Common/ui')].forEach(src => {
             if (fs.existsSync(src)) fs.cpSync(src, path.join(ctx.projectDir, 'src/components/ui'), { recursive: true });
         });
 
-        // Special: dock-connector.js (only for docked track)
+        // 4. Special: dock-connector.js (only for docked track)
         if (ctx.config.editorStrategy === 'unified') {
             const connSrc = path.join(ctx.paths.trackBoilerplate, 'shared/public/dock-connector.js');
             if (fs.existsSync(connSrc)) {

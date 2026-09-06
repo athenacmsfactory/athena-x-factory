@@ -5,11 +5,11 @@ Dit manifest is de definitieve operationele gids voor AI-agents (Gemini, Jules, 
 ---
 
 ## 🏗️ Fabriek Architectuur (V10 Flattened)
-- **Locatie:** `/home/kareltestspecial/0-IT/4-pj/x-v9/athena/`
+- **Locatie:** `/home/kareltestspecial/1-IT/4-pj/x-v9/athena/`
 - **Engine Kern (`/factory/5-engine/`):** Bevat alle actieve scripts en V10-omgeving.
 - **Sites (`/sites/`):** De individuele projecten (bijv. `fpc-gent-site`, `portfolio-kbm`).
 - **Input (`/input/`):** Rauwe data bronnen (TSV, Scrapes).
-- **Templates (`/factory/2-templates/`):** De blauwdrukken (Lego Bricks en Skeletons).
+- **Templates (`/factory/2-templates/`):** De blauwdrukken (Skeletons; de Lego-bricks leven sinds Fase 1b in `factory/packages/runtime/` = `@athena/runtime`).
 - **Site-Types (`/factory/3-sitetypes/`):** De 100% geflatteerde blauwdruk-registry.
 
 ---
@@ -42,6 +42,8 @@ Gebruik deze commando's vanuit de `/factory/` map voor autonome uitvoering:
 ---
 
 ## 🚀 Deployment & Monitoring
+- **Runtime-sync (Fase 1b):** `node factory/6-utilities/sync-runtime.js [--vault|--paths a,b] [--build]`
+  - *Wat het doet:* Packs `@athena/runtime` en vendort de tarball in alle sites, zodat engine-updates één commando kosten.
 - **GitHub Sync (Subtree):** `node factory/5-engine/sync-monorepo-to-github.js [site-name]`
   - *Wat het doet:* Pusht een specifieke site vanuit de monorepo naar zijn eigen GitHub repository onder de **athena-sites** organisatie.
 - **Site README Fixer:** `node factory/6-utilities/align-site-readmes.js`
