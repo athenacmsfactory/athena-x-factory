@@ -14,14 +14,11 @@
  * Exit-code: 0 = poort gepasseerd, 1 = poort geblokkeerd.
  */
 
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { AthenaConfigManager } from './lib/ConfigManager.js';
 import { QualityGate } from './lib/QualityGate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ATHENA_ROOT = path.resolve(__dirname, '../..');
 
 const args = process.argv.slice(2);
 const flags = {
@@ -37,8 +34,10 @@ if (!siteArg) {
     process.exit(2);
 }
 
-const cm = new AthenaConfigManager(ATHENA_ROOT);
-const gate = new QualityGate(cm);
+// Geen ConfigManager-import: de CLI blijft daarmee volledig stdlib-only en draait
+// ook in de sparse factory-checkout van de vault publisher-workflow (geen node_modules,
+// geen dotenv). resolveSiteDir heeft zelf correcte pad-fallbacks (sites/ + vault/).
+const gate = new QualityGate(null);
 
 const result = await gate.runGate(siteArg, {
     skipLighthouse: flags.skipLighthouse,
