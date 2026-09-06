@@ -15,11 +15,16 @@ import { ask } from './cli-interface.js';
 export async function loadEnv(defaultPath) {
     let result = dotenv.config({ path: defaultPath });
     const isHeadless = process.argv.includes('--headless') || (process.argv[1] && process.argv[1].includes('athena-agent.js'));
+    const isNonInteractive = process.env.CI === 'true' || !process.stdin.isTTY;
 
     while (result.error || !process.env.GEMINI_API_KEY) {
         if (isHeadless) {
             console.error(`\n❌ [HEADLESS MODE] Kon de .env file niet vinden op '${defaultPath}' of de GEMINI_API_KEY ontbreekt.`);
             process.exit(1);
+        }
+        if (isNonInteractive) {
+            console.error(`\n⚠️ [NON-INTERACTIVE] .env met GEMINI_API_KEY niet gevonden op '${defaultPath}' — ga verder zonder AI-credentials.`);
+            return false;
         }
         
         console.log(`\n⚠️ Kon de .env file niet vinden op '${defaultPath}' of de GEMINI_API_KEY ontbreekt.`);
