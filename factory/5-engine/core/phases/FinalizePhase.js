@@ -42,7 +42,7 @@ export class FinalizePhase extends BasePhase {
             }
         };
         fs.writeFileSync(path.join(ctx.projectDir, 'package.json'), JSON.stringify(pkg, null, 2));
-        fs.writeFileSync(path.join(ctx.projectDir, 'pnpm-workspace.yaml'), 'allowBuilds:\n  esbuild: true\n');
+        fs.writeFileSync(path.join(ctx.projectDir, 'pnpm-workspace.yaml'), "packages: ['.']\nallowBuilds:\n  esbuild: true\n");
 
         // 2. Vite Config & Ports
         this.setupViteConfig(ctx);
