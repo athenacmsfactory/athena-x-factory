@@ -88,7 +88,7 @@ export class SystemController {
         let saPath = path.join(this.root, 'factory', 'sheet-service-account.json');
         if (!fs.existsSync(saPath)) saPath = path.join(this.root, 'factory', 'service-account.json');
         
-        let email = 'athena-cms-sheet-write@gen-lang-client-0519605634.iam.gserviceaccount.com';
+        let email = 'athena-backend@athena-cms-factory.iam.gserviceaccount.com';
         if (fs.existsSync(saPath)) {
             try {
                 const saData = JSON.parse(fs.readFileSync(saPath, 'utf8'));
