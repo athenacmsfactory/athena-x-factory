@@ -73,7 +73,7 @@ export async function provisionSheet(projectName, clientEmail = null) {
         let saEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
         if (!saEmail) {
             console.warn("⚠️  WAARSCHUWING: GOOGLE_SERVICE_ACCOUNT_EMAIL niet gevonden in .env. Gebruik fallback...");
-            saEmail = 'athena-cms-sheet-write@gen-lang-client-0519605634.iam.gserviceaccount.com';
+            saEmail = 'athena-backend@athena-cms-factory.iam.gserviceaccount.com';
         }
 
         console.log(`🤖 Robot (${saEmail}) toegang geven...`);
