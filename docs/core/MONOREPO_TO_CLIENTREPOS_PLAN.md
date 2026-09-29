@@ -53,7 +53,7 @@ jobs:
           done
 ```
 ---
-*Gebouwd op vakmanschap, gedreven door nieuwsgierigheid en gedreven door succes.*
+*Gebouwd op vakmanschap, gedreven door nieuwsgierigheid en succes.*
 *Gemaakt op 1 februari 2026 door Gemini-CLI.*
 
 

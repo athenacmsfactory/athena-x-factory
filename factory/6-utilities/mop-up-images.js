@@ -6,7 +6,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_NAME = '<site>';
+const SITE_NAME = process.argv[2];
+const MEDIA_BASE_URL = process.argv[3];
+if (!SITE_NAME || !MEDIA_BASE_URL) {
+    console.error('Gebruik: node 6-utilities/mop-up-images.js <site-name> <media-base-url>');
+    process.exit(1);
+}
 const sitePath = path.resolve(__dirname, '../../sites', SITE_NAME);
 const dataPath = path.join(sitePath, 'public/data/pages');
 const imagesPath = path.join(sitePath, 'public/images');
@@ -40,7 +45,7 @@ async function main() {
     console.log('🔍 Found ' + missing.size + ' missing images. Starting download...');
     
     for (let img of missing) {
-        const url = 'https://www.example-media.invalid/wp-content/uploads/' + img; // Vereenvoudigde gok voor URL structuur
+        const url = MEDIA_BASE_URL.replace(/\/$/, '') + '/' + img;
         const success = await download(url, path.join(imagesPath, img));
         if (success) console.log('✅ Recovered: ' + img);
     }

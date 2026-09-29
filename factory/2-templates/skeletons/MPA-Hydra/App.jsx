@@ -11,8 +11,8 @@ function App() {
       nav: /* @NAV_ITEMS@ */ [
           { label: "Home", href: "#/" },
           { label: "Over ons", href: "#/over-ons" },
-          { label: "Behandeling", href: "#/diensten" },
-          { label: "Jobs", href: "#/jobs" },
+          { label: "Diensten", href: "#/diensten" },
+          { label: "Vacatures", href: "#/vacatures" },
           { label: "Contact", href: "#/contact" },
           { label: "Archief", href: "#/sitemap" }
       ]

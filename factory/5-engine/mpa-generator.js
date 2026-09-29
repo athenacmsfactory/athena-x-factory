@@ -22,9 +22,8 @@ async function generateMPA() {
     const siteDir = path.join(root, '../sites', `${projectName}-site`);
     const mpaTemplatesDir = path.join(root, '2-templates/skeletons/MPA-Hydra');
 
-    // Formatteer de projectnaam voor weergave (<site> -> Organisatienaam)
+    // Formatteer de projectnaam voor weergave (bv. my-agent -> My Agent)
     const formattedName = projectName.split('-').map(word => {
-        if (word.toLowerCase() === 'fpc') return 'FPC';
         return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
 
@@ -142,7 +141,7 @@ export default defineConfig(async ({ command }) => {
     });
 
     // We filteren en mappen naar een mooi menu (max 7 items)
-    const priority = ['over-ons', 'diensten', 'behandeling', 'zorg', 'aanbod', 'jobs', 'werken-bij', '', 'events', 'nieuws', 'contact'];
+    const priority = ['over-ons', 'diensten', 'aanbod', 'vacatures', 'werken-bij', 'projecten', 'nieuws', 'contact'];
     const navItems = [
         { label: "Home", href: "#/" }
     ];

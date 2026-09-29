@@ -10,9 +10,9 @@ Op dit moment wordt de kern-ontwikkeling van de Athena Factory en de bijbehorend
 ## GitHub & Governance
 De verbinding tussen de verschillende entiteiten is als volgt gestructureerd:
 
-*   **GitHub Gebruiker: `KarelTestSpecial`**: Direct verbonden met de primaire e-mail. Dit account heeft volledige beheer-rechten over de GitHub Organisatie **athena-cms-factory**.
+*   **Persoonlijk beheer-account**: direct verbonden met de primaire e-mail van de opdrachtgever; dit account heeft volledige beheer-rechten over de GitHub Organisatie **athena-cms-factory**.
 *   **GitHub Organisatie: `athena-cms-factory`**: De centrale plek waar alle gegenereerde klant-sites en de monorepo worden gehost.
-*   **Co-Administrator: `athenacmsfactory`**: Het officiële project-account (verbonden met `athena.cms.factory@gmail.com`) heeft eveneens volledige beheer-rechten om de continuïteit te waarborgen.
+*   **Co-Administrator: `athenacmsfactory`**: Het officiële project-account (verbonden met een dedicated factory-e-mail) heeft eveneens volledige beheer-rechten om de continuïteit te waarborgen.
 
 ## Toekomstplan (Account Migratie)
 Het is de uitdrukkelijke bedoeling om op termijn alle infrastructurele eigendomsrechten (GCP Projecten, Sheets, Firebase, etc.) volledig over te dragen naar het account **athena.cms.factory@gmail.com**.
@@ -22,4 +22,4 @@ Het is de uitdrukkelijke bedoeling om op termijn alle infrastructurele eigendoms
 *   **Financiële Onafhankelijkheid**: Dit is een cruciaal onderdeel van de commerciële roadmap van Athena.
 
 ## Conclusie
-Voorlopig werkt de huidige hybride setup (beheer via KarelTestSpecial, hosting via athena-cms-factory) uitstekend en biedt het de technische kracht die nodig is voor de huidige ontwikkelingsfase.
+Voorlopig werkt de huidige hybride setup (beheer via het persoonlijke account, hosting via athena-cms-factory) uitstekend en biedt het de technische kracht die nodig is voor de huidige ontwikkelingsfase.

@@ -5,7 +5,7 @@ import './index.css';
 const Hero = ({ data }) => {
   const heroData = data.hero?.[0] || {
     title: "Developer Dossier: Karel",
-    subtitle: "Een compleet overzicht van alle software-projecten en repositories ontwikkeld tijdens het een zelfstandige praktijk."
+    subtitle: "Een compleet overzicht van alle software-projecten en repositories die ik heb gebouwd."
   };
   
   return (
@@ -80,7 +80,7 @@ const Footer = () => {
     <footer>
       <p>&copy; 2026 Karel - Portfolio</p>
       <p style={{fontSize: '0.8rem', marginTop: '1rem', color: 'var(--text-muted)'}}>
-        Gegenereerd op basis van live GitHub data van KarelTestSpecial & athenacmsfactory.
+        Gegenereerd op basis van live GitHub data van athenacmsfactory.
       </p>
     </footer>
   );

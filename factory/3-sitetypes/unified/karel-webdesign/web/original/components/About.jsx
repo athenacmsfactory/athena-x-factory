@@ -5,7 +5,7 @@ import { Quote } from 'lucide-react';
 const About = ({ data }) => {
   const aboutData = data || {
     title: 'Over Mij',
-    content: 'Hallo, ik ben Karel. Ik ben een gepassioneerde webdeveloper die werkt aan zijn een zelfstandige praktijk. Programmeren is voor mij meer dan werk; het is mijn vakmanschap en mijn houvast.',
+    content: 'Hallo, ik ben Karel. Ik ben een gepassioneerde webdeveloper die bouwt aan een zelfstandige praktijk. Programmeren is voor mij meer dan werk; het is mijn vakmanschap en mijn houvast.',
     image_url: 'https://picsum.photos/id/447/600/800'
   };
 

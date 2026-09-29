@@ -28,15 +28,15 @@ export default function Footer() {
                     <div className="md:col-span-1">
                         <div className="flex items-center gap-3 mb-6">
                             {logo ? (
-                                <img src={logo} alt="Organisatienaam" className="h-10 w-auto object-contain" />
+                                <img src={logo} alt="Organisatielogo" className="h-10 w-auto object-contain" />
                             ) : (
-                                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-blue-500/20">F</div>
+                                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shadow-blue-500/20">O</div>
                             )}
                             <span className="text-xl font-black tracking-tight">Organisatienaam</span>
                         </div>
                         <p className="text-slate-400 text-sm leading-relaxed">
-                            Korte positionering van de organisatie in een of twee zinnen. 
-                            
+                            Korte positionering van de organisatie in één of twee zinnen.
+                            Vul hier de essentie van de dienstverlening.
                         </p>
                     </div>
 
@@ -68,7 +68,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm text-slate-400">
                             <li className="flex items-center gap-3">
                                 <i className="fa-solid fa-phone text-blue-500 w-4"></i>
-                                <span>+32 (0)00 00 00 00</span>
+                                <span>+32 (0)00 000 00 00</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <i className="fa-solid fa-envelope text-blue-500 w-4"></i>
@@ -87,7 +87,7 @@ export default function Footer() {
                         © {currentYear} Organisatienaam — Built with <span className="text-blue-500">Athena Factory MPA Engine</span>
                     </p>
                     <div className="flex gap-4">
-                        <a href="https://www.linkedin.com/company/fpc-antwerpen-gent/" target="_blank" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition-all">
+                        <a href="#" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition-all">
                             <i className="fa-brands fa-linkedin-in text-xs"></i>
                         </a>
                         <a href="#" className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-blue-600 hover:text-white transition-all">

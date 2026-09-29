@@ -23,7 +23,7 @@ if (!fs.existsSync(absoluteTargetDir)) {
 const extractedData = {
     basisgegevens: {
         hero_title: "Developer Dossier: Karel",
-        hero_subtitle: "Software-projecten en repositories ontwikkeld tijdens het een zelfstandige praktijk."
+        hero_subtitle: "Software-projecten en repositories die ik heb gebouwd."
     },
     projects: []
 };

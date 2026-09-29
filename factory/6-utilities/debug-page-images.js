@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
-const pagePath = 'sites/<site>/public/data/pages/jobs.json';
+const SITE_NAME = process.argv[2];
+const PAGE = process.argv[3] || 'index';
+if (!SITE_NAME) { console.error('Gebruik: node 6-utilities/debug-page-images.js <site-name> [pagina]'); process.exit(1); }
+const pagePath = path.join('sites', SITE_NAME, 'public/data/pages', `${PAGE}.json`);
 const content = fs.readFileSync(pagePath, 'utf8');
 const data = JSON.parse(content);
 
