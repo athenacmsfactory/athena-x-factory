@@ -37,7 +37,7 @@ Scripts voor batch-verwerking, onderhoud en specifieke migraties.
 - **check-missing-images.js**: Spoort ontbrekende media-assets op.
 
 ### Migratie & Tools
-- **sync-to-prod.sh**: Automatiseert de overgang van `athena-x` naar `athena`.
+- ~~**sync-to-prod.sh**~~: **verwijderd 29/9/2026** — dual-checkout-topologie (dev-tree → productie-tree + PM2) bestaat niet meer; publicatie loopt nu via `vault/` + `athena-publisher.yml` (GitHub Actions).
 - **export-site-to-sheets.js**: Exporteert lokale JSON data naar een nieuwe Google Sheet.
 - **simulate-customers.js**: Genereert gesimuleerde klantverzoeken voor testing.
 

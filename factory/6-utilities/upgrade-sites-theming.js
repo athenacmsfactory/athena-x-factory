@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const root = path.resolve(__dirname, '../../'); // athena-2/
+const root = path.resolve(__dirname, '../../'); // athena/
 const sitesDir = path.join(root, 'sites');
 
 const STYLE_INJECTOR_CONTENT = "import React, { useLayoutEffect } from 'react';\n\n" +

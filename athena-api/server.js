@@ -79,7 +79,7 @@ const analyticsCtrl = new AnalyticsController(configManager);
 autoCtrl.start(30);
 
 const app = express();
-const port = 5000; // Forceer dashboard op poort 5001 voor de Site Reviewer
+const port = process.env.PORT || 5000; // Cloud Run vereist process.env.PORT
 
 // --- MULTER CONFIG ---
 const storage = multer.diskStorage({
@@ -651,6 +651,6 @@ app.get('/api/system/layout-presets', (req, res) => {
 
 
 
-app.listen(port, () => {
-    console.log(`🔱 Athena Dashboard running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`🔱 Athena Dashboard running at http://0.0.0.0:${port}`);
 });

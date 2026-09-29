@@ -5,7 +5,7 @@ Dit manifest is de definitieve operationele gids voor AI-agents (Gemini, Jules, 
 ---
 
 ## 🏗️ Fabriek Architectuur (V10 Flattened)
-- **Locatie:** `/home/kareltestspecial/1-IT/4-pj/x-v9/athena/`
+- **Locatie:** `/home/kareltestspecial/workspace/x-v9/athena/`
 - **Engine Kern (`/factory/5-engine/`):** Bevat alle actieve scripts en V10-omgeving.
 - **Sites (`/sites/`):** De individuele projecten (bijv. `<site>`, `portfolio-kbm`).
 - **Input (`/input/`):** Rauwe data bronnen (TSV, Scrapes).

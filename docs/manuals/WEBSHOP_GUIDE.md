@@ -79,7 +79,7 @@ VITE_MOLLIE_API_KEY=test_...
 
 ## 5. Connecting the Backend
 
-The webshop uses the **[payment-processor.js](file:///home/kareltestspecial/0-IT/4-pj/x-v9/athena/factory/5-engine/logic/payment-processor.js)** utility to handle secure transaction signing.
+The webshop uses the **[payment-processor.js](file:///home/kareltestspecial/workspace/x-v9/athena/factory/5-engine/logic/payment-processor.js)** utility to handle secure transaction signing.
 
 To connect your frontend to a live payment session:
 1. Ensure your backend server (Node.js) imports `PaymentProcessor`.
@@ -92,9 +92,9 @@ To connect your frontend to a live payment session:
 
 You can customize the "WOW" factor of your shop using the built-in React components:
 
-- **[CustomerProfile.jsx](file:///home/kareltestspecial/0-IT/4-pj/x-v9/athena/factory/2-templates/skeletons/webshop/components/CustomerProfile.jsx)**: Edit this to add custom profile fields or branding.
-- **[OrderPreview.jsx](file:///home/kareltestspecial/0-IT/4-pj/x-v9/athena/factory/2-templates/skeletons/webshop/components/OrderPreview.jsx)**: Change the styling of the pre-checkout summary modal.
-- **[shop-logic.js](file:///home/kareltestspecial/0-IT/4-pj/x-v9/athena/factory/2-templates/skeletons/webshop/logic/shop-logic.js)**: Modify this if you need to add custom order logging or analytics events.
+- **[CustomerProfile.jsx](file:///home/kareltestspecial/workspace/x-v9/athena/factory/2-templates/skeletons/webshop/components/CustomerProfile.jsx)**: Edit this to add custom profile fields or branding.
+- **[OrderPreview.jsx](file:///home/kareltestspecial/workspace/x-v9/athena/factory/2-templates/skeletons/webshop/components/OrderPreview.jsx)**: Change the styling of the pre-checkout summary modal.
+- **[shop-logic.js](file:///home/kareltestspecial/workspace/x-v9/athena/factory/2-templates/skeletons/webshop/logic/shop-logic.js)**: Modify this if you need to add custom order logging or analytics events.
 
 ---
 

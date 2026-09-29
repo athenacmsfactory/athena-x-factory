@@ -68,7 +68,7 @@ The Vault (`../athena-vault-v8-1/`) is a **Cold Storage** environment. To ensure
 
 ## 📂 Detailed Project Directory Structure
 ```text
-/home/kareltestspecial/0-IT/3-DEV/y1/y/factory/
+/home/kareltestspecial/workspace/x-v9/athena/factory/
 ├── GEMINI.md                     # Master Context for the Factory (THIS FILE)
 ├── dock/                         # Visual Editor (Athena Dock) React App (Port 5002)
 │   ├── public/sites.json         # Central registry of all generated sites

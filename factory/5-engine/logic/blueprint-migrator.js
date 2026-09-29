@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const UNIFIED_DIR = '/home/kareltestspecial/0-IT/4-pj/x-v9/athena/factory/3-sitetypes/unified/';
+const UNIFIED_DIR = '/home/kareltestspecial/workspace/x-v9/athena/factory/3-sitetypes/unified/';
 
 const migrateBlueprint = (filePath) => {
     const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
